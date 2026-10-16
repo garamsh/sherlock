@@ -242,10 +242,10 @@ Quoted from each study's report, not re-scored. The corpora differ, so compare w
 | | M, chaining instruction | 10 | 0 | 14 | 17 | 0.705 | +2 to +4 |
 | | L, entity walk | 47 | 4 | 11 | 14 | 0.782 | about +270 |
 | | H, group summaries (offline) | 2 of 150 reached (g8) | — | — | — | 0.943 (g8), 1.107 (g4) | +85 to +125 |
-| #885 (`§Confirmation`) | S | 9 of 100 | 0 of 50 | 57 of 60 | 28 of 40 | 0.731 | 0 |
+| #885 (`§Confirmation (#885)`) | S | 9 of 100 | 0 of 50 | 57 of 60 | 28 of 40 | 0.731 | 0 |
 | | L | 56 | 0 | 39 | 25 | 0.814 | about +270 |
 | | L+A, label and instruction | 57 | 1 | 42 | 21 | 0.814 | about +292 |
-| #888 (`§Read-time variants`) | S | 4 of 100 | 0 of 50 | 57 of 60 | 28 of 40 | 0.730 | 0 |
+| #888 (`§Read-time variants (#888)`) | S | 4 of 100 | 0 of 50 | 57 of 60 | 28 of 40 | 0.730 | 0 |
 | | L | 60 | 0 | 36 | 25 | 0.813 | about +270 |
 | | L+G, gate | 7 | 0 | 52 | 27 | 0.813 | about +284 |
 | | L-T, walk only on call | 13 | 0 | 59 | 24 | 0.813 | about +265 |

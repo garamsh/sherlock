@@ -37,7 +37,7 @@ What ships (`docs/architecture/memory.md`, ADR 0006, ADR 0019):
 
 ### Compression of what ships
 
-Computed for this survey from the #856 replication's recorded syntheses (`research/mid-memory-rag/evidence/replication/`). The chars/source column is summary characters over the 897,180 characters of the 4,800 source messages. The last column is delivered recall on the replication's 280 primary queries (`research/mid-memory-rag/README.md` §Replication).
+Computed for this survey from the #856 replication's recorded syntheses (`research/mid-memory-rag/evidence/replication/`). The chars/source column is summary characters over the 897,180 characters of the 4,800 source messages. The last column is delivered recall on the replication's 280 primary queries (`research/mid-memory-rag/README.md` §Replication (issue #856)).
 
 | Batch | Mids | Mean summary chars | Stored summary chars / source chars | Delivered hits of 280 |
 |---|---:|---:|---:|---:|

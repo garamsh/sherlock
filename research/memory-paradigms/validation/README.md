@@ -150,7 +150,7 @@ From each live record's `trace` (`score.py controls`, `evidence/controls.json`):
 ## W, not run
 
 Amendment 4 dropped W before any live call. W's code, tests, sample and mutation check are in place (`arms/full/`, `sample.json`), and running W would take one live command with `-only` over the sample.
-- **None of `preregistration.md` §W's hypotheses was read:** not chains in view, not abstention in view, not corrections, not implicit chains.
+- **None of W's hypotheses (`preregistration.md` §W's hypotheses, and how each is read) was read:** not chains in view, not abstention in view, not corrections, not implicit chains.
 - **For the ceiling, `../README.md` §Full context as memory stands as the evidence.**
   - Full context matches or beats memory systems up to about 26K tokens.
   - At 100K to 115K it loses overall on 7 of the 8 models read.

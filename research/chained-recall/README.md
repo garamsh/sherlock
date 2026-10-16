@@ -157,7 +157,7 @@ The interface is `study/arm.go`; its doc comments are the contract. In short:
 
 Three workers share one MiniMax key, so there is one proxy and one ledger.
 
-- **Embedder.** Text-embeddings-inference 1.9.4 serves `BAAI/bge-base-en-v1.5` (revision `a5beb1e3e68b9ab74eb54cfd186867f64f240e1a`) on `127.0.0.1:8090`, container `tei-874`, as in `../mid-memory-rag/` §Production parity.
+- **Embedder.** Text-embeddings-inference 1.9.4 serves `BAAI/bge-base-en-v1.5` (revision `a5beb1e3e68b9ab74eb54cfd186867f64f240e1a`) on `127.0.0.1:8090`, container `tei-874`, as in `../mid-memory-rag/` §Production parity (issue #858).
 - **Proxy.** `harness proxy` listens on `127.0.0.1:8091`, run by #874's worker with `MINIMAX_KEY` in its environment only. Arms reach it with `-proxy http://127.0.0.1:8091`.
   - Its route names the arm, episode and phase of every call.
   - It reserves each request's worst case against a ceiling before sending.
@@ -267,11 +267,11 @@ The only model endpoint was MiniMax-M2 through the study proxies (`python3 score
 - The shared proxy was restarted twice while the ledger was open. The first raised the list-price guard from USD 1.00 to 3.00. The second installed the synthesis-cache bound fix of `367d0b1`, and `evidence/ledger/probes.log` records it.
 - Nothing was bought. At MiniMax-M2's list prices the calls come to USD 1.74 (shared ledger) and 3.03 (live ledger). These are guards only: the key is on a subscription.
 - **Per turn,** L's live turns used fewer act calls than S's: 505 against 587 over the same 240 probes. Recall already held what the model would otherwise have searched for.
-- **At write time,** L's extended synthesis call reads 61 and writes 63 more tokens per batch than the shipped one, with no extra call (`arms/links/README.md` §Added synthesis tokens). H adds one call per G mids.
+- **At write time,** L's extended synthesis call reads 61 and writes 63 more tokens per batch than the shipped one, with no extra call (`arms/links/README.md` §Added synthesis tokens (`b4-model`)). H adds one call per G mids.
 
 **Code cost** (net production lines, before tests):
 - M: +2 to +4 (one sentence of the contract).
-- L: about +270, measured from its arm (`arms/links/README.md` §Production estimate); the survey estimated +135 to +210.
+- L: about +270, measured from its arm (`arms/links/README.md` §Production estimate, measured); the survey estimated +135 to +210.
 - H: +85 to +125 (`arms/levels/README.md` §Production estimate).
 
 ## Verdict

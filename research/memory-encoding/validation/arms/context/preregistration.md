@@ -30,14 +30,14 @@ Fixes arm C's one paid phase before its first model call, and the controls and m
 
 ## Estimate
 
-- #885's stream synthesis read 328 and wrote 201 tokens per call (`../../preregistration.md` §Paid phases).
+- #885's stream synthesis read 328 and wrote 201 tokens per call (`../../preregistration.md` §Paid phases, in order).
 - The context messages add 386 characters per batch on average (at most 3,199), measured on `corpus.json`'s stream as "role: content" of the 8 messages before each batch. The added prompt text (341 characters), the schema field (54) and the input key (22) add about 420 more. Together that is about 200 tokens more input per call.
 - The context adds at most 300 characters of output, about 75 tokens.
 - So the phase is estimated at about 0.55M input and 0.29M output tokens.
 
 ## Pacing and the usage limit
 
-- **Start.** Only after the proxy's other paid phases of this study that `../../preregistration.md` §Paid phases orders before C's (the stream synthesis and F's facts) have ended, and once the PM confirms the key is free.
+- **Start.** Only after the proxy's other paid phases of this study that `../../preregistration.md` §Paid phases, in order, orders before C's (the stream synthesis and F's facts) have ended, and once the PM confirms the key is free.
 - **Concurrency.** Two requests at a time (`synthesis.go` `contextWorkers`).
 - **Usage limit.** On HTTP 429 with code 2056 the proxy pauses and probes at most every 30 minutes. C reads `/budget` while paused and sends nothing.
 - **Command.** `go run ./docs/research/memory-encoding/validation/arms/context build -dir docs/research/memory-encoding/validation -work <scratch> -proxy http://127.0.0.1:8101 -embed-url http://127.0.0.1:8100/v1`. The recording is written before the shared store is read, and a complete recording makes no call.

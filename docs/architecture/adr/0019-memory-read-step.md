@@ -7,7 +7,7 @@
 
 The prior read step resolved a question to a model-written address and widened to a subject on a miss. The running measurement in `research/recall-specificity/` found no addressed hits in 30 probes; every answer that carried the planted value came from widening. Source-linked summaries need a read that can find several topics and survive paraphrase without claiming that a candidate is an answer.
 
-The first source-linked read asked the session model for up to four search phrases and ranked mid summaries by FTS5 lexical relevance. The replication in `research/mid-memory-rag/` (§Replication, issue #856) compared it over 280 primary queries with ranking by embedding similarity, at three batch sizes, and with a hybrid of both.
+The first source-linked read asked the session model for up to four search phrases and ranked mid summaries by FTS5 lexical relevance. The replication in `research/mid-memory-rag/` (§Replication (issue #856)) compared it over 280 primary queries with ranking by embedding similarity, at three batch sizes, and with a hybrid of both.
 
 Similarity alone does not follow a chain: a question that names one entity, whose answer lies in an episode reached only through a second entity, finds the first hop and misses the rest. `research/chained-recall/` (#874, #885) linked each episode to the entities its synthesis names and walked those links; `research/memory-encoding/attributed/` (#916) measured that walk, with its episodes attributed to their subject, against the shipped recall.
 
@@ -31,7 +31,7 @@ Recent episodes remain available whatever the ranking. Pending source previews k
 
 - The replication delivered the evidence for 209 of 280 primary queries at batch 4 (B4), against 168 for the phrase call with FTS5. B4 led in every family: exact 64 against 60, paraphrase 52 against 31, implicit 28 against 19, correction 65 against 58. Batch 8 delivered 194 and batch 16 delivered 164, so smaller batches help similarity.
 - The hybrid, both relevant lists alternated, delivered 203. It keeps the phrase call and the FTS5 path beside the embedding path, so it is not taken.
-- Parity: the production recall, run over the same corpus with the recorded batch-4 syntheses and `BAAI/bge-base-en-v1.5` served over the OpenAI-compatible endpoint, delivered 212 of 280 (`research/mid-memory-rag/` §Production parity).
+- Parity: the production recall, run over the same corpus with the recorded batch-4 syntheses and `BAAI/bge-base-en-v1.5` served over the OpenAI-compatible endpoint, delivered 212 of 280 (`research/mid-memory-rag/` §Production parity (issue #858)).
 - The corpus is model-written, and its paraphrase and implicit families were selected to miss lexically, which favours similarity. A single local embedding model was measured. Neither ranking nor recency establishes truth; the agent must inspect the linked evidence.
 - `TestSessionRun_SearchRanksWithTheModelsQuery` pins the search call's query and bound, and `TestConversation_SearchReturnsTheEpisodeForTheModelsQuery` its result through the store.
 - `TestConversationRecall_RecentFirstThenSimilarDeduplicatedAndBounded` pins the selection, and `TestConversationRecall_RecentCorrectionAndOlderRelevantEpisode` shows a weak-overlap recent correction surviving while an older similar episode stays reachable. This is deterministic reachability, not model answer quality.

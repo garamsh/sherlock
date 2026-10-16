@@ -1,6 +1,6 @@
 # Mid-memory retrieval with separate similarity and recency lists
 
-Records the preregistered comparison for issue #854 between the shipped recall and the owner's mid-memory structure over 300 synthesized mid memories, its powered replication for issue #856 (§Replication), which turns #854's undetermined verdict into a decided one, and the production parity check for issue #858 (§Production parity). The study itself makes no production decision; ADR 0019 records the one #858 took.
+Records the preregistered comparison for issue #854 between the shipped recall and the owner's mid-memory structure over 300 synthesized mid memories, its powered replication for issue #856 (§Replication (issue #856)), which turns #854's undetermined verdict into a decided one, and the production parity check for issue #858 (§Production parity (issue #858)). The study itself makes no production decision; ADR 0019 records the one #858 took.
 
 The Go bridge `bridge.go` that both collections ran was deleted by #858, which removed the phrase call and FTS5 search it called. Its last working revision is `b898867`; `git log -- docs/research/mid-memory-rag/bridge.go` reaches it. Every evidence file and figure below is unchanged, and §Reproduction separates what still runs at head from what needs that revision.
 
@@ -318,7 +318,7 @@ Does the shipped recall, as #858 built it, reproduce the replication's B4 result
 [Scores](evidence/production-parity/scores.json) `run` holds these.
 
 - The store built 1,200 mids from 1,200 replayed synthesis calls. Each mid covers exactly one recorded batch of four, or the harness stops.
-- Two stored summaries differ from the recorded text. Those are the store's credential redaction, as §Replication Synthesis describes.
+- Two stored summaries differ from the recorded text. Those are the store's credential redaction, as §Replication (issue #856), its §Method, "Synthesis", describes.
 - A second run at `cfc5606`, and a third at `68f294c` (both PR #859) after a refactor of the store's row closing, wrote byte-identical [rankings](evidence/production-parity/rankings.json).
 
 ### Results

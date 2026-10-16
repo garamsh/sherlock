@@ -18,7 +18,7 @@ All five arms run at batch 4 over one shared store built from this corpus. Each 
 | L-T | `b4-model-t` | The walk only as a call the model makes | about +265 |
 | L+V | `b4-model-v` | One instruction: inspect before stating a linked fact | about +272 |
 
-- **L** is `../arms/links/README.md` §Production estimate's +270.
+- **L** is the +270 of `../arms/links/README.md` §Production estimate, measured.
 - **L+G.** Recall and `memory_search` fill their slots from the similar list and the walk's list in turn, as L's do. A walk mid enters the walk's list only if it names one of the query's own entities (a walk seed), or its walk score reaches the threshold (`memory.go` `gate`, `gateScore`).
   - **Threshold: infinity.** So the gate passes only walk mids that name one of the query's entities.
   - It was fixed by `score.py calibrate` from #885's records, and from no record of this run:
@@ -59,7 +59,7 @@ All five arms run at batch 4 over one shared store built from this corpus. Each 
   - All of them are in one 3,488-message stream after the base.
   - `corpus_test.py` runs `../confirm/corpus_test.py` over them.
 - **Absent items (N)** are built as in #885, so that L's walk from the query's entity reaches the episode stating the associated entity's value.
-- **Selection, before any live call**, exactly as `../confirm/preregistration.md` §Selection with its Amendment 1:
+- **Selection, before any live call**, exactly as `../confirm/preregistration.md` §Selection, before any live call, with its Amendment 1:
   - Chains: the first of each family with no later hop in the raw top 20 at batch 4, by `evidence/selection/check-b4.json`.
   - Absent items: the first 60 whose associated episode L's offline recall delivers as a walk item, by `evidence/selection/L-b4-model-probes.jsonl`.
   - If a family has too few, `select` stops and no live call is made until an amendment says what follows.

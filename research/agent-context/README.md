@@ -197,7 +197,7 @@ The step closest to a classic query-understanding stage.
 - **Layer (R2).** The same note as A. Its writer is the understanding call, so the note records the request before work starts; the terminal call carries only the reply.
 - **With the window and recall.** The window is unchanged. The recall query changes from raw text to the restatement and the queries.
 - **Deletes.** D1. It reintroduces a pre-turn model call, the shape #858 deleted with the phrase call.
-- **Estimate.** Additions of about +140 to +200: the call, its schema and parse, multi-query ranking, the note row and injection. Net about −100 to −40 before D2. Each turn adds one model call, about 4,000 input tokens with this context, and its latency: the context-free phrase call it resembles took 3.5 to 4.4 s ([mid-memory retrieval](../mid-memory-rag/README.md) §Cost).
+- **Estimate.** Additions of about +140 to +200: the call, its schema and parse, multi-query ranking, the note row and injection. Net about −100 to −40 before D2. Each turn adds one model call, about 4,000 input tokens with this context, and its latency: the context-free phrase call it resembles took 3.5 to 4.4 s ([mid-memory retrieval](../mid-memory-rag/README.md) §Per-turn cost and §Replication (issue #856), its §Cost).
 - **Evidence so far.**
   - A context-free rewrite did not help implicit tasks ([memory read policy](../memory-read-policy/README.md), arm B).
   - Maximum cosine over context-free phrases matched raw-text similarity, 27 against 27 of 40 (mid-memory retrieval, arm C).
@@ -236,7 +236,7 @@ For the next issue to preregister. Figures marked "estimate" are to be fixed in 
   - S: the shipped recall at `ebecac8`.
   - A, B and C as above, each implemented on an experiment branch that is not merged.
   - Every arm runs the production session through a study harness, as #858's parity harness did (`research/mid-memory-rag/parity/`).
-  - Model `MiniMax-M2`. Embedder `BAAI/bge-base-en-v1.5` on text-embeddings-inference, as in §Production parity of the mid-memory study.
+  - Model `MiniMax-M2`. Embedder `BAAI/bge-base-en-v1.5` on text-embeddings-inference, as in §Production parity (issue #858) of the mid-memory study.
   - Window 32 messages in every arm, instead of the default 128, so that beyond-window cases are affordable. The preregistration states this deviation.
 - **Corpus.** Ten conversation streams of about 150 turns each.
   - Filler, the exact, correction and absent items, and the implicit items come from the replication corpus, whose recorded batch-4 syntheses replay without paid calls (`evidence/replication/`).
@@ -277,7 +277,7 @@ For the next issue to preregister. Figures marked "estimate" are to be fixed in 
   - New items and their conversations cost about USD 1.5, going by the replication's USD 1.27 for 1,161 chats. Their synthesis costs about USD 0.3.
   - B's understanding calls and C's summaries cost under USD 2.
   - Expected total about USD 33; ceiling USD 40, enforced by reservation before each call as in the earlier studies.
-- **Power.** 280 paired primary queries is the size at which the replication's rule reached "valid" for a true 10-point gain with probability 0.817 at 33% discordance ([mid-memory retrieval](../mid-memory-rag/README.md) §Power at the observed disagreement). Answer-level discordance may differ; the preregistration recomputes power with `replication_score.py power` from a dry run.
+- **Power.** 280 paired primary queries is the size at which the replication's rule reached "valid" for a true 10-point gain with probability 0.817 at 33% discordance ([mid-memory retrieval](../mid-memory-rag/README.md) §Replication (issue #856), its §Results, "Power at the observed disagreement"). Answer-level discordance may differ; the preregistration recomputes power with `replication_score.py power` from a dry run.
 - **Decision rule.**
   1. Each candidate is compared with S on *applied* over the 280 primary queries, by the exact McNemar test with Holm correction across the three comparisons at family-wise α = 0.05, two-sided.
   2. A candidate is valid when its difference is positive and significant and every guardrail holds:
@@ -419,7 +419,7 @@ python3 research/agent-context/mutation.py                                      
   - `1cf6751` → `93ddc1f`, the key matching. The preregistration names `1cf6751` as the harness the binaries were built with; `93ddc1f`'s `harness/` tree is identical.
   - `b0d71c1` → `b8c1378`, the preregistration.
   - `d49acd1` → `e8cc29e`, the results.
-- Collection needs the TEI container of §Production parity in the mid-memory study on `127.0.0.1:8090`.
+- Collection needs the TEI container of §Production parity (issue #858) in the mid-memory study on `127.0.0.1:8090`.
 - Each arm's binary is built from `git archive <commit>` with `docs/research/agent-context/harness/` copied in, as `go build ./docs/research/agent-context/harness`.
 - The base store is `harness base -out base.db`.
 - The proxy is `harness proxy -ceiling <USD> -dir <ledger>`, with `MINIMAX_KEY` in its environment only.

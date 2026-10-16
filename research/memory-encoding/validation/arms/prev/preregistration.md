@@ -37,7 +37,7 @@ Fixes arm P's paid synthesis phase before its first model call, and the controls
 
 ## Pacing and the usage limit
 
-- **Start.** After `evidence/synthesis/stream-b4.jsonl` is complete and pushed, since every request carries recorded summaries, and in the order `../../preregistration.md` §Paid phases fixes.
+- **Start.** After `evidence/synthesis/stream-b4.jsonl` is complete and pushed, since every request carries recorded summaries, and in the order `../../preregistration.md` §Paid phases, in order, fixes.
 - **Usage limit.** On HTTP 429 with code 2056 the proxy pauses every request and probes at most every 30 minutes. P reads the proxy's `/budget` while it is paused and sends nothing.
 - **Command.** `go run ./docs/research/memory-encoding/validation/arms/prev build -dir docs/research/memory-encoding/validation -work <scratch> -setting <setting> -proxy http://127.0.0.1:8101 -embed-url http://127.0.0.1:8100/v1`. It resumes after the batches already recorded. A complete recording makes no call, and a recording whose given mids differ from what the store now gives is refused.
 

@@ -18,7 +18,7 @@ All three arms run at batch 4 over one shared store built from this corpus.
   - **Label.** Recall and `memory_search` deliver each walk mid with the kind `associated`. Its text opens with `Associated through the named entity "<name>", not matched to the question: `, where the name is the entity the mid names with the highest walk score (`memory.go` `associatedLabel`, `walk.go` `linked`).
   - **Instruction.** One contract instruction, appended to the ego as #874's M was (`main.go` `Abstention`): "Answer a fact only from a memory or source that states that fact about the thing the task asks about. A memory labelled associated was reached through a named entity, not matched to the question: treat it as a lead to search or inspect, never as the answer itself."
 - **Net production lines, before tests.**
-  - L: about +270, as `../arms/links/README.md` §Production estimate measured.
+  - L: about +270, as measured in `../arms/links/README.md` §Production estimate, measured.
   - L+A: about +292. That is L's +270, plus 22 lines the production port carries: 10 for the entity a mid was reached through, 11 for the label, and 1 for the instruction's sentence.
 - **Common to every arm.** Everything else is as `../live-preregistration.md` §Arms fixes it:
   - a live window of 32 messages;

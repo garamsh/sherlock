@@ -356,7 +356,7 @@ selection by existing record ID. The single PM-authorized run is now collected
 and independently adjudicated below; the published information comparison and all
 historical result bytes are preserved.
 
-### Method and premises
+### Premises and method
 
 - Reuse the published `information-2026-09-21/frozen/memory.db`, never plant again.
   Check the published file hashes, read a disposable copy through the real store,

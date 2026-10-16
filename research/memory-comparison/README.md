@@ -137,7 +137,7 @@ Stated only as far as the table carries them. The chain and absent figures below
 [906 screen]: ../memory-encoding/profiles/evidence/screen.json
 [854]: ../mid-memory-rag/evidence/scores.json
 [856]: ../mid-memory-rag/evidence/replication/scores.json
-[856 report]: ../mid-memory-rag/README.md#code-size-estimate-revised-for-the-valid-arms
+[856 report]: ../mid-memory-rag/README.md#revised-code-size-estimate-for-the-valid-arms
 [901]: ../memory-scaling/evidence/scores.json
 [913 screen]: ../memory-scaling/live/evidence/scores.json
 [916 live]: ../memory-encoding/attributed/evidence/live/scores.json

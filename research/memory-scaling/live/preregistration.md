@@ -146,5 +146,5 @@ Added at the PM's condition on the go, after the delivery screen above was score
   1. on the 280 primary queries, the lower bound of Kr's paired interval on stated is at least −0.05;
   2. net losses at most 3: exact stated, correction stated, correction stale-stated (Kr-only minus other-only), absent near-miss stated (Kr-only minus other-only).
 - **Reported beside it**, not gated: *covered-and-stated*, where the unit that states the value is also one whose interval holds an evidence source, per arm and family.
-- **Outcome.** If the stated gate passes, the paid phase proceeds as §Live phase and §Cost fix it, with the PM's go given on that condition. If it fails, no paid call is made and the report records the cut.
+- **Outcome.** If the stated gate passes, the paid phase proceeds as §Live phase and §Cost and paid-phase order fix it, with the PM's go given on that condition. If it fails, no paid call is made and the report records the cut.
 - **Mutation checks** added: the stated rule and the stale-stated rule each fail a test when removed.

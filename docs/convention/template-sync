@@ -11,22 +11,43 @@ project-owned:
     The template's placeholder CI, ownership and architecture indices cannot
     replace it. check-contents-list.sh belongs to the template's checks;
     this project has its own entry points.
+  The template's other check-*.sh scripts, and the Makefile lines that run
+    them, are not taken for the same reason (#1098):
+    check-section-citations.sh (2a24e5c46d54fb1261d34b8d19f9ab56d3e0afb9,
+    f4ae3ac8e49ae9dd7037095f885bf50af52e2c04), check-object-names.sh
+    (c782af73fad43a365a6ddf161b6da4ef7c11396e), check-heading-prefixes.sh
+    (51daaeb5b8b61ed49297605eb46805d5f4640a04,
+    f4ae3ac8e49ae9dd7037095f885bf50af52e2c04), and the hunks of
+    343870baaa6c122d40c030b16f63c4325e4d7bc0 that quote each check's
+    sentence. documentation.md's rule that no heading in a file is a prefix
+    of another heading in the same file is taken without
+    check-heading-prefixes.sh, so in this tree readers and review enforce
+    it and no check does.
 
 selection:
   All stack-neutral conventions are kept. Go and container images are the
     applicable stack files. FastAPI, NestJS, Next.js and Tailwind are absent.
   No derived stack is selected, so the Extends column and inheritance rules
     remain absent. Revisit if a derived stack is introduced (#684). Template
-    af855c1 names that column in §Independence and is not taken with it.
+    af855c11c4ab0cf50f92e1ffa1da9b330cee3bd6 names that column in
+    §Independence and is not taken with it.
   docs/architecture/structures/ supplies alternatives for a structural choice,
     not additional project rules. The domain shape was chosen in #939 and
     recorded as ADR 0023, with its rules in docs/architecture/structure.md;
     the folder itself is not copied, as the template's architecture index
     directs once the choice has landed.
-  docs/procedure/ (template 1310e43) is not taken yet; its adoption is
-    deferred to #1090. The sentence 1310e43 adds to AGENTS.md §What this
+  docs/procedure/ (template 1310e430f2e1172069ec71d3822dbbd2730f3ff6) is not
+    taken yet; its adoption is deferred to #1090. The sentence
+    1310e430f2e1172069ec71d3822dbbd2730f3ff6 adds to AGENTS.md §What this
     file outranks only places that layer below the conventions, so it is
-    left out with the layer (#1091).
+    left out with the layer (#1091). Template
+    8c4c3b8bc5a85b422f2c615eac977d5badd80875,
+    fd7ee578fefdb6a07e49b1cac08b8a622ea23996,
+    0958721978efe238e2174ba255e9397a7bcd2143 and
+    e54a6647cc75e3f2a58143a4e4f6290a52737acb change only that layer and are
+    deferred with it, as are the docs/procedure/ hunks of
+    2a24e5c46d54fb1261d34b8d19f9ab56d3e0afb9 and
+    343870baaa6c122d40c030b16f63c4325e4d7bc0 (#1098).
 
 deliberate-differences:
   AGENTS.md keeps host-defined PM/worker/QA roles, the dev/main rule, secret
@@ -35,9 +56,13 @@ deliberate-differences:
   git.md keeps tasks based on dev, batch promotion to main (#753), and the
     host-namespace prefix interpretation (#623). The author-preservation
     obligation is adapted to task squash merges into dev. The promotion
-    merge method is the template's (ddfa4fb); who opens a promotion stays
-    in §Branches, which the template does not state, and the §Commits
-    sentence on titles reaching main is dropped because §PRs states it.
+    merge method is the template's (ddfa4fb46b5479a15748e881130853261b76be51);
+    who opens a promotion stays in §Branches, which the template does not
+    state, and the §Commits sentence on titles reaching main is dropped
+    because §PRs states it. Template
+    f92f1f50d9419eb324acfdb56b0ade67d17c8b07 (an agent is not an author) is
+    taken with the same adaptation and no other: "the commit that reaches
+    the default branch" reads "the commit that reaches `dev`" (#1098).
   documentation.md owns claim evidence and negative-result methods for documents
     and GitHub artifacts, including reviews (#746); review.md keeps review procedure
     without repeating those general rules.
@@ -47,35 +72,55 @@ deliberate-differences:
   ci.md keeps the project's prose entry-point description, release separation,
     hooks and same-tag digest-refresh requirement. It does not import a
     placeholder Makefile. The selection-reporting addition in template
-    cccfb36 is deferred: current targets print counts without that selection
-    description, so adopting it needs a change to the entry points too.
+    cccfb36dcb7ddc1242d99760cbf4dd5581bd5d3d is deferred: current targets
+    print counts without that selection description, so adopting it needs a
+    change to the entry points too.
+  ci.md §Run the checks before pushing keeps its text from before template
+    bf74ec41bd71df12b93beffb99e81d9e5d44eee6, which is deferred to template
+    issue garamsh/convention-driven-project#533 (#1098). Its condition
+    "Once the project has a pipeline" contradicts §One entry point per
+    task, under which a run only for changes bound for another branch is
+    no record for a change. This project's pipeline runs only for main, so
+    for a task bound for dev test and build stay in the local pre-push
+    obligation. #533 rewrites the same bullets, so taking them now would be
+    redone.
   review.md keeps the reviewed SHA, conditional local
     substitution and its retirement condition, expanded head-check explanation,
     and the two project-specific Verification examples (#623, #663).
-    Template 6ca3421's bullet on a failure naming a cause outside the
-    change sits after the substitution bullets rather than directly after
-    "A conclusion is not a verdict", so "the two rules above" in the
-    substitution bullet keeps naming the two head-commit rules (#1091).
+    Template 6ca34218de5fdf40c6776a47c582f32dc04bbc08's bullet on a failure
+    naming a cause outside the change sits after the substitution bullets
+    rather than directly after "A conclusion is not a verdict", so "the two
+    rules above" in the substitution bullet keeps naming the two
+    head-commit rules (#1091).
   .github/PULL_REQUEST_TEMPLATE.md keeps the no-empty-fields instruction,
     consultation evidence and the instruction to surface unnamed cases.
     The whole-check entry point and Restructure rejected fields are adopted.
   stack-go.md remains adapted: hand-written test doubles (#623) and project
-    verification details. Upstream 37be164 removed the mandatory
-    interface-named package that this project declined (#685); that old
-    objection no longer describes upstream. b29f0f1's heading for
-    Generated mocks has no counterpart in this project's Test doubles
-    section, and §Module / package boundary drops the template's `mocks/`
-    bullet for the same reason (#623). 0b1cf9b's mockery-location hunk
-    lands in that same section and is not taken with it (#1091).
-    §Directory layout is the template's as of 6f3ddf8, its Service and
-    Library layouts and §Project envelope's composition-site exception
-    included, and §Module / package boundary's declare/depend and "The
-    import goes one way" bullets and §Error handling's adapter example
-    are taken with it (#1030). The Layout A/B/C text deferred before it
-    is gone; packages.md, structure.md, the architecture index and ADR
-    0001 were updated in the same change.
+    verification details. Upstream 37be164190fe985b408fc3b3d095cb4b7321b142
+    removed the mandatory interface-named package that this project
+    declined (#685); that old objection no longer describes upstream.
+    b29f0f104c68b42bfb363351a8e0e3cdc9b52829's heading for Generated mocks
+    has no counterpart in this project's Test doubles section, and §Module /
+    package boundary drops the template's `mocks/` bullet for the same
+    reason (#623). 0b1cf9bcb07c4c0a0c8d4370beac4f44638575ba's
+    mockery-location hunk lands in that same section and is not taken with
+    it (#1091).
+    §Directory layout is the template's as of
+    6f3ddf87484bde5c675cb85d387d366bf67a744b, its Service and Library
+    layouts and §Project envelope's composition-site exception included,
+    and §Module / package boundary's declare/depend and "The import goes
+    one way" bullets and §Error handling's adapter example are taken with
+    it (#1030). The Layout A/B/C text deferred before it is gone;
+    packages.md, structure.md, the architecture index and ADR 0001 were
+    updated in the same change.
+    Template 14315b12333643d94707c1be18d6504174cfb5b4 and
+    734d4bdd10e75db7decbcf56143dc2959881ba0e are taken whole (#1098). This
+    project has no Vet entry point of its own, as `go vet ./...` runs
+    inside `make lint`, so the package count is printed there; it has no
+    Coverage entry point, so that row's obligation reaches nothing here.
   .github/PULL_REQUEST_TEMPLATE.md's Summary comment keeps "Reference the
-    task or issue if one exists", which 7b274c6 replaced with the
+    task or issue if one exists", which
+    7b274c6d3ed81d907ff878f707da8e1a63ea9fc3 replaced with the
     Closes-keyword instruction. .github/ is the PM's, so #1022 does not
     change it.
   docs/architecture/README.md and adr/0000-template.md retain living records
@@ -91,12 +136,17 @@ deliberate-differences:
     responsibility documents ("Decisions land in pairs"), and "A point the
     structural rules leave to the project" lands a settled point as
     "Decisions land in pairs" pairs it.
-    §Rules every shape carries (548895a, 133b60c) is bootstrap input: its
+    §Rules every shape carries (548895a86dd664903781f792c7ed49f8117756cb,
+    133b60c1c5e833d5057908ab9c6a658656030b4c) is bootstrap input: its
     bullets are in structure.md beside the domain shape's rules, and the
     section is declined so the rule is held once and "Structural rules live
     in `structure.md`" stays true.
-    Template 1557dd2 and 392fb81 change only that section's opening
-    paragraph, so they are declined with it (#1029).
+    Template 1557dd2f970cc192acd6b96216db977f68417743 and
+    392fb8109693c47803752136bef0f1dee87c0b67 change only that section's
+    opening paragraph, so they are declined with it (#1029). Template
+    51daaeb5b8b61ed49297605eb46805d5f4640a04 renames that section's
+    heading, so its docs/architecture/README.md hunk is declined with it
+    (#1098).
 
 removal-audit:
   Syncs carried forward what the template changed, never what it removed
@@ -107,24 +157,57 @@ removal-audit:
     holds and template/main lacks, joining wrapped lines first so a
     sentence split across lines is found. Each sentence found is deleted
     or recorded above with its reason.
-  #1022 ran it against template b8b0890 and deleted two stack-go.md
-    sentences: §Module / package boundary's "The implementation lives with
-    the interface it satisfies" (removed upstream by 0440057) and §Error
-    handling's "Domain sentinels in `<domain>.go`" (removed by 2f5871e;
-    §Directory layout states the placement).
-  #1029 ran it against template a743468. It found only lines recorded
-    above, and took the rewrites that had been waiting: 2757013 in
-    stack-go.md, and b8b0890, 33c0f43 and 4bcd785 in documentation.md.
-  #1034 ran it against template 6f3ddf8. It found only lines recorded
-    above, and took 6c60405 and 6f3ddf8 whole.
-  #1030 ran it on stack-go.md against template 6f3ddf8 after taking
-    §Directory layout. It found no sentence and no line the template
-    has removed; the same check on the copy before the change found 32
-    sentences and 60 lines, all of them the deferred layout text.
-  #1091 ran it against template 1310e43, sentences and lines both. It
-    found only text recorded above: docs/convention/README.md's
-    Extends-free selection text, ci.md's deferred cccfb36 sentence, the
+  #1022 ran it against template b8b089072ebd148aad7e2692c6d3904f83aa6e9b
+    and deleted two stack-go.md sentences: §Module / package boundary's
+    "The implementation lives with the interface it satisfies" (removed
+    upstream by 0440057808b3933d489ded77f8cdd62f204bcad4) and §Error
+    handling's "Domain sentinels in `<domain>.go`" (removed by
+    2f5871ed41da017bce031fe09094ccd792adb328; §Directory layout states the
+    placement).
+  #1029 ran it against template a743468f84da90bf93f87ec5752a40258546ecd7.
+    It found only lines recorded above, and took the rewrites that had
+    been waiting: 2757013b8a3674f7560dc64c3221f0ccdd01dce5 in stack-go.md,
+    and b8b089072ebd148aad7e2692c6d3904f83aa6e9b,
+    33c0f434611282647f86c80b677c6c906a4c349a and
+    4bcd785e984f7fbee9ff1595d505d96d4f82bc41 in documentation.md.
+  #1034 ran it against template 6f3ddf87484bde5c675cb85d387d366bf67a744b.
+    It found only lines recorded above, and took
+    6c604053ea512333b847b0756f183fc6598a551c and
+    6f3ddf87484bde5c675cb85d387d366bf67a744b whole.
+  #1030 ran it on stack-go.md against template
+    6f3ddf87484bde5c675cb85d387d366bf67a744b after taking §Directory
+    layout. It found no sentence and no line the template has removed; the
+    same check on the copy before the change found 32 sentences and 60
+    lines, all of them the deferred layout text.
+  #1091 ran it against template 1310e430f2e1172069ec71d3822dbbd2730f3ff6,
+    sentences and lines both. It found only text recorded above:
+    docs/convention/README.md's Extends-free selection text, ci.md's
+    deferred cccfb36dcb7ddc1242d99760cbf4dd5581bd5d3d sentence, the
     PULL_REQUEST_TEMPLATE.md Summary comment, and AGENTS.md's §What this
-    file outranks paragraph without 1310e43's procedure sentence. It took
-    e15effd, 6ca3421, 640634f, e198839, 305847f, e63e3a1, 4b27d40 and the
-    stack-go.md import-cycle hunk of 0b1cf9b.
+    file outranks paragraph without
+    1310e430f2e1172069ec71d3822dbbd2730f3ff6's procedure sentence. It took
+    e15effde83dfd37fc9eaf0d5cb84854dc1f964a4,
+    6ca34218de5fdf40c6776a47c582f32dc04bbc08,
+    640634f8f763867ceb18c4f4c6d66d6ec05cb3f7,
+    e198839bf9201c5664c155d55e7ee1dd3766a7d3,
+    305847fba9d1cce70066df965d9f78cb8ff20c43,
+    e63e3a1874fac5fba25ea13db275f9cf1fba9482,
+    4b27d407555b550b2fc33563974a852540c33d6d and the stack-go.md
+    import-cycle hunk of 0b1cf9bcb07c4c0a0c8d4370beac4f44638575ba.
+  #1098 ran it against template e54a6647cc75e3f2a58143a4e4f6290a52737acb,
+    sentences and lines both, after taking
+    343870baaa6c122d40c030b16f63c4325e4d7bc0,
+    9463182fb5296108aff1a05d2e7d5b22a6a39d44,
+    51daaeb5b8b61ed49297605eb46805d5f4640a04's documentation.md hunk,
+    14315b12333643d94707c1be18d6504174cfb5b4,
+    734d4bdd10e75db7decbcf56143dc2959881ba0e and
+    f92f1f50d9419eb324acfdb56b0ade67d17c8b07. It covered the ten files
+    present in both trees that match no blob at that revision, the
+    project-owned paths above aside, and searched each file's own path
+    history. It found only text recorded above: docs/convention/README.md's
+    Extends-free selection text, ci.md's §Run the checks before pushing
+    bullets from before bf74ec41bd71df12b93beffb99e81d9e5d44eee6 and its
+    "An entry point reports what it did" line without
+    cccfb36dcb7ddc1242d99760cbf4dd5581bd5d3d's sentence, the
+    PULL_REQUEST_TEMPLATE.md Summary comment, and AGENTS.md's §What this
+    file outranks paragraph.

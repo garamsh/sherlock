@@ -74,10 +74,10 @@ deliberate-differences:
     placeholder Makefile. Its "Before pushing" bullet states that the
     pipeline runs only for main, so a task bound for dev runs test and build
     locally, and that the hooks leave build to run by hand (#1103).
-    The selection-reporting addition in template
-    cccfb36dcb7ddc1242d99760cbf4dd5581bd5d3d is deferred: current targets
-    print counts without that selection description, so adopting it needs a
-    change to the entry points too.
+    Template cccfb36dcb7ddc1242d99760cbf4dd5581bd5d3d is taken (#1095):
+    every target whose recipe prints a count names beside it how its set
+    was selected. Lint, test and build name the selector ./..., format its
+    git ls-files arguments, and build-tools its recipe's tool list.
     §Run the checks before pushing is the template's at
     3d0c87aaf8d363fc304df45a588928febc97097a, which repairs
     bf74ec41bd71df12b93beffb99e81d9e5d44eee6 (#1103).
@@ -208,3 +208,13 @@ removal-audit:
     cccfb36dcb7ddc1242d99760cbf4dd5581bd5d3d's sentence, the
     PULL_REQUEST_TEMPLATE.md Summary comment, and AGENTS.md's §What this
     file outranks paragraph.
+  #1103 ran it against template 3d0c87aaf8d363fc304df45a588928febc97097a,
+    sentences and lines both, after taking
+    3d0c87aaf8d363fc304df45a588928febc97097a and
+    cccfb36dcb7ddc1242d99760cbf4dd5581bd5d3d. It covered the eight files
+    present in both trees that match no blob at that revision, the
+    project-owned paths above aside, and searched each file's own path
+    history. It found only text recorded above: docs/convention/README.md's
+    Extends-free selection text, the PULL_REQUEST_TEMPLATE.md Summary
+    comment, and AGENTS.md's §What this file outranks paragraph. ci.md
+    holds no sentence or line the template has removed.

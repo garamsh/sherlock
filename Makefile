@@ -163,7 +163,9 @@ build:
 # position, and what it wrote is checked for the execute bit, because
 # `go build -o` also returns zero for a package that is not `main` and writes
 # an archive the platform cannot spawn. The counter advances past both, so the
-# number printed is the number of executables written (#653, #715).
+# number printed is the number of executables written (#653, #715). The set is
+# the loop's list, not what tools/ holds, so a tool directory missing from it is
+# never built, and the message names that list as the selection (#1095).
 build-tools:
 	@built=0; \
 	for tool in file_read file_write file_list shell_exec message_send github_push github_open_issue github_open_pull_request github_comment; do \
@@ -171,7 +173,7 @@ build-tools:
 		test -x tools/$$tool/$$tool || { echo "build-tools: go build wrote tools/$$tool/$$tool without the execute bit; ./tools/$$tool/ must be a main package"; exit 1; }; \
 		built=$$((built + 1)); \
 	done; \
-	echo "build-tools: $$built tools built"
+	echo "build-tools: $$built tools built, selected by: the tool list in the build-tools recipe"
 
 # Builds the two platform images (ADR 0017, ADR 0021); nothing is pushed and no
 # registry is named here. Each build context is the repository root because

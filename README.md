@@ -37,7 +37,7 @@ sherlock agent --agent-id my-agent                     # or: serve the agent's g
 
 To try the platform in Docker instead: `make build-images` builds both images — distroless agent (`build/agent.Dockerfile`, carrying the first-party tool executables at `/opt/sherlock/tools/`) and debian-slim workspace (`build/workspace.Dockerfile`) — and `deploy/local/` holds the local compose setup.
 
-### sherlock agent
+### The `agent` subcommand
 
 Runs the agent's self: the rolling session, memory, the mouth, and the HTTP gateway for the one agent this process serves (`--agent-id`, required: an absent or empty value refuses startup, and the value is used verbatim, so a GRN is a valid ID). `--assignment-epoch` optionally carries the launcher's assignment epoch; each serving start also mints a fresh generation, a runtime start nonce. The agent logs both and checks neither. Without `--message` it serves until interrupted:
 
@@ -56,7 +56,7 @@ A one-shot run exits non-zero if any tool call in the turn failed, naming the to
 
 **Warning: an unauthenticated gateway is a remote shell into the agent.** The gateway authenticates callers with mTLS when the `tls:` config section is set (server certificate/key plus a client CA — callers must present a certificate from that CA; ADR 0012). Without `tls:` the gateway serves loopback binds only, and a non-loopback `--addr` fails startup. Certificate issuance and CA operation are operator scope; rotation is a restart with new files.
 
-### sherlock workspace
+### The `workspace` subcommand
 
 Serves the agent's workspace (ADR 0017) — the computer: a gRPC data plane over loopback serving the filesystem (Read, Write, List) and process execution (Exec) in the workspace directory. The workspace owns the workspace directory and the executor; it holds no tools and no plugin loader. Nothing in the agent process dials it — the tools that need files or exec dial it themselves (§Adding tools), so the agent itself executes nothing.
 

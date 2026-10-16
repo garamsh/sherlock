@@ -67,7 +67,7 @@ Each subsection gives the source, then:
 - reported numbers;
 - what the source could not settle.
 
-### HippoRAG
+### HippoRAG (NeurIPS 2024)
 
 Source: Gutiérrez et al., "HippoRAG: Neurobiologically Inspired Long-Term Memory for Large Language Models", arXiv 2405.14831v3 (NeurIPS 2024). Repository `OSU-NLP-Group/HippoRAG` at `1438aba3fc44ff10573e5a5e1e7cc3c7f9794aff`.
 

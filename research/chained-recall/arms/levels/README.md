@@ -39,7 +39,7 @@ Committed before the first group-synthesis call and not edited after it. Everyth
   - The first failed call stops the run, and a re-run resumes after the recorded windows. On HTTP 429 with code 2056 the proxy pauses and probes at most every 30 minutes, and the run waits for it to resume.
 - **Ledger.** The proxy's `calls.jsonl` attributes every call to arm `H`, episode `g<G>-<window>` and phase `synth-g<G>`. The results table's tokens are read from it.
 
-### Controls and thresholds
+### Thresholds and controls
 
 Required before H's offline comparison is read as a result:
 

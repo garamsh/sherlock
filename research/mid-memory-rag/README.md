@@ -81,7 +81,7 @@ Recall@k and MRR@20 over the relevant list alone, primary 40 queries:
   B misses `correction-02` ("it's actually 3381" never names a phone).
 - **Absent queries.** Every arm returns a non-empty relevant list for all 10 [0.72, 1.00]: FTS always matched a token, and an unthresholded similarity list is non-empty by construction. For B, the AUC of top-1 cosine between present and absent queries is 0.765, so a threshold would separate them only partly.
 
-### Cost per turn
+### Per-turn cost
 
 [Spend](evidence/calls.json) is 391 HTTP calls, 164,927 input and 113,242 output tokens, USD 0.185 at USD 0.30/M input and USD 1.20/M output (priced from usage, not an invoice). By phase: synthesis 300 calls, USD 0.147; phrase 55 calls, USD 0.018; live 35 calls, USD 0.020; one embedding probe, 64 tokens reserved.
 
@@ -268,7 +268,7 @@ Relevant list alone, primary 280:
 - **H: valid.** The hybrid delivers more often than the shipped recall: +12.5 points, interval [+8.6, +14.6]. It is the only arm that loses almost nothing to A (4 queries).
 - Both verdicts rest on a model-written corpus whose paraphrase and implicit families are selected to miss lexically (§Replication limits). The per-family table is the part that transfers.
 
-### Code-size estimate, revised for the valid arms
+### Revised code-size estimate for the valid arms
 
 This is read from the files at `2b27bac`, as in #854 §Code-size estimate. Nothing is implemented.
 

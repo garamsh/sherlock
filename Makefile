@@ -35,7 +35,22 @@ PRIVILEGED_SHERLOCK_BIN ?= /tmp/sherlock-privileged
 # Assigned rather than defaulted, so an inherited shared value cannot return.
 export GOLANGCI_LINT_CACHE = $(CURDIR)/.cache/golangci-lint
 
+# The build and test entry points, and the vet run inside lint, each run
+# `go list ./...` first, print the number of packages it lists beside the
+# selector, and fail where that number is zero (stack-go.md §Verification commands). `go list` exits 0 when it
+# lists nothing, so the recipe compares the number itself, and a module go list
+# cannot read fails here with its own error rather than as an empty tree. The
+# number counts what `./...` selected, not what the command after it built,
+# tested or vetted, and the message says so. `$$selected` is set for the rest of
+# the recipe line that expands this.
+go_packages = packages=$$(go list ./...) || exit $$?; \
+	selected=$$(printf '%s' "$$packages" | awk 'END{print NR}'); \
+	test "$$selected" -gt 0 || { echo "$@: ./... selected no packages under $(CURDIR); the run covered nothing"; exit 1; }; \
+	echo "$@: ./... selected $$selected packages"
+
 lint:
+	@$(go_packages); \
+	echo "go vet ./..."; \
 	go vet ./...
 	golangci-lint run ./...
 
@@ -72,6 +87,8 @@ format-fix:
 	$(go_files) | xargs -0 -r gofmt -w
 
 test:
+	@$(go_packages); \
+	echo "go test ./..."; \
 	go test ./...
 
 # The capability list the tests below run under is read out of the deployment
@@ -133,17 +150,12 @@ test-privileged:
 
 # `go build ./...` prints nothing on success and reports an empty match as a
 # stderr warning rather than an error, so a module holding no packages exits
-# zero exactly like a run that compiled every one (#715, #653). The count is
-# what tells the two apart, and a count of zero is a failure. It comes from
-# `go list ./...`, which resolves the same pattern in the same module, so the
-# number reported is the number `go build ./...` compiled and a module go list
-# cannot read fails here with its own error rather than as an empty tree.
+# zero exactly like a run that compiled every one (#715, #653). The count
+# `go_packages` prints is what tells the two apart.
 build:
-	@packages=$$(go list ./...) || exit $$?; \
-	built=$$(printf '%s' "$$packages" | awk 'END{print NR}'); \
-	test "$$built" -gt 0 || { echo "build: no packages under $(CURDIR); the build covered nothing"; exit 1; }; \
-	go build ./... || exit $$?; \
-	echo "build: $$built packages built"
+	@$(go_packages); \
+	echo "go build ./..."; \
+	go build ./...
 
 # A `for` loop's status is its last iteration's, so a tool that failed to
 # compile left the target at exit 0 having written fewer executables than it

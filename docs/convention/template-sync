@@ -23,6 +23,12 @@ project-owned:
     of another heading in the same file is taken without
     check-heading-prefixes.sh, so in this tree readers and review enforce
     it and no check does.
+  Template 50f77c01061ee155e85cf6d7ed721ab40d20b119 changes only
+    check-heading-prefixes.sh, and the check-object-names.sh hunk of
+    b34a9ee535cf04c37129873ad616b4388e19062c only that script, so neither
+    is taken (#1106). The README.md line
+    517fc16f2092ff5544dcac7c8a6f2a976f9bcfb0 adds describes the template's
+    own tree, so it is not taken either.
 
 selection:
   All stack-neutral conventions are kept. Go and container images are the
@@ -36,18 +42,22 @@ selection:
     recorded as ADR 0023, with its rules in docs/architecture/structure.md;
     the folder itself is not copied, as the template's architecture index
     directs once the choice has landed.
-  docs/procedure/ (template 1310e430f2e1172069ec71d3822dbbd2730f3ff6) is not
-    taken yet; its adoption is deferred to #1090. The sentence
-    1310e430f2e1172069ec71d3822dbbd2730f3ff6 adds to AGENTS.md §What this
-    file outranks only places that layer below the conventions, so it is
-    left out with the layer (#1091). Template
-    8c4c3b8bc5a85b422f2c615eac977d5badd80875,
+  docs/procedure/ (template 1310e430f2e1172069ec71d3822dbbd2730f3ff6) is
+    declined (#1090). Template 517fc16f2092ff5544dcac7c8a6f2a976f9bcfb0
+    declares the layer the template repository's own, not part of what a
+    project takes, and the host's role definitions and guides already cover
+    what it holds. Template 8c4c3b8bc5a85b422f2c615eac977d5badd80875,
     fd7ee578fefdb6a07e49b1cac08b8a622ea23996,
-    0958721978efe238e2174ba255e9397a7bcd2143 and
-    e54a6647cc75e3f2a58143a4e4f6290a52737acb change only that layer and are
-    deferred with it, as are the docs/procedure/ hunks of
+    0958721978efe238e2174ba255e9397a7bcd2143,
+    e54a6647cc75e3f2a58143a4e4f6290a52737acb and
+    9a587666b29e760f0bd2f2f85cad583f0b08e266 change only that layer and are
+    declined with it, as are the docs/procedure/ hunks of
     2a24e5c46d54fb1261d34b8d19f9ab56d3e0afb9 and
-    343870baaa6c122d40c030b16f63c4325e4d7bc0 (#1098).
+    343870baaa6c122d40c030b16f63c4325e4d7bc0 (#1098). AGENTS.md §What this
+    file outranks takes 517fc16f2092ff5544dcac7c8a6f2a976f9bcfb0's ranking
+    sentence, which holds "where such a layer exists" and so reads true
+    without one; the unconditioned form
+    1310e430f2e1172069ec71d3822dbbd2730f3ff6 added stays out (#1106).
 
 deliberate-differences:
   AGENTS.md keeps host-defined PM/worker/QA roles, the dev/main rule, secret
@@ -218,3 +228,13 @@ removal-audit:
     Extends-free selection text, the PULL_REQUEST_TEMPLATE.md Summary
     comment, and AGENTS.md's §What this file outranks paragraph. ci.md
     holds no sentence or line the template has removed.
+  #1106 ran it against template 9a587666b29e760f0bd2f2f85cad583f0b08e266,
+    sentences and lines both, after taking
+    517fc16f2092ff5544dcac7c8a6f2a976f9bcfb0's AGENTS.md hunk,
+    b34a9ee535cf04c37129873ad616b4388e19062c's documentation.md hunk and
+    51a2af1f149a9f5f193e74e14492c48e30938100. It covered the eight files
+    present in both trees that match no blob at that revision, the
+    project-owned paths above aside, and searched each file's own path
+    history. It found only text recorded above: docs/convention/README.md's
+    Extends-free selection text and the PULL_REQUEST_TEMPLATE.md Summary
+    comment. AGENTS.md holds no sentence or line the template has removed.

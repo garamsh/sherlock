@@ -71,19 +71,16 @@ deliberate-differences:
     one rather than projects consuming this template.
   ci.md keeps the project's prose entry-point description, release separation,
     hooks and same-tag digest-refresh requirement. It does not import a
-    placeholder Makefile. The selection-reporting addition in template
+    placeholder Makefile. Its "Before pushing" bullet states that the
+    pipeline runs only for main, so a task bound for dev runs test and build
+    locally, and that the hooks leave build to run by hand (#1103).
+    The selection-reporting addition in template
     cccfb36dcb7ddc1242d99760cbf4dd5581bd5d3d is deferred: current targets
     print counts without that selection description, so adopting it needs a
     change to the entry points too.
-  ci.md §Run the checks before pushing keeps its text from before template
-    bf74ec41bd71df12b93beffb99e81d9e5d44eee6, which is deferred to template
-    issue garamsh/convention-driven-project#533 (#1098). Its condition
-    "Once the project has a pipeline" contradicts §One entry point per
-    task, under which a run only for changes bound for another branch is
-    no record for a change. This project's pipeline runs only for main, so
-    for a task bound for dev test and build stay in the local pre-push
-    obligation. #533 rewrites the same bullets, so taking them now would be
-    redone.
+    §Run the checks before pushing is the template's at
+    3d0c87aaf8d363fc304df45a588928febc97097a, which repairs
+    bf74ec41bd71df12b93beffb99e81d9e5d44eee6 (#1103).
   review.md keeps the reviewed SHA, conditional local
     substitution and its retirement condition, expanded head-check explanation,
     and the two project-specific Verification examples (#623, #663).

@@ -23,6 +23,7 @@ Two constraints bound the answer. The status must not claim more than the proces
 - The turn in flight commits instead of being cancelled, so a shutdown no longer costs a nearly finished turn. It also means a turn is bounded by the grace period alone: a turn the `SIGKILL` cuts off commits nothing, and its messages read unknown after the restart.
 - Queued messages are still lost on exit, as before; the sender learns that from the lookup and redelivers. Delivery stays at-least-once.
 - The status reports and does not enforce. Sherlock does not require a non-empty assignment epoch or revision, and does not compare any value it reports.
+- The drain order is a contract with garam, not only an internal sequence. garam ADR-0111 (`docs/architecture/adr/0111-a-directly-attached-runtime-is-activated-by-a-one-agent-host-authority-on-the-generation-it-reports-and-its-store-lock.md` in garamsh/garam at `85da7bb11bc0b8613eab2b6e5a87659f0a40528d`, merged to garam's `dev` by garamsh/garam#1498 and not on its `main` when this was written) bases its attach-mode restart on it: its §Decision bullet "A restart starts the new process only after the old one has exited" relies on the old process freeing its port before its lock. A change to the drain order is therefore announced to garam before it merges, as Sherlock committed on 2026-10-18 (that record's §What the Sherlock PM answered, #1108). The other Sherlock behaviours that restart relies on are listed in `deployment.md` §Load-bearing facts.
 
 ## Rejected alternatives
 

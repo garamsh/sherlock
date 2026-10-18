@@ -87,7 +87,7 @@ sherlock workspace exec --stdin -- wc -c < notes.txt
 
 ### Serving a workspace to an MCP client
 
-`sherlock workspace mcp` is a stdio MCP server whose tools `read`, `write`, `list` and `exec` each run the matching operation above once, as a child process of the same binary (ADR 0028). An MCP-capable agent with its local tools disabled then operates the workspace and nothing on its own host. The client starts it from a command line, for example in an MCP configuration file:
+`sherlock workspace mcp` is a stdio MCP server whose tools `read`, `write`, `list` and `exec` each run the matching operation above once, as a child process of the same binary (ADR 0028). An MCP-capable agent with its local tools disabled then has these four as its only tools, so the workspace is what its tool calls act on; what that leaves running on its own host is listed below. The client starts it from a command line, for example in an MCP configuration file:
 
 ```json
 {"mcpServers": {"sherlock-workspace": {"command": "sherlock", "args": ["workspace", "mcp", "--workspace-addr", "127.0.0.1:8081"]}}}
@@ -95,6 +95,29 @@ sherlock workspace exec --stdin -- wc -c < notes.txt
 
 - Its one setting is the address, resolved as the operations resolve it. It opens no listener and takes no positional argument.
 - A workspace refusal (exit 2) comes back as a tool result marked as an error; an unreachable workspace (exit 3) as JSON-RPC error `-32001`; any other failure as `-32603` (`docs/architecture/environment.md` §Workspace MCP server).
+
+#### Claude Code as the client
+
+Checked against Claude Code 2.1.302, the version `claude --version` printed; each flag's quoted effect is from that version's `claude --help`. With a workspace serving on `127.0.0.1:8081` and `sherlock` on `PATH`:
+
+```sh
+claude -p "List the workspace's top directory, then run pwd in it." \
+  --tools "" \
+  --strict-mcp-config \
+  --mcp-config '{"mcpServers": {"sherlock-workspace": {"command": "sherlock", "args": ["workspace", "mcp", "--workspace-addr", "127.0.0.1:8081"]}}}' \
+  --allowedTools 'mcp__sherlock-workspace__*'
+```
+
+- `--tools ""` turns off Claude Code's built-in tools: the flag specifies "the list of available tools from the built-in set", and `""` is to "disable all tools".
+- `--strict-mcp-config` makes the server above the only one: "Only use MCP servers from --mcp-config, ignoring all other MCP configurations".
+- `--mcp-config` loads that server from a JSON string, the configuration shown earlier in this section.
+- `--allowedTools` allows the server's tools without a permission prompt, which a `-p` run has nobody to answer. `mcp__<server>__*` matching every tool of one server is from Claude Code's permissions documentation (`https://code.claude.com/docs/en/permissions`, "To match every tool from an MCP server").
+
+#### What this setup does not cover
+
+- **Mechanisms the client runs on its own host that are not tools.** `--tools ""` names the built-in tool set only. Claude Code's `--help` names hooks "defined in settings and by installed plugins" (under `--bare`), and its permissions documentation describes hooks as "custom shell commands" Claude Code runs (§Extend permissions with hooks). Turn those off, or review what they run, before relying on this setup: `claude --help` states that `--bare` skips them, and that it also changes how Claude Code authenticates. For any other client, find and disable its equivalents; this section states nothing about them.
+- **The workspace's isolation is the workspace's own.** An `exec` child gets no network, the resource caps, the scrubbed environment and the workspace directory (ADR 0027 §3, "Exec runs under the isolation the agent's own exec gets"), and the MCP server's only effect on the client's host is running the operation CLI (ADR 0028 §3, "The server's only effect on its own host is running the CLI"). Nothing here adds isolation beyond that.
+- **A workspace run directly on the host separates less than one in its own container.** `docs/architecture/deployment.md` §Volumes and ownership rests the separation of an `exec` child from the agent's files on the workspace container's mounts and on the `exec-uid`. A workspace started as a host process has no such mount boundary, and the executor gives an `exec` child a new network namespace (and a user namespace when unprivileged) but no mount namespace or changed root (`internal/workspace/shell/process_linux.go`), so its `exec` children read and write whatever files their `exec-uid` can on that host.
 
 ### Configuration
 

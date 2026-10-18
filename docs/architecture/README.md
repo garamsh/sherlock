@@ -41,7 +41,7 @@ One pod per agent, two containers (ADR 0017): the agent container is the agent's
 - `0004` — model access is consumer-owned interfaces, and the wire protocol is configuration
 - `0005` — tools own security; guard models are layers, not boundaries
 - `0006` — preserve recent context and source-linked older conversation
-- `0007` — gateway I/O: asynchronous ingress, tool-based outbound, separate monitoring
+- `0007` — gateway I/O: a platform-neutral gateway with pushed asynchronous ingress, tool-based outbound, separate monitoring
 - `0008` — agent-influenced sub-processes run dropped to the unprivileged UID
 - `0009` — the tool definition shape: a script with a manifest
 - `0010` — one execution boundary: agent-influenced effects under the unprivileged UID

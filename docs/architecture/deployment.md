@@ -45,7 +45,7 @@ Two consequences an operator plans around:
 | Gateway HTTP | `127.0.0.1:8080` | `addr` | `SHERLOCK_ADDR` |
 | Workspace gRPC | `127.0.0.1:8081` | `addr` | `SHERLOCK_ADDR` |
 
-The agent finds the workspace through its own `workspace-addr` (default `127.0.0.1:8081`) and publishes it to every tool it spawns as `SHERLOCK_WORKSPACE_ADDR`. The agent never dials the workspace itself; the tools do (`environment.md`).
+The agent finds the workspace through its own `workspace-addr` (default `127.0.0.1:8081`) and publishes it to every tool it spawns as `SHERLOCK_WORKSPACE_ADDR`. The agent never dials the workspace itself; the tools do, and so do the `sherlock workspace` operation subcommands a caller outside the agent runs (ADR 0027, `environment.md`).
 
 **The bind gate, as a deployment fact** (ADR 0012). Both listeners refuse to serve beyond localhost unless something authenticates the caller:
 

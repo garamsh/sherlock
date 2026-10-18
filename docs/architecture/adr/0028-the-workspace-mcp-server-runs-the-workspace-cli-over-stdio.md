@@ -71,7 +71,7 @@ Facts this has to fit:
 ### 6. The dependency
 
 - **`github.com/modelcontextprotocol/go-sdk`, at `v1.8.0`, using its `mcp` package.** It is the MCP project's own Go SDK. It gives the server the stdio transport, protocol version negotiation and input-schema validation. It also gives the tests a client that is not this server's own code, which a hand-written protocol subset could not offer.
-- **Version basis.** `go list -m -versions github.com/modelcontextprotocol/go-sdk`, run on 2026-10-18, ends `… v1.7.0 v1.8.0-pre.1 v1.8.0-pre.2 v1.8.0`. `go list -m -json github.com/modelcontextprotocol/go-sdk@latest` reports `v1.8.0` with time `2026-09-04T08:08:52Z`. Its `go.mod` requires `go 1.25.0`, below this module's `go 1.26.5`.
+- **Version basis.** `go list -m -versions github.com/modelcontextprotocol/go-sdk`, run on 2026-10-18, ends `… v1.7.0 v1.8.0-pre.1 v1.8.0-pre.2 v1.8.0`. `go list -m -json github.com/modelcontextprotocol/go-sdk@latest` reports `v1.8.0` with time `2026-09-04T08:08:52Z`. Its `go.mod` requires `go 1.25.0`, below this module's `go` directive (`1.26.9` since #1129).
 - **What it links.** `go list -deps` on a program importing only `mcp` lists these modules outside the standard library and the SDK:
   - `github.com/google/jsonschema-go` v0.4.3;
   - `github.com/segmentio/encoding` v0.5.4 and `github.com/segmentio/asm` v1.1.3;

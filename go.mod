@@ -4,7 +4,7 @@ go 1.26.5
 
 require (
 	github.com/go-jose/go-jose/v4 v4.1.6
-	github.com/go-viper/mapstructure/v2 v2.4.0
+	github.com/go-viper/mapstructure/v2 v2.5.0
 	github.com/santhosh-tekuri/jsonschema/v6 v6.0.2
 	github.com/spf13/cobra v1.10.2
 	github.com/spf13/pflag v1.0.10

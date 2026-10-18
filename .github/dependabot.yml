@@ -1,7 +1,7 @@
 # Moves the pins ci.md §Verify a pinned dependency requires a mover for:
 # the base-image digests in build/*.Dockerfile and in the runtime
-# fixture's deploy/runtime-fixture/meter/Dockerfile, and the action SHAs
-# in .github/workflows/.
+# fixture's deploy/runtime-fixture/meter/Dockerfile, the action SHAs in
+# .github/workflows/, and the module versions go.mod pins under go.sum.
 #
 # The docker entry covers the tag-moved case only. Dependabot's docker
 # ecosystem has no security-update channel, and a digest refresh under an
@@ -19,6 +19,12 @@ updates:
   # "/" is where the github-actions ecosystem looks; the workflows under
   # .github/workflows/ are what it reads.
   - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+  # go.mod at the root is the repository's only module; it covers
+  # cmd/, internal/, tools/ and deploy/runtime-fixture/meter/.
+  - package-ecosystem: "gomod"
     directory: "/"
     schedule:
       interval: "weekly"

@@ -19,9 +19,9 @@ import (
 // process execution. Its addr flag is its own, not the agent's: sibling
 // subcommands register the same name on separate flag sets, and the
 // workspace's default listener is 8081, not the gateway's 8080. Its
-// subcommands are the operations that call the contract (ADR 0027); it
-// takes no positional argument, so a mistyped one refuses instead of
-// serving.
+// subcommands are the operations that call the contract (ADR 0027) and
+// the MCP server that runs them (ADR 0028); it takes no positional
+// argument, so a mistyped one refuses instead of serving.
 func newWorkspaceCommand() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "workspace",
@@ -37,6 +37,7 @@ func newWorkspaceCommand() *cobra.Command {
 	}
 	config.AddWorkspaceFlags(cmd.Flags())
 	cmd.AddCommand(newWorkspaceOperationCommands()...)
+	cmd.AddCommand(newWorkspaceMCPCommand())
 	return cmd
 }
 

@@ -18,10 +18,19 @@ import (
 	"github.com/garamsh/sherlock/internal/workspace/shell"
 )
 
+// runAsBinaryEnv makes this test binary behave as the sherlock binary.
+// `sherlock workspace mcp` execs whichever binary it runs as for each
+// operation, so a server started from a test runs this one.
+const runAsBinaryEnv = "SHERLOCK_TEST_RUN_AS_BINARY"
+
 // TestMain routes the resource-limit verb as main does: the workspace
 // these tests start runs a real executor, which execs whichever binary
-// it runs as — this test binary — to cap each child (ADR 0008).
+// it runs as — this test binary — to cap each child (ADR 0008). Under
+// runAsBinaryEnv it runs as the binary instead of running tests.
 func TestMain(m *testing.M) {
+	if os.Getenv(runAsBinaryEnv) != "" {
+		os.Exit(run())
+	}
 	shell.ShimIfRequested()
 	os.Exit(m.Run())
 }

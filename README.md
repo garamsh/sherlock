@@ -85,6 +85,17 @@ sherlock workspace exec --stdin -- wc -c < notes.txt
 - `exec` runs one positional through `sh -c`, and more than one as an executable with its arguments. It always runs the child without network, under the resource caps, with the scrubbed environment, in the workspace directory. `--timeout` sets the command's timeout, and without it the workspace's `exec-timeout` applies. `--stdin` forwards standard input.
 - The command's own exit code is part of the result. The CLI's exit status is about the call: `0` for performed, `1` for the CLI's own failure (refused before any call, or unable to write the result of an operation the workspace performed), `2` for refused by the workspace (a path outside it, an executable it cannot start), and `3` for an unreachable workspace or one that did not answer. Every failure prints one JSON object on stderr, `{"error":"usage|workspace|unreachable","code":"<gRPC code>","message":"…"}` (`docs/architecture/environment.md` §Workspace CLI contract).
 
+### Serving a workspace to an MCP client
+
+`sherlock workspace mcp` is a stdio MCP server whose tools `read`, `write`, `list` and `exec` each run the matching operation above once, as a child process of the same binary (ADR 0028). An MCP-capable agent with its local tools disabled then operates the workspace and nothing on its own host. The client starts it from a command line, for example in an MCP configuration file:
+
+```json
+{"mcpServers": {"sherlock-workspace": {"command": "sherlock", "args": ["workspace", "mcp", "--workspace-addr", "127.0.0.1:8081"]}}}
+```
+
+- Its one setting is the address, resolved as the operations resolve it. It opens no listener and takes no positional argument.
+- A workspace refusal (exit 2) comes back as a tool result marked as an error; an unreachable workspace (exit 3) as JSON-RPC error `-32001`; any other failure as `-32603` (`docs/architecture/environment.md` §Workspace MCP server).
+
 ### Configuration
 
 Settings resolve in order: **flags > environment variables > config file > defaults**. Environment variables use the `SHERLOCK_` prefix (`SHERLOCK_MEMORY_PATH`, `SHERLOCK_WORKSPACE_ADDR`, …). The agent's config file resolves in order: `--config <path>`, then `./configs/agent.yaml`, then the XDG config path (`~/.config/sherlock/config.yaml` on Linux); the workspace's resolves the same way with `workspace.yaml`. A missing file is an error only when `--config` names it explicitly. A loaded config file must be owner-only (`0600` or `0400`); a group/other-readable file fails startup (docs/architecture/security.md). A key the file carries that no setting reads — a typo, a renamed key, a block left from a removed feature — is reported at startup by a WARN naming the key and the file, and does not stop the process: the file keeps working when a key is renamed, and `tools.pin` for `tools.pins` says so instead of reading as an absent pin set.

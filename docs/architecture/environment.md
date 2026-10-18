@@ -24,7 +24,7 @@ Governs the environment model: what an environment is, its topology, and its tru
 
 The pod split is two processes today. `sherlock workspace` serves one workspace (config key, created on first use) over the gRPC contract — Read, Write, List, Exec. It owns no tools and no script-tool runtime, but it owns the executor: Exec children run in the workspace directory, dropped to the exec UID, and when privileged the workspace chowns the directory to the same UID so both writers share one owner. The shipped images make this concrete: the agent image hosts the reasoning loop, gateway, memory, and the tool client — it runs no exec'd command and no tool's behavior in its own process, and the only processes it starts are the installed tool executables, spawned directly, so it stays distroless nonroot with no shell; the sidecar image hosts the workspace gRPC server with a shell (Exec children are `sh -c` sub-processes) and an exec account at uid 1001 (`build/workspace.Dockerfile`); the deployment sets the exec UID children drop to and grants exactly the capabilities the executor needs — SETUID, SETGID, CHOWN, SYS_ADMIN, KILL (`deploy/local/`).
 
-`sherlock agent` holds the reasoning loop, gateway, memory, and the platform tool client (`internal/tool`). The agent's tool set is the operator's `tools/` directory — each tool is a `manifest.json` plus an executable. The platform's stdio runner spawns the executable on demand. Tools that need the workspace (file_read, file_write, file_list, shell_exec) dial it and hold the gRPC client themselves. One binary serves both roles, so it imports `internal/workspace/server` for the `sherlock workspace` subcommand — it is the server. `sherlock agent` never calls the workspace as a client, so the agent side reaches the workspace only through a tool it spawned (ADR 0017). The operation subcommands ADR 0027 decides are the binary's only client code for the listener; until #1111 implements them, nothing under `cmd/` dials it. The agent's only workspace setting is `workspace-addr` — the agent keeps no exec machinery and no workspace-path.
+`sherlock agent` holds the reasoning loop, gateway, memory, and the platform tool client (`internal/tool`). The agent's tool set is the operator's `tools/` directory — each tool is a `manifest.json` plus an executable. The platform's stdio runner spawns the executable on demand. Tools that need the workspace (file_read, file_write, file_list, shell_exec) dial it and hold the gRPC client themselves. One binary serves both roles, so it imports `internal/workspace/server` for the `sherlock workspace` subcommand — it is the server. `sherlock agent` never calls the workspace as a client, so the agent side reaches the workspace only through a tool it spawned (ADR 0017). The `sherlock workspace` operation subcommands (`cmd/sherlock/workspace_client.go`) are the binary's only client code for the listener: each dials it once per invocation, through the wire in `internal/workspace/` (ADR 0027). The agent's only workspace setting is `workspace-addr` — the agent keeps no exec machinery and no workspace-path.
 
 ## File operation contracts
 
@@ -46,16 +46,16 @@ What the `sherlock workspace` operation subcommands send, print and exit with (A
 
 - `exec` with one positional runs it through `sh -c`; with more, the first is the executable and the rest its arguments, run without a shell. `--timeout` sets the call's timeout, and without it `exec-timeout` decides; `--stdin` forwards standard input, and without it none is read.
 - `exec` always asks for an empty network namespace and never for the trusted class, an environment or a working directory: the child runs exactly as a `shell_exec` child does. The command's exit code and a workspace timeout are results, so the CLI exits 0 for them.
-- Every failure prints `{"error":"<class>","code":"<gRPC code>","message":"<text>"}` on stderr and nothing on stdout:
+- Every failure prints `{"error":"<class>","code":"<gRPC code>","message":"<text>"}` on stderr, and nothing on stdout beyond the part of a result whose write failed:
 
 | Exit | `error` | Meaning |
 |---|---|---|
 | 0 | — | The workspace performed the operation |
-| 1 | `usage` | The CLI sent nothing: a bad argument or flag, a refused `--config` or `--strict-config`, an unreadable stdin |
+| 1 | `usage` | The CLI's own failure: it sent nothing (a bad argument or flag, a refused `--config` or `--strict-config`, an unreadable stdin, an unusable address), or it could not write the result after the workspace performed the operation, whose effect then happened and whose result stdout may hold in part |
 | 2 | `workspace` | The workspace refused the call: any status it answered with, today `InvalidArgument` for a filesystem refusal such as a path outside the workspace, or `Internal` for an executor failure |
 | 3 | `unreachable` | No answer: `Unavailable` (the connection failed) or `DeadlineExceeded` (the CLI's bound passed first). After a Write or an Exec was sent, its effect is unknown |
 
-- Every call is bounded, so a workspace that stopped answering ends in exit 3: Read, Write and List at a fixed bound, Exec at `--timeout` plus a dispatch margin or, without one, at a stall bound above any `exec-timeout`.
+- Every call is bounded, so a workspace that stopped answering ends in exit 3: Read, Write and List at a fixed bound, Exec at `--timeout` plus a dispatch margin or, without one, at one hour, as `shell_exec` does; an `exec-timeout` above an hour ends such a call in exit 3.
 - Every other `sherlock` command keeps exit 1 for any error.
 
 ## GitHub operation contracts

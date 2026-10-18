@@ -67,6 +67,23 @@ sherlock workspace
 - The workspace owns the workspace directory (`workspace` key, created on first use); Exec children work in it by default, so they see workspace files natively. Exec children drop to the exec UID (`exec-uid` key, default 1001; single-account mode: the workspace's own UID — any other unprivileged value fails closed with `agent_uid unavailable` — which the executor runs and which is not a supported deployment shape, ADR 0008). When privileged the workspace chowns the directory to the exec UID, so files written through the gRPC contract and by exec'd children share one owner.
 - The listener carries no authentication in this phase, so it serves loopback binds only — a non-loopback `--addr` fails startup (ADR 0012, same posture as the gateway).
 - Its config file resolves in order: `--config <path>`, then `./configs/workspace.yaml`, then the XDG config path (`~/.config/sherlock/workspace.yaml` on Linux). Keys: `addr` (default `127.0.0.1:8081`), `workspace` (default `data/workspace`), `exec-uid` (default `1001`), `exec-timeout` (default `30s`). There is no `tools:` config — tools live in the agent.
+- A positional argument that names no operation below is refused rather than ignored, so `sherlock workspace raed` fails instead of starting a server.
+
+### Operating a workspace
+
+The `sherlock workspace` subcommands `read`, `write`, `list` and `exec` each make one call on a running workspace's gRPC contract and nothing else on the caller's host, so a person, a script or an MCP server operates the workspace with the isolation the agent's own tools get (ADR 0027).
+
+```sh
+sherlock workspace list .                          # {"entries":[{"name":"notes.txt","dir":false}]}
+echo hello | sherlock workspace write notes.txt    # {"bytes_written":6}
+sherlock workspace read notes.txt                  # the file's bytes, unchanged
+sherlock workspace exec -- 'ls -la; exit 3'        # {"stdout":"…","stderr":"","exit_code":3,"timed_out":false}
+sherlock workspace exec --stdin -- wc -c < notes.txt
+```
+
+- The address is `--workspace-addr`, then `SHERLOCK_WORKSPACE_ADDR`, then `127.0.0.1:8081`. No config file is read, and `--config` or `--strict-config` is refused.
+- `exec` runs one positional through `sh -c`, and more than one as an executable with its arguments. It always runs the child without network, under the resource caps, with the scrubbed environment, in the workspace directory. `--timeout` sets the command's timeout, and without it the workspace's `exec-timeout` applies. `--stdin` forwards standard input.
+- The command's own exit code is part of the result. The CLI's exit status is about the call: `0` for performed, `1` for the CLI's own failure (refused before any call, or unable to write the result of an operation the workspace performed), `2` for refused by the workspace (a path outside it, an executable it cannot start), and `3` for an unreachable workspace or one that did not answer. Every failure prints one JSON object on stderr, `{"error":"usage|workspace|unreachable","code":"<gRPC code>","message":"…"}` (`docs/architecture/environment.md` §Workspace CLI contract).
 
 ### Configuration
 

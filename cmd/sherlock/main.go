@@ -2,7 +2,8 @@
 // "sherlock agent" runs the agent's self — the HTTP gateway, the rolling
 // session, memory, the mouth, and the tool client that spawns the
 // operator's installed tools — and "sherlock workspace" serves the
-// agent's workspace, the gRPC data plane (files and exec). Settings
+// agent's workspace, the gRPC data plane (files and exec), whose
+// operations its subcommands call (ADR 0027). Settings
 // come from flags, SHERLOCK_* environment variables, and configs/agent.yaml
 // through viper.
 package main
@@ -23,7 +24,7 @@ func main() {
 	// command, so it never returns to run a subcommand.
 	shell.ShimIfRequested()
 	if err := NewRootCommand().Execute(); err != nil {
-		os.Exit(1)
+		os.Exit(exitStatus(err))
 	}
 }
 

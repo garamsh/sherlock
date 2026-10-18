@@ -76,13 +76,13 @@ Facts this has to fit:
   - `github.com/google/jsonschema-go` v0.4.3;
   - `github.com/segmentio/encoding` v0.5.4 and `github.com/segmentio/asm` v1.1.3;
   - `github.com/yosida95/uritemplate/v3` v3.0.2;
-  - `golang.org/x/oauth2` v0.35.0;
-  - `golang.org/x/sync` v0.20.0;
+  - `golang.org/x/oauth2`, v0.35.0 in the SDK's requirements, selected here at v0.36.0 by minimal version selection;
+  - `golang.org/x/sync`, v0.20.0 in the SDK's requirements, selected here at v0.23.0;
   - `golang.org/x/time` v0.15.0;
-  - `golang.org/x/sys`, at v0.41.0 in the SDK's requirements, already required here at v0.48.0, which minimal version selection keeps.
+  - `golang.org/x/sys`, at v0.41.0 in the SDK's requirements, already required here at a later version (v0.48.0 at the revision above, v0.49.0 since #1125), which minimal version selection keeps.
   
   The SDK's `auth` and `oauthex` packages are linked through `mcp`. Nothing in this decision configures them, and the stdio transport carries no credential.
-- **Advisory check.** `govulncheck -show verbose ./...` (scanner v1.7.0, DB updated 2026-10-08 22:31:09 UTC) on that program, under `go 1.26.5`, reports nothing in the SDK or the modules it adds. It reports one finding outside the standard library: GO-2026-5024 in `golang.org/x/sys` v0.41.0, fixed in v0.44.0, Windows-only and not called. It does not apply here, since the module resolves `x/sys` to v0.48.0. The standard-library findings are the `go1.26.5` toolchain's. `govulncheck ./...` on this module at `8719dea396ca476fc9d45aa4cb49f8b1cd9eac84`, without the SDK, reports 17 of them already.
+- **Advisory check.** `govulncheck -show verbose ./...` (scanner v1.7.0, DB updated 2026-10-08 22:31:09 UTC) on that program, under `go 1.26.5`, reports nothing in the SDK or the modules it adds. It reports one finding outside the standard library: GO-2026-5024 in `golang.org/x/sys` v0.41.0, fixed in v0.44.0, Windows-only and not called. It does not apply here, since the module resolves `x/sys` to v0.48.0 or later. The standard-library findings are the `go1.26.5` toolchain's. `govulncheck ./...` on this module at `8719dea396ca476fc9d45aa4cb49f8b1cd9eac84`, without the SDK, reports 17 of them already.
 - **Pinning and moving.** The version is pinned by `go.mod` and checked against `go.sum` and the checksum database. `.github/dependabot.yml`'s weekly `gomod` entry (#1120) proposes bumps for the SDK as for every module in `go.mod`, and each bump is reviewed as its own pull request.
 
 ## Rejected alternatives

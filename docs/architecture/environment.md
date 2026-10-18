@@ -46,16 +46,16 @@ What the `sherlock workspace` operation subcommands send, print and exit with (A
 
 - `exec` with one positional runs it through `sh -c`; with more, the first is the executable and the rest its arguments, run without a shell. `--timeout` sets the call's timeout, and without it `exec-timeout` decides; `--stdin` forwards standard input, and without it none is read.
 - `exec` always asks for an empty network namespace and never for the trusted class, an environment or a working directory: the child runs exactly as a `shell_exec` child does. The command's exit code and a workspace timeout are results, so the CLI exits 0 for them.
-- Every failure prints `{"error":"<class>","code":"<gRPC code>","message":"<text>"}` on stderr and nothing on stdout:
+- Every failure prints `{"error":"<class>","code":"<gRPC code>","message":"<text>"}` on stderr, and nothing on stdout beyond the part of a result whose write failed:
 
 | Exit | `error` | Meaning |
 |---|---|---|
 | 0 | — | The workspace performed the operation |
-| 1 | `usage` | The CLI sent nothing: a bad argument or flag, a refused `--config` or `--strict-config`, an unreadable stdin |
+| 1 | `usage` | The CLI's own failure: it sent nothing (a bad argument or flag, a refused `--config` or `--strict-config`, an unreadable stdin, an unusable address), or it could not write the result after the workspace performed the operation, whose effect then happened and whose result stdout may hold in part |
 | 2 | `workspace` | The workspace refused the call: any status it answered with, today `InvalidArgument` for a filesystem refusal such as a path outside the workspace, or `Internal` for an executor failure |
 | 3 | `unreachable` | No answer: `Unavailable` (the connection failed) or `DeadlineExceeded` (the CLI's bound passed first). After a Write or an Exec was sent, its effect is unknown |
 
-- Every call is bounded, so a workspace that stopped answering ends in exit 3: Read, Write and List at a fixed bound, Exec at `--timeout` plus a dispatch margin or, without one, at a stall bound above any `exec-timeout`.
+- Every call is bounded, so a workspace that stopped answering ends in exit 3: Read, Write and List at a fixed bound, Exec at `--timeout` plus a dispatch margin or, without one, at one hour, as `shell_exec` does; an `exec-timeout` above an hour ends such a call in exit 3.
 - Every other `sherlock` command keeps exit 1 for any error.
 
 ## GitHub operation contracts

@@ -27,9 +27,10 @@ const (
 	// own bound: dispatch, reaping a child past its deadline, replying.
 	execDispatchMargin = 5 * time.Second
 
-	// execStallTimeout bounds an Exec that names no timeout. The
-	// workspace's exec-timeout bounds the command; this catches only a
-	// workspace that stopped answering, so it clears any exec-timeout.
+	// execStallTimeout bounds an Exec that names no timeout, as
+	// shell_exec's does. The workspace's exec-timeout bounds the command;
+	// this catches a workspace that stopped answering, and ends a command
+	// an exec-timeout above it allows in exit 3.
 	execStallTimeout = time.Hour
 )
 
@@ -234,8 +235,9 @@ func runOperation(cmd *cobra.Command, args []string, nargs int,
 }
 
 // reportFailure prints err as the operation's JSON failure on stderr.
-// An error that is not an operation's is the CLI's own — a write to
-// stdout that failed — and is reported with the usage class.
+// An error that is not an operation's is the CLI's own and takes the
+// usage class: a failed write of the result to stdout, after the
+// workspace performed the operation, is one (ADR 0027 §4).
 func reportFailure(cmd *cobra.Command, err error) error {
 	if err == nil {
 		return nil

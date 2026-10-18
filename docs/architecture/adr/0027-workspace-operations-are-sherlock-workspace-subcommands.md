@@ -52,18 +52,18 @@ Four subcommands of the existing `sherlock workspace` command — `read`, `write
 
 ### 4. Failures and exit status
 
-Every failure prints one JSON object on stderr, `{"error":"<class>","code":"<gRPC code>","message":"<text>"}`, and nothing on stdout. cobra's own error and usage text is silenced for these commands.
+Every failure prints one JSON object on stderr, `{"error":"<class>","code":"<gRPC code>","message":"<text>"}`, and nothing on stdout beyond the part of a result whose write failed. cobra's own error and usage text is silenced for these commands.
 
 | Exit | `error` | When | `code` |
 |---|---|---|---|
 | 0 | — | The workspace performed the operation | — |
-| 1 | `usage` | The CLI sent nothing: a bad argument or flag, a refused `--config`, an unreadable stdin | empty |
+| 1 | `usage` | The CLI's own failure. Either it sent nothing — a bad argument or flag, a refused `--config` or `--strict-config`, an unreadable stdin, an unusable address — or it could not write the result after the workspace performed the operation, whose effect then happened and whose result stdout may hold in part | empty |
 | 2 | `workspace` | The workspace answered the call with an error status: a path outside the workspace, a missing file, an executor failure | the status's code, today `InvalidArgument` or `Internal` |
 | 3 | `unreachable` | No answer: the connection failed, or the CLI's deadline passed first | `Unavailable` or `DeadlineExceeded` |
 
 - **Class 3 is exactly `Unavailable` and `DeadlineExceeded`; every other status is class 2.** The workspace sends neither code itself (§Context), so either one is the client's report that no answer came.
 - **Class 3 does not say the operation did not happen.** A deadline that passes after a Write or an Exec was sent leaves its effect unknown; a caller retrying a write or a command owns that.
-- **The CLI bounds every call**, so a workspace that stopped answering ends in exit 3 and not a hang: Read, Write and List at a fixed bound, as the file tools do; Exec at `--timeout` plus a margin for dispatch, or, without `--timeout`, at a stall bound that clears any `exec-timeout`, as `shell_exec` does.
+- **The CLI bounds every call**, so a workspace that stopped answering ends in exit 3 and not a hang: Read, Write and List at a fixed bound, as the file tools do; Exec at `--timeout` plus a margin for dispatch, or, without `--timeout`, at one hour, as `shell_exec` does. An operator `exec-timeout` above an hour therefore ends such a call in exit 3 before the workspace answers.
 - **Exit 1 stays the binary's status for every other command's error**, so nothing an existing caller of `sherlock agent` or `sherlock workspace` reads changes.
 
 ### 5. Why this shape suits the MCP server (#1112)

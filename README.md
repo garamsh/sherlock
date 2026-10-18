@@ -83,7 +83,7 @@ sherlock workspace exec --stdin -- wc -c < notes.txt
 
 - The address is `--workspace-addr`, then `SHERLOCK_WORKSPACE_ADDR`, then `127.0.0.1:8081`. No config file is read, and `--config` or `--strict-config` is refused.
 - `exec` runs one positional through `sh -c`, and more than one as an executable with its arguments. It always runs the child without network, under the resource caps, with the scrubbed environment, in the workspace directory. `--timeout` sets the command's timeout, and without it the workspace's `exec-timeout` applies. `--stdin` forwards standard input.
-- The command's own exit code is part of the result. The CLI's exit status is about the call: `0` for performed, `1` for refused by the CLI before any call, `2` for refused by the workspace (a path outside it, an executable it cannot start), and `3` for an unreachable workspace or one that did not answer. Every failure prints one JSON object on stderr, `{"error":"usage|workspace|unreachable","code":"<gRPC code>","message":"…"}` (`docs/architecture/environment.md` §Workspace CLI contract).
+- The command's own exit code is part of the result. The CLI's exit status is about the call: `0` for performed, `1` for the CLI's own failure (refused before any call, or unable to write the result of an operation the workspace performed), `2` for refused by the workspace (a path outside it, an executable it cannot start), and `3` for an unreachable workspace or one that did not answer. Every failure prints one JSON object on stderr, `{"error":"usage|workspace|unreachable","code":"<gRPC code>","message":"…"}` (`docs/architecture/environment.md` §Workspace CLI contract).
 
 ### Configuration
 

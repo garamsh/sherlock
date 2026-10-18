@@ -18,11 +18,15 @@ import (
 // serves the workspace's gRPC contract (ADR 0017) — the filesystem and
 // process execution. Its addr flag is its own, not the agent's: sibling
 // subcommands register the same name on separate flag sets, and the
-// workspace's default listener is 8081, not the gateway's 8080.
+// workspace's default listener is 8081, not the gateway's 8080. Its
+// subcommands are the operations that call the contract (ADR 0027); it
+// takes no positional argument, so a mistyped one refuses instead of
+// serving.
 func newWorkspaceCommand() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "workspace",
-		Short: "Serve the agent's workspace over the gRPC contract (files and exec)",
+		Short: "Serve the agent's workspace over the gRPC contract (files and exec), or call it",
+		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, _ []string) error {
 			cfg, err := config.ResolveWorkspace(cmd.Flags())
 			if err != nil {
@@ -32,6 +36,7 @@ func newWorkspaceCommand() *cobra.Command {
 		},
 	}
 	config.AddWorkspaceFlags(cmd.Flags())
+	cmd.AddCommand(newWorkspaceOperationCommands()...)
 	return cmd
 }
 

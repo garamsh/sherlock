@@ -33,8 +33,9 @@ const (
 // (ADR 0017): it serves the filesystem (Read, Write, List) and runs
 // agent-influenced processes (Exec) in the workspace directory. It
 // exposes no tool hosting: tools are executables the agent's tool
-// client spawns from their manifests, and tools are the only callers
-// of this contract. The plugin concept is dropped.
+// client spawns from their manifests. Its callers are those tools and
+// the `sherlock workspace` operation subcommands (ADR 0027). The plugin
+// concept is dropped.
 type WorkspaceClient interface {
 	Read(ctx context.Context, in *ReadRequest, opts ...grpc.CallOption) (*ReadResponse, error)
 	Write(ctx context.Context, in *WriteRequest, opts ...grpc.CallOption) (*WriteResponse, error)
@@ -98,8 +99,9 @@ func (c *workspaceClient) Exec(ctx context.Context, in *ExecRequest, opts ...grp
 // (ADR 0017): it serves the filesystem (Read, Write, List) and runs
 // agent-influenced processes (Exec) in the workspace directory. It
 // exposes no tool hosting: tools are executables the agent's tool
-// client spawns from their manifests, and tools are the only callers
-// of this contract. The plugin concept is dropped.
+// client spawns from their manifests. Its callers are those tools and
+// the `sherlock workspace` operation subcommands (ADR 0027). The plugin
+// concept is dropped.
 type WorkspaceServer interface {
 	Read(context.Context, *ReadRequest) (*ReadResponse, error)
 	Write(context.Context, *WriteRequest) (*WriteResponse, error)

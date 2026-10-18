@@ -32,7 +32,7 @@ Four subcommands of the existing `sherlock workspace` command — `read`, `write
 ### 2. The address and what the CLI reads
 
 - **The listener's address is the CLI's one setting**: `--workspace-addr`, then `SHERLOCK_WORKSPACE_ADDR`, then `127.0.0.1:8081`, resolved in `internal/config/` like every entry point's settings. The flag is the name the agent already uses for the same address, and the variable is the one every tool the agent spawns already holds.
-- **No config file is read.** `agent.yaml` is the agent's and `workspace.yaml` is the server's, where `addr` means the bind; reading either ties a client to a process it is not, and a caller on another host has neither. One setting with a flag and a variable needs no file. The root's shared `--config` and `--strict-config` are refused when given to a subcommand, rather than ignored.
+- **No config file is read.** `agent.yaml` is the agent's and `workspace.yaml` is the server's, where `addr` means the bind; reading either ties a client to a process it is not, and a caller outside both containers has neither. One setting with a flag and a variable needs no file. The root's shared `--config` and `--strict-config` are refused when given to a subcommand, rather than ignored.
 - **The CLI dials what it is given and gates nothing.** Who can reach the listener is the listener's bind gate (ADR 0012), which this decision leaves as it is: loopback only, unauthenticated.
 - **No credential reaches the CLI or passes through it.** It reads no secret and forwards no environment to the workspace.
 

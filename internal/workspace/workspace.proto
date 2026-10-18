@@ -7,8 +7,9 @@ option go_package = "github.com/garamsh/sherlock/internal/workspace;workspace";
 // (ADR 0017): it serves the filesystem (Read, Write, List) and runs
 // agent-influenced processes (Exec) in the workspace directory. It
 // exposes no tool hosting: tools are executables the agent's tool
-// client spawns from their manifests, and tools are the only callers
-// of this contract. The plugin concept is dropped.
+// client spawns from their manifests. Its callers are those tools and
+// the `sherlock workspace` operation subcommands (ADR 0027). The plugin
+// concept is dropped.
 service Workspace {
   rpc Read(ReadRequest) returns (ReadResponse);
   rpc Write(WriteRequest) returns (WriteResponse);

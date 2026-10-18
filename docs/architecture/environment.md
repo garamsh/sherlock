@@ -1,6 +1,6 @@
 # Environment
 
-Governs the environment model: what an environment is, its topology, and its trust boundaries. Rationale: ADR 0017, ADR 0008, ADR 0009, ADR 0010, ADR 0027.
+Governs the environment model: what an environment is, its topology, and its trust boundaries. Rationale: ADR 0017, ADR 0008, ADR 0009, ADR 0010, ADR 0027, ADR 0028.
 
 ## Current decisions
 
@@ -19,6 +19,7 @@ Governs the environment model: what an environment is, its topology, and its tru
 - A shared workspace serving several agents — one volume with several user accounts — is a later step, not the starting shape.
 - Anything that can run a command operates the workspace through its contract with the `sherlock workspace` operation subcommands — `read`, `write`, `list`, `exec` — and reaches nothing on its own host (ADR 0027). Each makes one call on the listener at `--workspace-addr`, then `SHERLOCK_WORKSPACE_ADDR`, then `127.0.0.1:8081`, and reads no config file. They change neither the contract nor who can reach the listener (ADR 0012). §Workspace CLI contract states what they print and how they exit.
 - Plain `sherlock workspace` serves the workspace as before and takes no positional argument, so a mistyped operation refuses instead of starting a server (ADR 0027).
+- An MCP-capable agent operates the workspace through `sherlock workspace mcp`, a stdio MCP server whose tools `read`, `write`, `list` and `exec` each run the matching operation subcommand once as a child process of the same binary (ADR 0028). It opens no listener and links no workspace stubs, so its only effect on its own host is running the CLI. `mcp` is not an operation: §Workspace CLI contract governs the four operations, and §Workspace MCP server governs it.
 
 ## Current state
 
@@ -58,6 +59,26 @@ What the `sherlock workspace` operation subcommands send, print and exit with (A
 - Every call is bounded, so a workspace that stopped answering ends in exit 3: Read, Write and List at a fixed bound, Exec at `--timeout` plus a dispatch margin or, without one, at one hour, as `shell_exec` does; an `exec-timeout` above an hour ends such a call in exit 3.
 - Every other `sherlock` command keeps exit 1 for any error.
 
+## Workspace MCP server
+
+What `sherlock workspace mcp` offers and answers (ADR 0028).
+
+- Transport: MCP over stdin and stdout, started by the client. No listener; stdout carries only the protocol, and logs go to stderr. Its one setting is the address it passes to each child as `--workspace-addr`: the flag, then `SHERLOCK_WORKSPACE_ADDR`, then `127.0.0.1:8081`, with no config file. It takes no positional argument.
+
+| Tool | Input | Runs | Result on exit 0 |
+|---|---|---|---|
+| `read` | `path` | `workspace read <path>` | text content when the file is UTF-8, otherwise an embedded resource holding the bytes |
+| `write` | `path`, `content` | `workspace write <path>` with `content` on stdin | `{"bytes_written":n}`, as text and structured content |
+| `list` | `path` | `workspace list <path>` | `{"entries":[…]}`, as text and structured content |
+| `exec` | `command`; optional `args`, `stdin`, `timeout` | `workspace exec [--timeout] [--stdin] -- <command> [<args>…]` | `{"stdout","stderr","exit_code","timed_out"}`, as text and structured content |
+
+| CLI exit | MCP answer |
+|---|---|
+| 0 | tool result |
+| 2 | tool result with `isError: true`, the CLI's stderr object as text |
+| 3 | JSON-RPC error `-32001`, `workspace unreachable: …`, the CLI's stderr object as `data` |
+| 1, any other exit, or a child that could not start | JSON-RPC error `-32603`, the CLI's stderr object as `data` when it printed one |
+
 ## GitHub operation contracts
 
 - `github_push` takes owner, repo, branch and sha; `github_open_issue` takes owner, repo, title, body and labels; `github_open_pull_request` takes owner, repo, head, base, title and body; `github_comment` takes owner, repo, number and message. Every input is required: `body` may be an empty string and `labels` an empty list, and the boundary rejects a missing or null title or body, a field another tool takes, and a comment number below 1.
@@ -70,4 +91,4 @@ What the `sherlock workspace` operation subcommands send, print and exit with (A
 - The agent↔sidecar authentication (pod-local workspace listener today) — with the contract protocol work.
 - Whether that contract reports the ceilings the workspace applies. A `shell_exec` call carrying no `timeout_nanos` runs under `exec-timeout`, which no tool in the agent container can read, so the tool bounds such a call against a workspace that stopped answering and nothing else — an hour, and the queue makes that every later message for the agent (ADR 0007). #740 asked for that path to become unreachable and is answered with a measurement instead of a change: filling the timeout agent-side and requiring it in the manifest each hand the command's ceiling to the caller, which is the regression #732 fixed, so the only shape leaving `exec-timeout` to decide is a method here reporting what the workspace will apply — a fifth beside Read, Write, List and Exec, and a decision about this contract rather than an implementation of it. With the contract protocol work above.
 - The shared-sidecar account model — with the multi-tenancy work.
-- A remote tool form (e.g., a hosted MCP server or HTTP tool) when an external integration needs one. The current tool shape is stdio-only; an external transport fields (HTTP, gRPC) lands when the first real use case arrives, not before.
+- A remote tool form for the agent's own tool client (an HTTP tool, or the agent calling a hosted MCP server) when an external integration needs one. The current tool shape is stdio-only; an external transport (HTTP, gRPC) lands when the first real use case arrives, not before. The workspace's MCP server (ADR 0028) runs the other way — it offers the workspace to other agents, over stdio — and settles nothing here.

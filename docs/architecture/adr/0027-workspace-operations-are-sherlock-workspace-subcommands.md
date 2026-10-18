@@ -26,6 +26,7 @@ Four subcommands of the existing `sherlock workspace` command — `read`, `write
 
 - **Subcommands of the `sherlock` binary, under `sherlock workspace`.** The binary already ships in both images and is what `README.md` tells a user to build; one noun names the workspace whether a caller serves it or operates it.
 - **Plain `sherlock workspace` keeps starting the server exactly as today**, with the same flags, environment and config file. The subcommands add nothing to its flag set, and its flags stay its own: `sherlock workspace read --exec-uid 5 x` fails as an unknown flag.
+- **`sherlock workspace mcp` is under the same noun and is not an operation.** It serves the four operations to an MCP client by running them (ADR 0028). It makes no call on the listener itself, and §3-§5 govern the four operations, not it.
 - **A typo cannot start a server.** The server command takes no positional argument: `sherlock workspace raed` exits non-zero with cobra's `unknown command "raed" for "sherlock workspace"` and binds nothing. Today that argument is silently ignored and the server starts (§Context). No deployment in this repository passes one: the two command lines in §Context are what `rg -n 'workspace' build/workspace.Dockerfile deploy/local/ | rg -i 'cmd|entrypoint|command|args'` finds.
 - **No new package.** The client is code in `cmd/sherlock/` over the generated stubs in `internal/workspace/`, its one caller. A client package would stand between one caller and the stubs and hide nothing.
 

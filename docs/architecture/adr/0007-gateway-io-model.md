@@ -1,4 +1,4 @@
-# ADR 0007: Gateway I/O — asynchronous ingress, tool-based outbound, separate monitoring
+# ADR 0007: Gateway I/O — a platform-neutral gateway with pushed asynchronous ingress, tool-based outbound, separate monitoring
 
 > Status: accepted
 > Date: 2026-07-25
@@ -7,11 +7,16 @@
 
 The agent is modeled as a person, not a task runner: one continuous rolling session rather than per-task sessions. Input is normally fire-and-forget messages; real-time visibility into ongoing work is needed only occasionally and must not complicate the message path. Replies — to the sender, to another person, or to another agent — should be the agent's own decision. OpenClaw, the reference platform, validates this shape: a single long-lived gateway owning all channels, request/ack plus server-push event streams, one rolling main session, per-session serialized runs with queued followups, outbound via session tools, and per-agent SQLite state.
 
+The owner settled in #1110 (2026-10-18) where the gateway stands relative to garam and to other agents. The gateway is a layer attached to the agent, comparable to the Hermes agent's gateway, and Sherlock builds it as its own: an independent layer inside this repository, not a separate repository. garam keeps the matching layer on its side, with one connector per agent kind, and is one more platform the gateway receives from. Some agents run where they cannot accept an inbound connection.
+
 ## Decision
 
-The gateway separates three flows: ingress, outbound, and monitoring.
+The gateway is platform-neutral and Sherlock's own, and it separates three flows: ingress, outbound, and monitoring.
 
-- **Ingress is asynchronous.** Channel adapters normalize inbound messages; the gateway accepts each message under the ID its sender gave it, or one it assigns when the sender gave none, enqueues it for the agent, and acknowledges. No synchronous response couples a sender to a turn.
+- **The gateway is Sherlock's own, and garam is one platform it receives from.** It is an independent layer inside this repository (#1110). It receives from platforms and is written for none of them; matching a platform's traffic to the form the gateway accepts is that platform's side — for garam, its connector for Sherlock.
+- **Delivery to the agent is push.** A platform pushes each message to the gateway; the gateway does not fetch messages from a platform. Today the push is a post to the gateway's own listener.
+- **An agent that cannot accept an inbound connection gets one its gateway opens outward, and the platform pushes over it.** This is the stated direction (#1110), not built: today the gateway only listens for messages. How that connection works is open (`gateway.md` §Open questions).
+- **Ingress is asynchronous.** A platform delivers each message in the gateway's form; the gateway accepts each message under the ID its sender gave it, or one it assigns when the sender gave none, enqueues it for the agent, and acknowledges. No synchronous response couples a sender to a turn.
 - **A sender can redeliver safely.** A message ID is scoped to its sender — the issuer and subject a signature verified (ADR 0026), or else the transport principal: the verified mTLS caller identity, empty over plain-HTTP loopback — and kept byte for byte. A message already queued or running in this process is not queued again; one whose turn committed its sources to memory is answered as completed and not run again; either delivered again with other content is refused. Completed means those committed sources and nothing weaker, so the 202 never means it. The party that posted a message can ask whether it is completed, pending in this process, or unknown to it; a restart forgets pending, not completed.
 - **One rolling session per agent.** No automatic reset and no per-task sessions; context growth drains into long-term memory per ADR 0006.
 - **Execution is serialized per agent.** Messages arriving mid-run are queued as followups. There is no mid-run steering or interruption (ADR 0014).
@@ -25,6 +30,8 @@ The gateway separates three flows: ingress, outbound, and monitoring.
 
 ## Consequences
 
+- A new platform is reached by that platform delivering in the gateway's form, not by a platform-specific path in the gateway.
+- Until the outward-opened connection is built, an agent receives only where a platform can reach its listener.
 - Senders of different kinds (people, other agents, scheduled jobs) mix safely: the queue serializes them, and no sender blocks on a run.
 - Reply routing is decoupled from the sender — work requested by one party can be delivered to another, and agent-to-agent messaging uses the same mechanism as human messaging.
 - The agent may legitimately choose not to reply; the default reply conventions live in the agent's instructions.

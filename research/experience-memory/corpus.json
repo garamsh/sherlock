@@ -1,0 +1,3887 @@
+{
+ "window": 32,
+ "distance_messages": 40,
+ "seed": 1153,
+ "blocks": [
+  [
+   [
+    {
+     "role": "user",
+     "content": "Hey, I have a 10-year-old golden retriever and I've been thinking about getting pet insurance. Is it even worth it at this point since she's already a senior dog?"
+    },
+    {
+     "role": "assistant",
+     "content": "That's a really common question, and honestly it depends on a few things. Senior dogs are more likely to develop health issues, so insurance can definitely pay off—but premiums tend to be higher and there may be pre-existing condition exclusions to consider. What specific health concerns does your golden have right now?"
+    }
+   ],
+   [
+    {
+     "role": "user",
+     "content": "She's pretty healthy overall, no major issues yet. But I know goldens are prone to cancer and joint problems later on. That's kind of why I'm looking into it now."
+    },
+    {
+     "role": "assistant",
+     "content": "Smart thinking. Many policies won't cover conditions that are considered pre-existing, so getting coverage before problems arise is key. For a senior dog, you'd typically be looking at higher monthly premiums—maybe $50-$100/month depending on coverage—but it could save you thousands if something big comes up. Have you gotten any quotes yet?"
+    }
+   ],
+   [
+    {
+     "role": "user",
+     "content": "Not yet, I didn't even know where to start. There's so many options out there. What should I actually look for in a policy?"
+    },
+    {
+     "role": "assistant",
+     "content": "Great question. Focus on three things: reimbursement rate (usually 70-90%), annual max payout, and what's specifically included—like hereditary conditions, cancer treatments, and hip dysplasia. Some policies exclude certain breed-specific issues, so read the fine print. Also check if they cover exam fees and medications, since those add up fast."
+    }
+   ],
+   [
+    {
+     "role": "user",
+     "content": "Okay, that helps a lot. So would you say it's better to get accident-only coverage or the full comprehensive plan for an older dog?"
+    },
+    {
+     "role": "assistant",
+     "content": "For a senior dog, I'd lean toward comprehensive if you can afford it. Accident-only won't help with cancer or chronic conditions, which are the bigger financial risks for older pets. That said, if budget is tight, accident-only is still better than nothing—it covers emergencies like injuries or poisonings, which can still be extremely expensive. Maybe get a few quotes for both levels and compare the price difference?"
+    }
+   ],
+   [
+    {
+     "role": "user",
+     "content": "Hey, I have my dog's annual checkup coming up next week and I'm not sure what documents I should bring. This is only our second time at this vet, so I want to make sure I don't forget anything important."
+    },
+    {
+     "role": "assistant",
+     "content": "Great question! For a first or second visit to a new vet, you'll definitely want to bring your dog's vaccination records, especially the rabies certificate. If your pup has any previous medical history or past vet records, bring those too—it helps the new vet get a full picture of his health."
+    }
+   ],
+   [
+    {
+     "role": "user",
+     "content": "Oh good, I have those somewhere. What about his leash and collar, or is that overkill?"
+    },
+    {
+     "role": "assistant",
+     "content": "Not overkill at all! Always bring a leash and collar, or a secure harness. Even calm dogs can get nervous at the vet and you don't want them slipping away. It's also a good idea to bring a few small treats—he'll appreciate the distraction and it helps if the vet wants to do a quick treat-based exam."
+    }
+   ],
+   [
+    {
+     "role": "user",
+     "content": "Should I bring his medication bottles? He's on heartworm preventive and a joint supplement."
+    },
+    {
+     "role": "assistant",
+     "content": "Absolutely, yes! Bring all medication bottles or at least a list with the names, dosages, and frequencies. The vet needs to know exactly what he's taking to avoid any interactions and to make sure the dosages are still appropriate. Also mention any over-the-counter supplements or vitamins."
+    }
+   ],
+   [
+    {
+     "role": "user",
+     "content": "We moved here a few months ago. Do I need to bring proof of ownership or anything like that?"
+    },
+    {
+     "role": "assistant",
+     "content": "Your previous vet records should have his microchip info if he's chipped—that's usually enough proof. If you have the adoption papers or registration, you can bring those too, but it's not usually required. Just make sure you know his approximate date of birth and any known allergies off the top of your head."
+    }
+   ],
+   [
+    {
+     "role": "user",
+     "content": "Hey, I just adopted a 2-year-old rescue dog and I'm really struggling with training. He knows basically nothing and gets distracted easily. Where do I even start?"
+    },
+    {
+     "role": "assistant",
+     "content": "Start with the basics: sit, stay, come, and down. Keep training sessions short—about 5 to 10 minutes max. Dogs have limited attention spans, and you'll get better results with multiple short sessions throughout the day than one long one. Use high-value treats like small bits of chicken or cheese to keep him motivated."
+    }
+   ],
+   [
+    {
+     "role": "user",
+     "content": "Okay, so I've been trying 'sit' but he just looks at me like I'm crazy. What am I doing wrong?"
+    },
+    {
+     "role": "assistant",
+     "content": "You're likely moving too fast. Hold the treat slightly above his nose and slowly move it back over his head—his bottom will naturally go down. The moment his butt hits the floor, mark it with a word like 'yes' and immediately give the treat. Timing is everything. If you're waiting too long after he sits, he won't connect the action with the reward."
+    }
+   ],
+   [
+    {
+     "role": "user",
+     "content": "That actually makes a lot of sense. He also pulls on the leash really badly on walks. It's exhausting."
+    },
+    {
+     "role": "assistant",
+     "content": "Stop and wait every time he pulls. Literally freeze in place until the leash is loose, then continue. It sounds tedious, but consistency is key. Also, let him sniff during walks—that's mental exercise for dogs. Consider a front-clip harness for better control. Start in your yard or a quiet area before tackling busy streets."
+    }
+   ],
+   [
+    {
+     "role": "user",
+     "content": "How long does this usually take to see progress? I'm feeling a bit discouraged honestly."
+    },
+    {
+     "role": "assistant",
+     "content": "Don't get discouraged—every dog learns at their own pace. With consistent practice, you should see noticeable improvement in basic commands within 2 to 4 weeks. Leash manners can take longer, maybe a couple months. The rescue dogs I've worked with sometimes need extra patience because they're still adjusting to their new environment. Celebrate the small wins along the way!"
+    }
+   ],
+   [
+    {
+     "role": "user",
+     "content": "Hey, I just adopted a cockatiel and I need to learn about grooming basics. What should I know about wing clipping, nail trimming, and feather care?"
+    },
+    {
+     "role": "assistant",
+     "content": "Congratulations on your new cockatiel! Let's start with wing clipping—it's optional but common for safety. The goal isn't to make your bird flightless but to limit their ability to fly long distances or gain height. A professional vet or experienced groomer should do it the first time to show you the proper technique. They'll trim the primary feathers on both wings, usually removing about 5-6 feathers from each side. Never clip just one wing as it causes balance issues."
+    }
+   ],
+   [
+    {
+     "role": "user",
+     "content": "That makes sense. How often do the wings need trimming?"
+    },
+    {
+     "role": "assistant",
+     "content": "Wing feathers molted and regrow, so plan to clip roughly every 6-12 months depending on your bird's molting cycle. Some birds feather back quickly, others take longer. During molting season, you'll notice loose feathers everywhere—this is the ideal time for a trim since the new feathers aren't fully grown yet. Keep an eye on your cockatiel's behavior; if they're suddenly flying more confidently, it's probably time for another clip."
+    }
+   ],
+   [
+    {
+     "role": "user",
+     "content": "Okay, what about nail trimming? My bird's claws are getting pretty sharp."
+    },
+    {
+     "role": "assistant",
+     "content": "Nail trims are essential and you'll definitely want to do this at home once you learn how. Use proper bird nail clippers—never human clippers as they can splinter the nails. The trick is to trim just the sharp tip, avoiding the quick (the blood vessel inside the nail). If your bird has dark nails and you can't see the quick, trim very small amounts at a time. Have styptic powder on hand just in case you nick the quick. Go slow, offer treats, and make it a positive experience."
+    }
+   ],
+   [
+    {
+     "role": "user",
+     "content": "Got it. And what's the best way to handle feather care? My cockatiel preens a lot but I want to make sure I'm helping."
+    },
+    {
+     "role": "assistant",
+     "content": "Preening is completely normal and healthy—your bird is keeping their feathers clean and well-aligned. You can support this by providing a shallow dish or misting bottle for baths. Most cockatiels love being gently misted with lukewarm water, which mimics rain bathing. Some enjoy sitting on a damp washcloth too. A balanced diet with vitamin A supports feather health, and offering occasional foraging toys reduces stress-related feather damaging. If you notice bald patches, excessive plucking, or ragged feathers, that's worth a vet visit to rule out skin issues or parasites."
+    }
+   ],
+   [
+    {
+     "role": "user",
+     "content": "Hey, I just adopted a kitten and I'm trying to figure out a feeding schedule. How often should I feed her?"
+    },
+    {
+     "role": "assistant",
+     "content": "Congratulations on the new kitten! For a young kitten around 8-12 weeks old, you'll want to feed her about 3-4 small meals per day. As she gets older (around 4-6 months), you can drop to 3 meals, then move to twice daily feedings once she's an adult cat. Consistency really helps cats feel secure."
+    }
+   ],
+   [
+    {
+     "role": "user",
+     "content": "What times work best? I work during the day so I'm not sure how to space it out."
+    },
+    {
+     "role": "assistant",
+     "content": "A good routine would be feeding her around 7am before you leave for work, then another meal around noon if someone can stop by, or you could do a late morning feeding at around 10am. Then feed her again around 5-6pm when you get home, and maybe a small snack before bed around 9-10pm. The key is spacing them out evenly so she's not going too long without food."
+    }
+   ],
+   [
+    {
+     "role": "user",
+     "content": "Should I free-feed or stick to set meal times?"
+    },
+    {
+     "role": "assistant",
+     "content": "For kittens, set meal times are actually better because you can monitor how much she's eating and make sure she's getting enough. Free-feeding often leads to overweight cats, and you won't notice if her appetite changes (which can signal health issues). Stick to scheduled meals—you'll both adjust to the routine quickly."
+    }
+   ],
+   [
+    {
+     "role": "user",
+     "content": "Any tips for making the routine stick? She gets so excited when she sees me grab her bowl."
+    },
+    {
+     "role": "assistant",
+     "content": "That's totally normal! Try feeding her in the same spot each time, and use a consistent command or word before meals so she learns to associate it with food. You could say \"food time\" or tap the bowl lightly. Also, try not to feed her immediately when she meows—wait a minute or two so she learns that the routine, not the meowing, is what triggers dinner. It only takes about a week for cats to settle into a new schedule."
+    }
+   ]
+  ],
+  [
+   [
+    {
+     "role": "user",
+     "content": "Hey, I just adopted a long-haired dog and I'm not sure how often I should be brushing him. He's got this beautiful golden coat but I don't want to mess it up. How often is enough?"
+    },
+    {
+     "role": "assistant",
+     "content": "Congrats on the new furry friend! For long-haired dogs, you'll want to brush at least every other day—ideally daily if you can manage it. This prevents mats and tangles from forming, especially around the ears, legs, and belly. Skip too many days and you'll regret it when you find a giant matted mess behind his ears!"
+    }
+   ],
+   [
+    {
+     "role": "user",
+     "content": "That makes sense. What happens if I skip a few days? Like, is it really that big of a deal?"
+    },
+    {
+     "role": "assistant",
+     "content": "Yes, it really is! When you skip brushing, loose fur builds up and starts tangling with the living hair. Those tangles turn into mats quickly, and mats can pull on your dog's skin and cause irritation or even pain. Once mats form, they're tough to deal with—you might need to cut them out, which isn't fun for anyone. Plus, regular brushing distributes natural oils through the coat and keeps it shiny."
+    }
+   ],
+   [
+    {
+     "role": "user",
+     "content": "Okay, so what kind of brush should I even use? There are so many options at the pet store and I got overwhelmed."
+    },
+    {
+     "role": "assistant",
+     "content": "For a long-haired dog, a slicker brush is your best friend—those are the ones with the fine metal wires on a flat or rectangular head. They grab the undercoat really well. You'll also want a metal comb with both wide and narrow teeth: use the wide teeth first, then the narrow teeth to check for any tangles you might have missed. That's a solid starter kit that works for most long-haired breeds."
+    }
+   ],
+   [
+    {
+     "role": "user",
+     "content": "Should I also be bathing him? I don't want to overdo it but he does get stinky sometimes."
+    },
+    {
+     "role": "assistant",
+     "content": "Bathing once every four to six weeks is usually perfect for most long-haired dogs. Over-bathing can dry out their skin and strip those natural oils. When you do bathe him, use a dog-specific shampoo—never human shampoo, it's too harsh. Make sure you thoroughly rinse AND condition if his coat tends to get dry. Just keep brushing through the bathing process too, it helps you work out any minor tangles before they become problems."
+    }
+   ],
+   [
+    {
+     "role": "user",
+     "content": "Hey, I just got a meeting invite for tomorrow afternoon. Can you tell me what it's about?"
+    },
+    {
+     "role": "assistant",
+     "content": "Sure! The meeting is scheduled for tomorrow at 2:00 PM and it's with the product team about the Q2 planning session."
+    }
+   ],
+   [
+    {
+     "role": "user",
+     "content": "Thanks! I'm going to go ahead and accept it."
+    },
+    {
+     "role": "assistant",
+     "content": "Great, I've accepted the meeting invitation for you. You're all set for tomorrow at 2 PM."
+    }
+   ],
+   [
+    {
+     "role": "user",
+     "content": "What topics will we be discussing? I want to make sure I'm prepared."
+    },
+    {
+     "role": "assistant",
+     "content": "The agenda includes three main items: reviewing last quarter's metrics, discussing the new feature roadmap, and assigning team responsibilities for the upcoming cycle."
+    }
+   ],
+   [
+    {
+     "role": "user",
+     "content": "The feature roadmap part sounds important. How detailed will that discussion be?"
+    },
+    {
+     "role": "assistant",
+     "content": "Pretty detailed. They'll be walking through the proposed features for July through September, including timeline estimates and resource requirements for each."
+    }
+   ],
+   [
+    {
+     "role": "user",
+     "content": "Hey, I just got a new laptop and there's a warranty registration card in the box. Should I actually fill that thing out or is it just junk?"
+    },
+    {
+     "role": "assistant",
+     "content": "Yes, you should register it! It's not junk—it's actually pretty important. Registering your warranty ensures you're covered if something goes wrong with your laptop during the warranty period."
+    }
+   ],
+   [
+    {
+     "role": "user",
+     "content": "What happens if I don't register? Can't I just keep the receipt and be fine?"
+    },
+    {
+     "role": "assistant",
+     "content": "You might be okay without it, but registering gives you better protection. Most manufacturers require registration to activate the full warranty coverage, especially for longer extended warranties. Without it, they might only honor the basic warranty that came with the purchase."
+    }
+   ],
+   [
+    {
+     "role": "user",
+     "content": "So what exactly do I get by registering?"
+    },
+    {
+     "role": "assistant",
+     "content": "The main benefits are: easier warranty claims since they have your info on file, faster support when you contact customer service, and sometimes exclusive offers or recalls get sent directly to you. Some companies also throw in bonus perks like discounted repairs or extended coverage."
+    }
+   ],
+   [
+    {
+     "role": "user",
+     "content": "How do I actually register? I hate filling out paper forms and mailing them."
+    },
+    {
+     "role": "assistant",
+     "content": "Good news—you can usually do it all online. Most manufacturers have a registration page on their website where you enter your laptop's serial number, purchase date, and your contact info. Some even let you register through their mobile app. Much easier than mailing a card!"
+    }
+   ],
+   [
+    {
+     "role": "user",
+     "content": "Hey, I just got into a small fender bender in a parking lot. Nothing major, but there's some damage to my bumper. How do I even start filing an insurance claim for this?"
+    },
+    {
+     "role": "assistant",
+     "content": "Sorry to hear about the accident! The first step is to gather some basic information while you're still at the scene. You'll want to take photos of both vehicles, exchange contact and insurance details with the other driver, and note the exact location and time. Then you can either call your insurance company or file the claim through their website or app—most insurers let you start the process online these days."
+    }
+   ],
+   [
+    {
+     "role": "user",
+     "content": "Okay, I got pictures and we exchanged info. The other driver admitted it was their fault. Do I need to file with their insurance or mine?"
+    },
+    {
+     "role": "assistant",
+     "content": "Since they admitted fault, you'd typically file a claim with their insurance company—they're the at-fault party's liability coverage should cover your damages. You'll need their policy number if you have it. That said, you can also file through your own insurer if you'd rather, and they'll handle the back-and-forth with the other company for you. Sometimes that's easier since you're already familiar with your own insurer's process."
+    }
+   ],
+   [
+    {
+     "role": "user",
+     "content": "What happens after I submit the claim? Like, how long does the whole thing take?"
+    },
+    {
+     "role": "assistant",
+     "content": "After you submit the claim, an adjuster will be assigned to assess the damage to your vehicle. They'll probably want to inspect it in person or sometimes accept photos if the damage is minor. Once they determine the repair cost, you'll get a payout or the claim will be sent directly to a repair shop. For straightforward cases like yours, it usually takes about a week or two, but it can vary depending on how busy the insurer is and whether there's any disagreement about fault."
+    }
+   ],
+   [
+    {
+     "role": "user",
+     "content": "Will my rates go up even though the other person was clearly at fault?"
+    },
+    {
+     "role": "assistant",
+     "content": "Generally no—you shouldn't see a rate increase when you're not at fault. That's one of the main points of having insurance. However, some insurers have certain surcharges depending on your policy or state regulations, so it's worth asking your agent directly. If you're worried about it, you can always get a quote from another company after your claim is resolved to compare rates."
+    }
+   ],
+   [
+    {
+     "role": "user",
+     "content": "Hey, I just left some comments on your PR for the user authentication module. Got a minute to chat about it?"
+    },
+    {
+     "role": "assistant",
+     "content": "Sure, absolutely! I saw your comments come through. What did you have in mind?"
+    }
+   ],
+   [
+    {
+     "role": "user",
+     "content": "The logic looks solid overall, but I'm concerned about the password reset flow. You're calling the database directly in the controller instead of going through the service layer."
+    },
+    {
+     "role": "assistant",
+     "content": "Ah, good catch. I was trying to save time, but you're right—it breaks our layered architecture pattern. I should refactor that to use the auth service instead. Want me to move the validation and database calls there?"
+    }
+   ],
+   [
+    {
+     "role": "user",
+     "content": "Yes, exactly. Also, can we add rate limiting to the login endpoint? I noticed we're currently allowing unlimited attempts, which could be a security issue."
+    },
+    {
+     "role": "assistant",
+     "content": "Makes sense. I can add a simple rate limiter middleware. There's already a rate-limit package in our package.json we haven't used yet. I'll implement a five-attempt lockout with exponential backoff. Should I also add logging for failed attempts?"
+    }
+   ],
+   [
+    {
+     "role": "user",
+     "content": "That would be great for monitoring. One more thing—the error messages are too generic. Let's make them more specific so users know what went wrong without exposing internals."
+    },
+    {
+     "role": "assistant",
+     "content": "Got it. I'll update the error responses to be user-friendly while keeping the detailed logs server-side for debugging. I'll push the revisions tomorrow morning. Thanks for the feedback!"
+    }
+   ]
+  ]
+ ],
+ "families": [
+  {
+   "id": "F01",
+   "family": "primary",
+   "task": "list",
+   "domain": "bicycle maintenance",
+   "rule": "status_prefix",
+   "new_rule": null,
+   "files": {},
+   "steps": [
+    {
+     "kind": "live",
+     "content": "List three practical tips for bicycle maintenance.",
+     "correction": false,
+     "probe": null,
+     "instance": 1
+    },
+    {
+     "kind": "live",
+     "content": "Good, but from now on always begin your reply with 'STATUS:'. List three practical tips for bicycle maintenance.",
+     "correction": true,
+     "probe": null,
+     "instance": 1
+    },
+    {
+     "kind": "block",
+     "index": 0,
+     "content": "",
+     "correction": false,
+     "probe": null,
+     "instance": null
+    },
+    {
+     "kind": "live",
+     "content": "Give me three tips for bicycle maintenance.",
+     "correction": false,
+     "probe": {
+      "check": {
+       "kind": "prefix",
+       "value": "STATUS:"
+      }
+     },
+     "instance": 2
+    },
+    {
+     "kind": "block",
+     "index": 1,
+     "content": "",
+     "correction": false,
+     "probe": null,
+     "instance": null
+    },
+    {
+     "kind": "live",
+     "content": "What are three things worth knowing about bicycle maintenance?",
+     "correction": false,
+     "probe": {
+      "check": {
+       "kind": "prefix",
+       "value": "STATUS:"
+      }
+     },
+     "instance": 3
+    }
+   ]
+  },
+  {
+   "id": "F02",
+   "family": "primary",
+   "task": "list",
+   "domain": "sourdough baking",
+   "rule": "juniper_suffix",
+   "new_rule": null,
+   "files": {},
+   "steps": [
+    {
+     "kind": "live",
+     "content": "List three practical tips for sourdough baking.",
+     "correction": false,
+     "probe": null,
+     "instance": 1
+    },
+    {
+     "kind": "live",
+     "content": "Do it like this from now on: sign every reply with '— Juniper'. List three practical tips for sourdough baking.",
+     "correction": true,
+     "probe": null,
+     "instance": 1
+    },
+    {
+     "kind": "block",
+     "index": 0,
+     "content": "",
+     "correction": false,
+     "probe": null,
+     "instance": null
+    },
+    {
+     "kind": "live",
+     "content": "Give me three tips for sourdough baking.",
+     "correction": false,
+     "probe": {
+      "check": {
+       "kind": "suffix",
+       "value": "— Juniper"
+      }
+     },
+     "instance": 2
+    },
+    {
+     "kind": "block",
+     "index": 1,
+     "content": "",
+     "correction": false,
+     "probe": null,
+     "instance": null
+    },
+    {
+     "kind": "live",
+     "content": "What are three things worth knowing about sourdough baking?",
+     "correction": false,
+     "probe": {
+      "check": {
+       "kind": "suffix",
+       "value": "— Juniper"
+      }
+     },
+     "instance": 3
+    }
+   ]
+  },
+  {
+   "id": "F03",
+   "family": "primary",
+   "task": "list",
+   "domain": "spreadsheet budgeting",
+   "rule": "lowercase",
+   "new_rule": null,
+   "files": {},
+   "steps": [
+    {
+     "kind": "live",
+     "content": "List three practical tips for spreadsheet budgeting.",
+     "correction": false,
+     "probe": null,
+     "instance": 1
+    },
+    {
+     "kind": "live",
+     "content": "That is right, but from now on write every reply in lowercase only. List three practical tips for spreadsheet budgeting.",
+     "correction": true,
+     "probe": null,
+     "instance": 1
+    },
+    {
+     "kind": "block",
+     "index": 0,
+     "content": "",
+     "correction": false,
+     "probe": null,
+     "instance": null
+    },
+    {
+     "kind": "live",
+     "content": "Give me three tips for spreadsheet budgeting.",
+     "correction": false,
+     "probe": {
+      "check": {
+       "kind": "all_lowercase"
+      }
+     },
+     "instance": 2
+    },
+    {
+     "kind": "block",
+     "index": 1,
+     "content": "",
+     "correction": false,
+     "probe": null,
+     "instance": null
+    },
+    {
+     "kind": "live",
+     "content": "What are three things worth knowing about spreadsheet budgeting?",
+     "correction": false,
+     "probe": {
+      "check": {
+       "kind": "all_lowercase"
+      }
+     },
+     "instance": 3
+    }
+   ]
+  },
+  {
+   "id": "F04",
+   "family": "primary",
+   "task": "list",
+   "domain": "houseplant care",
+   "rule": "uppercase",
+   "new_rule": null,
+   "files": {},
+   "steps": [
+    {
+     "kind": "live",
+     "content": "List three practical tips for houseplant care.",
+     "correction": false,
+     "probe": null,
+     "instance": 1
+    },
+    {
+     "kind": "live",
+     "content": "That is right, but from now on write every reply in uppercase only. List three practical tips for houseplant care.",
+     "correction": true,
+     "probe": null,
+     "instance": 1
+    },
+    {
+     "kind": "block",
+     "index": 0,
+     "content": "",
+     "correction": false,
+     "probe": null,
+     "instance": null
+    },
+    {
+     "kind": "live",
+     "content": "Give me three tips for houseplant care.",
+     "correction": false,
+     "probe": {
+      "check": {
+       "kind": "all_uppercase"
+      }
+     },
+     "instance": 2
+    },
+    {
+     "kind": "block",
+     "index": 1,
+     "content": "",
+     "correction": false,
+     "probe": null,
+     "instance": null
+    },
+    {
+     "kind": "live",
+     "content": "What are three things worth knowing about houseplant care?",
+     "correction": false,
+     "probe": {
+      "check": {
+       "kind": "all_uppercase"
+      }
+     },
+     "instance": 3
+    }
+   ]
+  },
+  {
+   "id": "F05",
+   "family": "primary",
+   "task": "list",
+   "domain": "board-game nights",
+   "rule": "roman_list",
+   "new_rule": null,
+   "files": {},
+   "steps": [
+    {
+     "kind": "live",
+     "content": "List three practical tips for board-game nights.",
+     "correction": false,
+     "probe": null,
+     "instance": 1
+    },
+    {
+     "kind": "live",
+     "content": "Use this numbering from now on: number every list you write with Roman numerals. List three practical tips for board-game nights.",
+     "correction": true,
+     "probe": null,
+     "instance": 1
+    },
+    {
+     "kind": "block",
+     "index": 0,
+     "content": "",
+     "correction": false,
+     "probe": null,
+     "instance": null
+    },
+    {
+     "kind": "live",
+     "content": "Give me three tips for board-game nights.",
+     "correction": false,
+     "probe": {
+      "check": {
+       "kind": "roman_list"
+      }
+     },
+     "instance": 2
+    },
+    {
+     "kind": "block",
+     "index": 1,
+     "content": "",
+     "correction": false,
+     "probe": null,
+     "instance": null
+    },
+    {
+     "kind": "live",
+     "content": "What are three things worth knowing about board-game nights?",
+     "correction": false,
+     "probe": {
+      "check": {
+       "kind": "roman_list"
+      }
+     },
+     "instance": 3
+    }
+   ]
+  },
+  {
+   "id": "F06",
+   "family": "primary",
+   "task": "list",
+   "domain": "hiking gear",
+   "rule": "no_bullets",
+   "new_rule": null,
+   "files": {},
+   "steps": [
+    {
+     "kind": "live",
+     "content": "List three practical tips for hiking gear.",
+     "correction": false,
+     "probe": null,
+     "instance": 1
+    },
+    {
+     "kind": "live",
+     "content": "Not like that any more — from now on answer in plain prose, with no bullet lists. List three practical tips for hiking gear.",
+     "correction": true,
+     "probe": null,
+     "instance": 1
+    },
+    {
+     "kind": "block",
+     "index": 0,
+     "content": "",
+     "correction": false,
+     "probe": null,
+     "instance": null
+    },
+    {
+     "kind": "live",
+     "content": "Give me three tips for hiking gear.",
+     "correction": false,
+     "probe": {
+      "check": {
+       "kind": "no_bullets"
+      }
+     },
+     "instance": 2
+    },
+    {
+     "kind": "block",
+     "index": 1,
+     "content": "",
+     "correction": false,
+     "probe": null,
+     "instance": null
+    },
+    {
+     "kind": "live",
+     "content": "What are three things worth knowing about hiking gear?",
+     "correction": false,
+     "probe": {
+      "check": {
+       "kind": "no_bullets"
+      }
+     },
+     "instance": 3
+    }
+   ]
+  },
+  {
+   "id": "F07",
+   "family": "primary",
+   "task": "list",
+   "domain": "coffee brewing",
+   "rule": "tl_dr_prefix",
+   "new_rule": null,
+   "files": {},
+   "steps": [
+    {
+     "kind": "live",
+     "content": "List three practical tips for coffee brewing.",
+     "correction": false,
+     "probe": null,
+     "instance": 1
+    },
+    {
+     "kind": "live",
+     "content": "Keep doing it that way from now on: start every reply with a line beginning 'TL;DR:'. List three practical tips for coffee brewing.",
+     "correction": true,
+     "probe": null,
+     "instance": 1
+    },
+    {
+     "kind": "block",
+     "index": 0,
+     "content": "",
+     "correction": false,
+     "probe": null,
+     "instance": null
+    },
+    {
+     "kind": "live",
+     "content": "Give me three tips for coffee brewing.",
+     "correction": false,
+     "probe": {
+      "check": {
+       "kind": "prefix",
+       "value": "TL;DR:"
+      }
+     },
+     "instance": 2
+    },
+    {
+     "kind": "block",
+     "index": 1,
+     "content": "",
+     "correction": false,
+     "probe": null,
+     "instance": null
+    },
+    {
+     "kind": "live",
+     "content": "What are three things worth knowing about coffee brewing?",
+     "correction": false,
+     "probe": {
+      "check": {
+       "kind": "prefix",
+       "value": "TL;DR:"
+      }
+     },
+     "instance": 3
+    }
+   ]
+  },
+  {
+   "id": "F08",
+   "family": "primary",
+   "task": "code",
+   "domain": "resume writing",
+   "rule": "status_prefix",
+   "new_rule": null,
+   "files": {},
+   "steps": [
+    {
+     "kind": "live",
+     "content": "Write a short Python function that keeps track of resume writing.",
+     "correction": false,
+     "probe": null,
+     "instance": 1
+    },
+    {
+     "kind": "live",
+     "content": "Good, but from now on always begin your reply with 'STATUS:'. Write a short Python function that keeps track of resume writing.",
+     "correction": true,
+     "probe": null,
+     "instance": 1
+    },
+    {
+     "kind": "block",
+     "index": 0,
+     "content": "",
+     "correction": false,
+     "probe": null,
+     "instance": null
+    },
+    {
+     "kind": "live",
+     "content": "Show me a small Python function that summarizes resume writing.",
+     "correction": false,
+     "probe": {
+      "check": {
+       "kind": "prefix",
+       "value": "STATUS:"
+      }
+     },
+     "instance": 2
+    },
+    {
+     "kind": "block",
+     "index": 1,
+     "content": "",
+     "correction": false,
+     "probe": null,
+     "instance": null
+    },
+    {
+     "kind": "live",
+     "content": "Write a Python function that ranks resume writing by priority.",
+     "correction": false,
+     "probe": {
+      "check": {
+       "kind": "prefix",
+       "value": "STATUS:"
+      }
+     },
+     "instance": 3
+    }
+   ]
+  },
+  {
+   "id": "F09",
+   "family": "primary",
+   "task": "code",
+   "domain": "meal prepping",
+   "rule": "juniper_suffix",
+   "new_rule": null,
+   "files": {},
+   "steps": [
+    {
+     "kind": "live",
+     "content": "Write a short Python function that keeps track of meal prepping.",
+     "correction": false,
+     "probe": null,
+     "instance": 1
+    },
+    {
+     "kind": "live",
+     "content": "Do it like this from now on: sign every reply with '— Juniper'. Write a short Python function that keeps track of meal prepping.",
+     "correction": true,
+     "probe": null,
+     "instance": 1
+    },
+    {
+     "kind": "block",
+     "index": 0,
+     "content": "",
+     "correction": false,
+     "probe": null,
+     "instance": null
+    },
+    {
+     "kind": "live",
+     "content": "Show me a small Python function that summarizes meal prepping.",
+     "correction": false,
+     "probe": {
+      "check": {
+       "kind": "suffix",
+       "value": "— Juniper"
+      }
+     },
+     "instance": 2
+    },
+    {
+     "kind": "block",
+     "index": 1,
+     "content": "",
+     "correction": false,
+     "probe": null,
+     "instance": null
+    },
+    {
+     "kind": "live",
+     "content": "Write a Python function that ranks meal prepping by priority.",
+     "correction": false,
+     "probe": {
+      "check": {
+       "kind": "suffix",
+       "value": "— Juniper"
+      }
+     },
+     "instance": 3
+    }
+   ]
+  },
+  {
+   "id": "F10",
+   "family": "primary",
+   "task": "code",
+   "domain": "chess openings",
+   "rule": "lowercase",
+   "new_rule": null,
+   "files": {},
+   "steps": [
+    {
+     "kind": "live",
+     "content": "Write a short Python function that keeps track of chess openings.",
+     "correction": false,
+     "probe": null,
+     "instance": 1
+    },
+    {
+     "kind": "live",
+     "content": "That is right, but from now on write every reply in lowercase only. Write a short Python function that keeps track of chess openings.",
+     "correction": true,
+     "probe": null,
+     "instance": 1
+    },
+    {
+     "kind": "block",
+     "index": 0,
+     "content": "",
+     "correction": false,
+     "probe": null,
+     "instance": null
+    },
+    {
+     "kind": "live",
+     "content": "Show me a small Python function that summarizes chess openings.",
+     "correction": false,
+     "probe": {
+      "check": {
+       "kind": "all_lowercase"
+      }
+     },
+     "instance": 2
+    },
+    {
+     "kind": "block",
+     "index": 1,
+     "content": "",
+     "correction": false,
+     "probe": null,
+     "instance": null
+    },
+    {
+     "kind": "live",
+     "content": "Write a Python function that ranks chess openings by priority.",
+     "correction": false,
+     "probe": {
+      "check": {
+       "kind": "all_lowercase"
+      }
+     },
+     "instance": 3
+    }
+   ]
+  },
+  {
+   "id": "F11",
+   "family": "primary",
+   "task": "code",
+   "domain": "aquarium care",
+   "rule": "tab_indent",
+   "new_rule": null,
+   "files": {},
+   "steps": [
+    {
+     "kind": "live",
+     "content": "Write a short Python function that keeps track of aquarium care.",
+     "correction": false,
+     "probe": null,
+     "instance": 1
+    },
+    {
+     "kind": "live",
+     "content": "Change one thing and keep it: from now on indent code with tabs, never with spaces. Write a short Python function that keeps track of aquarium care.",
+     "correction": true,
+     "probe": null,
+     "instance": 1
+    },
+    {
+     "kind": "block",
+     "index": 0,
+     "content": "",
+     "correction": false,
+     "probe": null,
+     "instance": null
+    },
+    {
+     "kind": "live",
+     "content": "Show me a small Python function that summarizes aquarium care.",
+     "correction": false,
+     "probe": {
+      "check": {
+       "kind": "tab_indent"
+      }
+     },
+     "instance": 2
+    },
+    {
+     "kind": "block",
+     "index": 1,
+     "content": "",
+     "correction": false,
+     "probe": null,
+     "instance": null
+    },
+    {
+     "kind": "live",
+     "content": "Write a Python function that ranks aquarium care by priority.",
+     "correction": false,
+     "probe": {
+      "check": {
+       "kind": "tab_indent"
+      }
+     },
+     "instance": 3
+    }
+   ]
+  },
+  {
+   "id": "F12",
+   "family": "primary",
+   "task": "code",
+   "domain": "photo organizing",
+   "rule": "space_indent",
+   "new_rule": null,
+   "files": {},
+   "steps": [
+    {
+     "kind": "live",
+     "content": "Write a short Python function that keeps track of photo organizing.",
+     "correction": false,
+     "probe": null,
+     "instance": 1
+    },
+    {
+     "kind": "live",
+     "content": "Change one thing and keep it: from now on indent code with spaces, never with tabs. Write a short Python function that keeps track of photo organizing.",
+     "correction": true,
+     "probe": null,
+     "instance": 1
+    },
+    {
+     "kind": "block",
+     "index": 0,
+     "content": "",
+     "correction": false,
+     "probe": null,
+     "instance": null
+    },
+    {
+     "kind": "live",
+     "content": "Show me a small Python function that summarizes photo organizing.",
+     "correction": false,
+     "probe": {
+      "check": {
+       "kind": "space_indent"
+      }
+     },
+     "instance": 2
+    },
+    {
+     "kind": "block",
+     "index": 1,
+     "content": "",
+     "correction": false,
+     "probe": null,
+     "instance": null
+    },
+    {
+     "kind": "live",
+     "content": "Write a Python function that ranks photo organizing by priority.",
+     "correction": false,
+     "probe": {
+      "check": {
+       "kind": "space_indent"
+      }
+     },
+     "instance": 3
+    }
+   ]
+  },
+  {
+   "id": "F13",
+   "family": "primary",
+   "task": "code",
+   "domain": "garden planting",
+   "rule": "tl_dr_prefix",
+   "new_rule": null,
+   "files": {},
+   "steps": [
+    {
+     "kind": "live",
+     "content": "Write a short Python function that keeps track of garden planting.",
+     "correction": false,
+     "probe": null,
+     "instance": 1
+    },
+    {
+     "kind": "live",
+     "content": "Keep doing it that way from now on: start every reply with a line beginning 'TL;DR:'. Write a short Python function that keeps track of garden planting.",
+     "correction": true,
+     "probe": null,
+     "instance": 1
+    },
+    {
+     "kind": "block",
+     "index": 0,
+     "content": "",
+     "correction": false,
+     "probe": null,
+     "instance": null
+    },
+    {
+     "kind": "live",
+     "content": "Show me a small Python function that summarizes garden planting.",
+     "correction": false,
+     "probe": {
+      "check": {
+       "kind": "prefix",
+       "value": "TL;DR:"
+      }
+     },
+     "instance": 2
+    },
+    {
+     "kind": "block",
+     "index": 1,
+     "content": "",
+     "correction": false,
+     "probe": null,
+     "instance": null
+    },
+    {
+     "kind": "live",
+     "content": "Write a Python function that ranks garden planting by priority.",
+     "correction": false,
+     "probe": {
+      "check": {
+       "kind": "prefix",
+       "value": "TL;DR:"
+      }
+     },
+     "instance": 3
+    }
+   ]
+  },
+  {
+   "id": "F14",
+   "family": "primary",
+   "task": "file",
+   "domain": "public speaking",
+   "rule": "status_prefix",
+   "new_rule": null,
+   "files": {},
+   "steps": [
+    {
+     "kind": "live",
+     "content": "Save a short note about public speaking in my workspace.",
+     "correction": false,
+     "probe": null,
+     "instance": 1
+    },
+    {
+     "kind": "live",
+     "content": "Good, but from now on always begin your reply with 'STATUS:'. Save a short note about public speaking in my workspace.",
+     "correction": true,
+     "probe": null,
+     "instance": 1
+    },
+    {
+     "kind": "block",
+     "index": 0,
+     "content": "",
+     "correction": false,
+     "probe": null,
+     "instance": null
+    },
+    {
+     "kind": "live",
+     "content": "Write a note about public speaking into a file in my workspace.",
+     "correction": false,
+     "probe": {
+      "check": {
+       "kind": "prefix",
+       "value": "STATUS:"
+      }
+     },
+     "instance": 2
+    },
+    {
+     "kind": "block",
+     "index": 1,
+     "content": "",
+     "correction": false,
+     "probe": null,
+     "instance": null
+    },
+    {
+     "kind": "live",
+     "content": "Put a short note about public speaking in a file for me.",
+     "correction": false,
+     "probe": {
+      "check": {
+       "kind": "prefix",
+       "value": "STATUS:"
+      }
+     },
+     "instance": 3
+    }
+   ]
+  },
+  {
+   "id": "F15",
+   "family": "primary",
+   "task": "file",
+   "domain": "pet grooming",
+   "rule": "juniper_suffix",
+   "new_rule": null,
+   "files": {},
+   "steps": [
+    {
+     "kind": "live",
+     "content": "Save a short note about pet grooming in my workspace.",
+     "correction": false,
+     "probe": null,
+     "instance": 1
+    },
+    {
+     "kind": "live",
+     "content": "Do it like this from now on: sign every reply with '— Juniper'. Save a short note about pet grooming in my workspace.",
+     "correction": true,
+     "probe": null,
+     "instance": 1
+    },
+    {
+     "kind": "block",
+     "index": 0,
+     "content": "",
+     "correction": false,
+     "probe": null,
+     "instance": null
+    },
+    {
+     "kind": "live",
+     "content": "Write a note about pet grooming into a file in my workspace.",
+     "correction": false,
+     "probe": {
+      "check": {
+       "kind": "suffix",
+       "value": "— Juniper"
+      }
+     },
+     "instance": 2
+    },
+    {
+     "kind": "block",
+     "index": 1,
+     "content": "",
+     "correction": false,
+     "probe": null,
+     "instance": null
+    },
+    {
+     "kind": "live",
+     "content": "Put a short note about pet grooming in a file for me.",
+     "correction": false,
+     "probe": {
+      "check": {
+       "kind": "suffix",
+       "value": "— Juniper"
+      }
+     },
+     "instance": 3
+    }
+   ]
+  },
+  {
+   "id": "F16",
+   "family": "primary",
+   "task": "file",
+   "domain": "camping in the rain",
+   "rule": "lowercase",
+   "new_rule": null,
+   "files": {},
+   "steps": [
+    {
+     "kind": "live",
+     "content": "Save a short note about camping in the rain in my workspace.",
+     "correction": false,
+     "probe": null,
+     "instance": 1
+    },
+    {
+     "kind": "live",
+     "content": "That is right, but from now on write every reply in lowercase only. Save a short note about camping in the rain in my workspace.",
+     "correction": true,
+     "probe": null,
+     "instance": 1
+    },
+    {
+     "kind": "block",
+     "index": 0,
+     "content": "",
+     "correction": false,
+     "probe": null,
+     "instance": null
+    },
+    {
+     "kind": "live",
+     "content": "Write a note about camping in the rain into a file in my workspace.",
+     "correction": false,
+     "probe": {
+      "check": {
+       "kind": "all_lowercase"
+      }
+     },
+     "instance": 2
+    },
+    {
+     "kind": "block",
+     "index": 1,
+     "content": "",
+     "correction": false,
+     "probe": null,
+     "instance": null
+    },
+    {
+     "kind": "live",
+     "content": "Put a short note about camping in the rain in a file for me.",
+     "correction": false,
+     "probe": {
+      "check": {
+       "kind": "all_lowercase"
+      }
+     },
+     "instance": 3
+    }
+   ]
+  },
+  {
+   "id": "F17",
+   "family": "primary",
+   "task": "file",
+   "domain": "home insurance",
+   "rule": "uppercase",
+   "new_rule": null,
+   "files": {},
+   "steps": [
+    {
+     "kind": "live",
+     "content": "Save a short note about home insurance in my workspace.",
+     "correction": false,
+     "probe": null,
+     "instance": 1
+    },
+    {
+     "kind": "live",
+     "content": "That is right, but from now on write every reply in uppercase only. Save a short note about home insurance in my workspace.",
+     "correction": true,
+     "probe": null,
+     "instance": 1
+    },
+    {
+     "kind": "block",
+     "index": 0,
+     "content": "",
+     "correction": false,
+     "probe": null,
+     "instance": null
+    },
+    {
+     "kind": "live",
+     "content": "Write a note about home insurance into a file in my workspace.",
+     "correction": false,
+     "probe": {
+      "check": {
+       "kind": "all_uppercase"
+      }
+     },
+     "instance": 2
+    },
+    {
+     "kind": "block",
+     "index": 1,
+     "content": "",
+     "correction": false,
+     "probe": null,
+     "instance": null
+    },
+    {
+     "kind": "live",
+     "content": "Put a short note about home insurance in a file for me.",
+     "correction": false,
+     "probe": {
+      "check": {
+       "kind": "all_uppercase"
+      }
+     },
+     "instance": 3
+    }
+   ]
+  },
+  {
+   "id": "F18",
+   "family": "primary",
+   "task": "file",
+   "domain": "learning a language",
+   "rule": "kebab_files",
+   "new_rule": null,
+   "files": {},
+   "steps": [
+    {
+     "kind": "live",
+     "content": "Save a short note about learning a language in my workspace.",
+     "correction": false,
+     "probe": null,
+     "instance": 1
+    },
+    {
+     "kind": "live",
+     "content": "Rename things that way from now on: name every file you save in kebab-case. Save a short note about learning a language in my workspace.",
+     "correction": true,
+     "probe": null,
+     "instance": 1
+    },
+    {
+     "kind": "block",
+     "index": 0,
+     "content": "",
+     "correction": false,
+     "probe": null,
+     "instance": null
+    },
+    {
+     "kind": "live",
+     "content": "Write a note about learning a language into a file in my workspace.",
+     "correction": false,
+     "probe": {
+      "check": {
+       "kind": "kebab_files"
+      }
+     },
+     "instance": 2
+    },
+    {
+     "kind": "block",
+     "index": 1,
+     "content": "",
+     "correction": false,
+     "probe": null,
+     "instance": null
+    },
+    {
+     "kind": "live",
+     "content": "Put a short note about learning a language in a file for me.",
+     "correction": false,
+     "probe": {
+      "check": {
+       "kind": "kebab_files"
+      }
+     },
+     "instance": 3
+    }
+   ]
+  },
+  {
+   "id": "F19",
+   "family": "primary",
+   "task": "file",
+   "domain": "keeping a journal",
+   "rule": "snake_files",
+   "new_rule": null,
+   "files": {},
+   "steps": [
+    {
+     "kind": "live",
+     "content": "Save a short note about keeping a journal in my workspace.",
+     "correction": false,
+     "probe": null,
+     "instance": 1
+    },
+    {
+     "kind": "live",
+     "content": "Use this naming from now on: name every file you save in snake_case. Save a short note about keeping a journal in my workspace.",
+     "correction": true,
+     "probe": null,
+     "instance": 1
+    },
+    {
+     "kind": "block",
+     "index": 0,
+     "content": "",
+     "correction": false,
+     "probe": null,
+     "instance": null
+    },
+    {
+     "kind": "live",
+     "content": "Write a note about keeping a journal into a file in my workspace.",
+     "correction": false,
+     "probe": {
+      "check": {
+       "kind": "snake_files"
+      }
+     },
+     "instance": 2
+    },
+    {
+     "kind": "block",
+     "index": 1,
+     "content": "",
+     "correction": false,
+     "probe": null,
+     "instance": null
+    },
+    {
+     "kind": "live",
+     "content": "Put a short note about keeping a journal in a file for me.",
+     "correction": false,
+     "probe": {
+      "check": {
+       "kind": "snake_files"
+      }
+     },
+     "instance": 3
+    }
+   ]
+  },
+  {
+   "id": "F20",
+   "family": "primary",
+   "task": "file",
+   "domain": "training for a race",
+   "rule": "tl_dr_prefix",
+   "new_rule": null,
+   "files": {},
+   "steps": [
+    {
+     "kind": "live",
+     "content": "Save a short note about training for a race in my workspace.",
+     "correction": false,
+     "probe": null,
+     "instance": 1
+    },
+    {
+     "kind": "live",
+     "content": "Keep doing it that way from now on: start every reply with a line beginning 'TL;DR:'. Save a short note about training for a race in my workspace.",
+     "correction": true,
+     "probe": null,
+     "instance": 1
+    },
+    {
+     "kind": "block",
+     "index": 0,
+     "content": "",
+     "correction": false,
+     "probe": null,
+     "instance": null
+    },
+    {
+     "kind": "live",
+     "content": "Write a note about training for a race into a file in my workspace.",
+     "correction": false,
+     "probe": {
+      "check": {
+       "kind": "prefix",
+       "value": "TL;DR:"
+      }
+     },
+     "instance": 2
+    },
+    {
+     "kind": "block",
+     "index": 1,
+     "content": "",
+     "correction": false,
+     "probe": null,
+     "instance": null
+    },
+    {
+     "kind": "live",
+     "content": "Put a short note about training for a race in a file for me.",
+     "correction": false,
+     "probe": {
+      "check": {
+       "kind": "prefix",
+       "value": "TL;DR:"
+      }
+     },
+     "instance": 3
+    }
+   ]
+  },
+  {
+   "id": "F21",
+   "family": "primary",
+   "task": "files",
+   "domain": "fixing a bicycle chain",
+   "rule": "status_prefix",
+   "new_rule": null,
+   "files": {
+    "fixing-a-bicycle-chain-notes.txt": "kiwi-4821\nNotes on fixing a bicycle chain.\n"
+   },
+   "steps": [
+    {
+     "kind": "live",
+     "content": "What is in my workspace, and what does fixing-a-bicycle-chain-notes.txt say?",
+     "correction": false,
+     "probe": null,
+     "instance": 1
+    },
+    {
+     "kind": "live",
+     "content": "Good, but from now on always begin your reply with 'STATUS:'. What is in my workspace, and what does fixing-a-bicycle-chain-notes.txt say?",
+     "correction": true,
+     "probe": null,
+     "instance": 1
+    },
+    {
+     "kind": "block",
+     "index": 0,
+     "content": "",
+     "correction": false,
+     "probe": null,
+     "instance": null
+    },
+    {
+     "kind": "live",
+     "content": "List what is in my workspace and read fixing-a-bicycle-chain-notes.txt for me.",
+     "correction": false,
+     "probe": {
+      "check": {
+       "kind": "prefix",
+       "value": "STATUS:"
+      }
+     },
+     "instance": 2
+    },
+    {
+     "kind": "block",
+     "index": 1,
+     "content": "",
+     "correction": false,
+     "probe": null,
+     "instance": null
+    },
+    {
+     "kind": "live",
+     "content": "Show me the files in my workspace and the contents of fixing-a-bicycle-chain-notes.txt.",
+     "correction": false,
+     "probe": {
+      "check": {
+       "kind": "prefix",
+       "value": "STATUS:"
+      }
+     },
+     "instance": 3
+    }
+   ]
+  },
+  {
+   "id": "F22",
+   "family": "primary",
+   "task": "files",
+   "domain": "planning a birthday",
+   "rule": "juniper_suffix",
+   "new_rule": null,
+   "files": {
+    "planning-a-birthday-notes.txt": "kiwi-4821\nNotes on planning a birthday.\n"
+   },
+   "steps": [
+    {
+     "kind": "live",
+     "content": "What is in my workspace, and what does planning-a-birthday-notes.txt say?",
+     "correction": false,
+     "probe": null,
+     "instance": 1
+    },
+    {
+     "kind": "live",
+     "content": "Do it like this from now on: sign every reply with '— Juniper'. What is in my workspace, and what does planning-a-birthday-notes.txt say?",
+     "correction": true,
+     "probe": null,
+     "instance": 1
+    },
+    {
+     "kind": "block",
+     "index": 0,
+     "content": "",
+     "correction": false,
+     "probe": null,
+     "instance": null
+    },
+    {
+     "kind": "live",
+     "content": "List what is in my workspace and read planning-a-birthday-notes.txt for me.",
+     "correction": false,
+     "probe": {
+      "check": {
+       "kind": "suffix",
+       "value": "— Juniper"
+      }
+     },
+     "instance": 2
+    },
+    {
+     "kind": "block",
+     "index": 1,
+     "content": "",
+     "correction": false,
+     "probe": null,
+     "instance": null
+    },
+    {
+     "kind": "live",
+     "content": "Show me the files in my workspace and the contents of planning-a-birthday-notes.txt.",
+     "correction": false,
+     "probe": {
+      "check": {
+       "kind": "suffix",
+       "value": "— Juniper"
+      }
+     },
+     "instance": 3
+    }
+   ]
+  },
+  {
+   "id": "F23",
+   "family": "primary",
+   "task": "files",
+   "domain": "reading more books",
+   "rule": "list_before_read",
+   "new_rule": null,
+   "files": {
+    "reading-more-books-notes.txt": "kiwi-4821\nNotes on reading more books.\n"
+   },
+   "steps": [
+    {
+     "kind": "live",
+     "content": "What is in my workspace, and what does reading-more-books-notes.txt say?",
+     "correction": false,
+     "probe": null,
+     "instance": 1
+    },
+    {
+     "kind": "live",
+     "content": "Work like that from now on: check the file list before you read a file. What is in my workspace, and what does reading-more-books-notes.txt say?",
+     "correction": true,
+     "probe": null,
+     "instance": 1
+    },
+    {
+     "kind": "block",
+     "index": 0,
+     "content": "",
+     "correction": false,
+     "probe": null,
+     "instance": null
+    },
+    {
+     "kind": "live",
+     "content": "List what is in my workspace and read reading-more-books-notes.txt for me.",
+     "correction": false,
+     "probe": {
+      "check": {
+       "kind": "all_of",
+       "of": [
+        {
+         "kind": "tool_before",
+         "first": "file_list",
+         "second": "file_read"
+        },
+        {
+         "kind": "contains",
+         "value": "kiwi-4821"
+        }
+       ]
+      }
+     },
+     "instance": 2
+    },
+    {
+     "kind": "block",
+     "index": 1,
+     "content": "",
+     "correction": false,
+     "probe": null,
+     "instance": null
+    },
+    {
+     "kind": "live",
+     "content": "Show me the files in my workspace and the contents of reading-more-books-notes.txt.",
+     "correction": false,
+     "probe": {
+      "check": {
+       "kind": "all_of",
+       "of": [
+        {
+         "kind": "tool_before",
+         "first": "file_list",
+         "second": "file_read"
+        },
+        {
+         "kind": "contains",
+         "value": "kiwi-4821"
+        }
+       ]
+      }
+     },
+     "instance": 3
+    }
+   ]
+  },
+  {
+   "id": "F24",
+   "family": "primary",
+   "task": "files",
+   "domain": "saving money monthly",
+   "rule": "read_before_list",
+   "new_rule": null,
+   "files": {
+    "saving-money-monthly-notes.txt": "kiwi-4821\nNotes on saving money monthly.\n"
+   },
+   "steps": [
+    {
+     "kind": "live",
+     "content": "What is in my workspace, and what does saving-money-monthly-notes.txt say?",
+     "correction": false,
+     "probe": null,
+     "instance": 1
+    },
+    {
+     "kind": "live",
+     "content": "Work like that from now on: read the file before you list the directory. What is in my workspace, and what does saving-money-monthly-notes.txt say?",
+     "correction": true,
+     "probe": null,
+     "instance": 1
+    },
+    {
+     "kind": "block",
+     "index": 0,
+     "content": "",
+     "correction": false,
+     "probe": null,
+     "instance": null
+    },
+    {
+     "kind": "live",
+     "content": "List what is in my workspace and read saving-money-monthly-notes.txt for me.",
+     "correction": false,
+     "probe": {
+      "check": {
+       "kind": "all_of",
+       "of": [
+        {
+         "kind": "tool_before",
+         "first": "file_read",
+         "second": "file_list"
+        },
+        {
+         "kind": "contains",
+         "value": "kiwi-4821"
+        }
+       ]
+      }
+     },
+     "instance": 2
+    },
+    {
+     "kind": "block",
+     "index": 1,
+     "content": "",
+     "correction": false,
+     "probe": null,
+     "instance": null
+    },
+    {
+     "kind": "live",
+     "content": "Show me the files in my workspace and the contents of saving-money-monthly-notes.txt.",
+     "correction": false,
+     "probe": {
+      "check": {
+       "kind": "all_of",
+       "of": [
+        {
+         "kind": "tool_before",
+         "first": "file_read",
+         "second": "file_list"
+        },
+        {
+         "kind": "contains",
+         "value": "kiwi-4821"
+        }
+       ]
+      }
+     },
+     "instance": 3
+    }
+   ]
+  },
+  {
+   "id": "F25",
+   "family": "primary",
+   "task": "files",
+   "domain": "choosing a laptop",
+   "rule": "tl_dr_prefix",
+   "new_rule": null,
+   "files": {
+    "choosing-a-laptop-notes.txt": "kiwi-4821\nNotes on choosing a laptop.\n"
+   },
+   "steps": [
+    {
+     "kind": "live",
+     "content": "What is in my workspace, and what does choosing-a-laptop-notes.txt say?",
+     "correction": false,
+     "probe": null,
+     "instance": 1
+    },
+    {
+     "kind": "live",
+     "content": "Keep doing it that way from now on: start every reply with a line beginning 'TL;DR:'. What is in my workspace, and what does choosing-a-laptop-notes.txt say?",
+     "correction": true,
+     "probe": null,
+     "instance": 1
+    },
+    {
+     "kind": "block",
+     "index": 0,
+     "content": "",
+     "correction": false,
+     "probe": null,
+     "instance": null
+    },
+    {
+     "kind": "live",
+     "content": "List what is in my workspace and read choosing-a-laptop-notes.txt for me.",
+     "correction": false,
+     "probe": {
+      "check": {
+       "kind": "prefix",
+       "value": "TL;DR:"
+      }
+     },
+     "instance": 2
+    },
+    {
+     "kind": "block",
+     "index": 1,
+     "content": "",
+     "correction": false,
+     "probe": null,
+     "instance": null
+    },
+    {
+     "kind": "live",
+     "content": "Show me the files in my workspace and the contents of choosing-a-laptop-notes.txt.",
+     "correction": false,
+     "probe": {
+      "check": {
+       "kind": "prefix",
+       "value": "TL;DR:"
+      }
+     },
+     "instance": 3
+    }
+   ]
+  },
+  {
+   "id": "F26",
+   "family": "primary",
+   "task": "advice",
+   "domain": "growing herbs indoors",
+   "rule": "status_prefix",
+   "new_rule": null,
+   "files": {},
+   "steps": [
+    {
+     "kind": "live",
+     "content": "Recommend a plan for growing herbs indoors and mention any caveat.",
+     "correction": false,
+     "probe": null,
+     "instance": 1
+    },
+    {
+     "kind": "live",
+     "content": "Good, but from now on always begin your reply with 'STATUS:'. Recommend a plan for growing herbs indoors and mention any caveat.",
+     "correction": true,
+     "probe": null,
+     "instance": 1
+    },
+    {
+     "kind": "block",
+     "index": 0,
+     "content": "",
+     "correction": false,
+     "probe": null,
+     "instance": null
+    },
+    {
+     "kind": "live",
+     "content": "What do you recommend for growing herbs indoors, and what is the caveat?",
+     "correction": false,
+     "probe": {
+      "check": {
+       "kind": "prefix",
+       "value": "STATUS:"
+      }
+     },
+     "instance": 2
+    },
+    {
+     "kind": "block",
+     "index": 1,
+     "content": "",
+     "correction": false,
+     "probe": null,
+     "instance": null
+    },
+    {
+     "kind": "live",
+     "content": "Suggest a plan for growing herbs indoors, noting the caveat.",
+     "correction": false,
+     "probe": {
+      "check": {
+       "kind": "prefix",
+       "value": "STATUS:"
+      }
+     },
+     "instance": 3
+    }
+   ]
+  },
+  {
+   "id": "F27",
+   "family": "primary",
+   "task": "advice",
+   "domain": "running a book club",
+   "rule": "juniper_suffix",
+   "new_rule": null,
+   "files": {},
+   "steps": [
+    {
+     "kind": "live",
+     "content": "Recommend a plan for running a book club and mention any caveat.",
+     "correction": false,
+     "probe": null,
+     "instance": 1
+    },
+    {
+     "kind": "live",
+     "content": "Do it like this from now on: sign every reply with '— Juniper'. Recommend a plan for running a book club and mention any caveat.",
+     "correction": true,
+     "probe": null,
+     "instance": 1
+    },
+    {
+     "kind": "block",
+     "index": 0,
+     "content": "",
+     "correction": false,
+     "probe": null,
+     "instance": null
+    },
+    {
+     "kind": "live",
+     "content": "What do you recommend for running a book club, and what is the caveat?",
+     "correction": false,
+     "probe": {
+      "check": {
+       "kind": "suffix",
+       "value": "— Juniper"
+      }
+     },
+     "instance": 2
+    },
+    {
+     "kind": "block",
+     "index": 1,
+     "content": "",
+     "correction": false,
+     "probe": null,
+     "instance": null
+    },
+    {
+     "kind": "live",
+     "content": "Suggest a plan for running a book club, noting the caveat.",
+     "correction": false,
+     "probe": {
+      "check": {
+       "kind": "suffix",
+       "value": "— Juniper"
+      }
+     },
+     "instance": 3
+    }
+   ]
+  },
+  {
+   "id": "F28",
+   "family": "primary",
+   "task": "advice",
+   "domain": "shipping a small order",
+   "rule": "lowercase",
+   "new_rule": null,
+   "files": {},
+   "steps": [
+    {
+     "kind": "live",
+     "content": "Recommend a plan for shipping a small order and mention any caveat.",
+     "correction": false,
+     "probe": null,
+     "instance": 1
+    },
+    {
+     "kind": "live",
+     "content": "That is right, but from now on write every reply in lowercase only. Recommend a plan for shipping a small order and mention any caveat.",
+     "correction": true,
+     "probe": null,
+     "instance": 1
+    },
+    {
+     "kind": "block",
+     "index": 0,
+     "content": "",
+     "correction": false,
+     "probe": null,
+     "instance": null
+    },
+    {
+     "kind": "live",
+     "content": "What do you recommend for shipping a small order, and what is the caveat?",
+     "correction": false,
+     "probe": {
+      "check": {
+       "kind": "all_lowercase"
+      }
+     },
+     "instance": 2
+    },
+    {
+     "kind": "block",
+     "index": 1,
+     "content": "",
+     "correction": false,
+     "probe": null,
+     "instance": null
+    },
+    {
+     "kind": "live",
+     "content": "Suggest a plan for shipping a small order, noting the caveat.",
+     "correction": false,
+     "probe": {
+      "check": {
+       "kind": "all_lowercase"
+      }
+     },
+     "instance": 3
+    }
+   ]
+  },
+  {
+   "id": "F29",
+   "family": "primary",
+   "task": "advice",
+   "domain": "teaching a child to swim",
+   "rule": "uppercase",
+   "new_rule": null,
+   "files": {},
+   "steps": [
+    {
+     "kind": "live",
+     "content": "Recommend a plan for teaching a child to swim and mention any caveat.",
+     "correction": false,
+     "probe": null,
+     "instance": 1
+    },
+    {
+     "kind": "live",
+     "content": "That is right, but from now on write every reply in uppercase only. Recommend a plan for teaching a child to swim and mention any caveat.",
+     "correction": true,
+     "probe": null,
+     "instance": 1
+    },
+    {
+     "kind": "block",
+     "index": 0,
+     "content": "",
+     "correction": false,
+     "probe": null,
+     "instance": null
+    },
+    {
+     "kind": "live",
+     "content": "What do you recommend for teaching a child to swim, and what is the caveat?",
+     "correction": false,
+     "probe": {
+      "check": {
+       "kind": "all_uppercase"
+      }
+     },
+     "instance": 2
+    },
+    {
+     "kind": "block",
+     "index": 1,
+     "content": "",
+     "correction": false,
+     "probe": null,
+     "instance": null
+    },
+    {
+     "kind": "live",
+     "content": "Suggest a plan for teaching a child to swim, noting the caveat.",
+     "correction": false,
+     "probe": {
+      "check": {
+       "kind": "all_uppercase"
+      }
+     },
+     "instance": 3
+    }
+   ]
+  },
+  {
+   "id": "F30",
+   "family": "primary",
+   "task": "advice",
+   "domain": "restoring furniture",
+   "rule": "roman_list",
+   "new_rule": null,
+   "files": {},
+   "steps": [
+    {
+     "kind": "live",
+     "content": "Recommend a plan for restoring furniture and mention any caveat.",
+     "correction": false,
+     "probe": null,
+     "instance": 1
+    },
+    {
+     "kind": "live",
+     "content": "Use this numbering from now on: number every list you write with Roman numerals. Recommend a plan for restoring furniture and mention any caveat.",
+     "correction": true,
+     "probe": null,
+     "instance": 1
+    },
+    {
+     "kind": "block",
+     "index": 0,
+     "content": "",
+     "correction": false,
+     "probe": null,
+     "instance": null
+    },
+    {
+     "kind": "live",
+     "content": "What do you recommend for restoring furniture, and what is the caveat?",
+     "correction": false,
+     "probe": {
+      "check": {
+       "kind": "roman_list"
+      }
+     },
+     "instance": 2
+    },
+    {
+     "kind": "block",
+     "index": 1,
+     "content": "",
+     "correction": false,
+     "probe": null,
+     "instance": null
+    },
+    {
+     "kind": "live",
+     "content": "Suggest a plan for restoring furniture, noting the caveat.",
+     "correction": false,
+     "probe": {
+      "check": {
+       "kind": "roman_list"
+      }
+     },
+     "instance": 3
+    }
+   ]
+  },
+  {
+   "id": "F31",
+   "family": "primary",
+   "task": "advice",
+   "domain": "buying a first guitar",
+   "rule": "no_bullets",
+   "new_rule": null,
+   "files": {},
+   "steps": [
+    {
+     "kind": "live",
+     "content": "Recommend a plan for buying a first guitar and mention any caveat.",
+     "correction": false,
+     "probe": null,
+     "instance": 1
+    },
+    {
+     "kind": "live",
+     "content": "Not like that any more — from now on answer in plain prose, with no bullet lists. Recommend a plan for buying a first guitar and mention any caveat.",
+     "correction": true,
+     "probe": null,
+     "instance": 1
+    },
+    {
+     "kind": "block",
+     "index": 0,
+     "content": "",
+     "correction": false,
+     "probe": null,
+     "instance": null
+    },
+    {
+     "kind": "live",
+     "content": "What do you recommend for buying a first guitar, and what is the caveat?",
+     "correction": false,
+     "probe": {
+      "check": {
+       "kind": "no_bullets"
+      }
+     },
+     "instance": 2
+    },
+    {
+     "kind": "block",
+     "index": 1,
+     "content": "",
+     "correction": false,
+     "probe": null,
+     "instance": null
+    },
+    {
+     "kind": "live",
+     "content": "Suggest a plan for buying a first guitar, noting the caveat.",
+     "correction": false,
+     "probe": {
+      "check": {
+       "kind": "no_bullets"
+      }
+     },
+     "instance": 3
+    }
+   ]
+  },
+  {
+   "id": "F32",
+   "family": "primary",
+   "task": "advice",
+   "domain": "staying in touch abroad",
+   "rule": "caveat_first",
+   "new_rule": null,
+   "files": {},
+   "steps": [
+    {
+     "kind": "live",
+     "content": "Recommend a plan for staying in touch abroad and mention any caveat.",
+     "correction": false,
+     "probe": null,
+     "instance": 1
+    },
+    {
+     "kind": "live",
+     "content": "Order it this way from now on: put the caveat before the recommendation. Recommend a plan for staying in touch abroad and mention any caveat.",
+     "correction": true,
+     "probe": null,
+     "instance": 1
+    },
+    {
+     "kind": "block",
+     "index": 0,
+     "content": "",
+     "correction": false,
+     "probe": null,
+     "instance": null
+    },
+    {
+     "kind": "live",
+     "content": "What do you recommend for staying in touch abroad, and what is the caveat?",
+     "correction": false,
+     "probe": {
+      "check": {
+       "kind": "order_words",
+       "first": "caveat",
+       "second": "recommend"
+      }
+     },
+     "instance": 2
+    },
+    {
+     "kind": "block",
+     "index": 1,
+     "content": "",
+     "correction": false,
+     "probe": null,
+     "instance": null
+    },
+    {
+     "kind": "live",
+     "content": "Suggest a plan for staying in touch abroad, noting the caveat.",
+     "correction": false,
+     "probe": {
+      "check": {
+       "kind": "order_words",
+       "first": "caveat",
+       "second": "recommend"
+      }
+     },
+     "instance": 3
+    }
+   ]
+  },
+  {
+   "id": "F33",
+   "family": "primary",
+   "task": "advice",
+   "domain": "composting at home",
+   "rule": "recommend_first",
+   "new_rule": null,
+   "files": {},
+   "steps": [
+    {
+     "kind": "live",
+     "content": "Recommend a plan for composting at home and mention any caveat.",
+     "correction": false,
+     "probe": null,
+     "instance": 1
+    },
+    {
+     "kind": "live",
+     "content": "Order it the other way from now on: put the recommendation before the caveat. Recommend a plan for composting at home and mention any caveat.",
+     "correction": true,
+     "probe": null,
+     "instance": 1
+    },
+    {
+     "kind": "block",
+     "index": 0,
+     "content": "",
+     "correction": false,
+     "probe": null,
+     "instance": null
+    },
+    {
+     "kind": "live",
+     "content": "What do you recommend for composting at home, and what is the caveat?",
+     "correction": false,
+     "probe": {
+      "check": {
+       "kind": "order_words",
+       "first": "recommend",
+       "second": "caveat"
+      }
+     },
+     "instance": 2
+    },
+    {
+     "kind": "block",
+     "index": 1,
+     "content": "",
+     "correction": false,
+     "probe": null,
+     "instance": null
+    },
+    {
+     "kind": "live",
+     "content": "Suggest a plan for composting at home, noting the caveat.",
+     "correction": false,
+     "probe": {
+      "check": {
+       "kind": "order_words",
+       "first": "recommend",
+       "second": "caveat"
+      }
+     },
+     "instance": 3
+    }
+   ]
+  },
+  {
+   "id": "F34",
+   "family": "primary",
+   "task": "advice",
+   "domain": "planning a wedding",
+   "rule": "tl_dr_prefix",
+   "new_rule": null,
+   "files": {},
+   "steps": [
+    {
+     "kind": "live",
+     "content": "Recommend a plan for planning a wedding and mention any caveat.",
+     "correction": false,
+     "probe": null,
+     "instance": 1
+    },
+    {
+     "kind": "live",
+     "content": "Keep doing it that way from now on: start every reply with a line beginning 'TL;DR:'. Recommend a plan for planning a wedding and mention any caveat.",
+     "correction": true,
+     "probe": null,
+     "instance": 1
+    },
+    {
+     "kind": "block",
+     "index": 0,
+     "content": "",
+     "correction": false,
+     "probe": null,
+     "instance": null
+    },
+    {
+     "kind": "live",
+     "content": "What do you recommend for planning a wedding, and what is the caveat?",
+     "correction": false,
+     "probe": {
+      "check": {
+       "kind": "prefix",
+       "value": "TL;DR:"
+      }
+     },
+     "instance": 2
+    },
+    {
+     "kind": "block",
+     "index": 1,
+     "content": "",
+     "correction": false,
+     "probe": null,
+     "instance": null
+    },
+    {
+     "kind": "live",
+     "content": "Suggest a plan for planning a wedding, noting the caveat.",
+     "correction": false,
+     "probe": {
+      "check": {
+       "kind": "prefix",
+       "value": "TL;DR:"
+      }
+     },
+     "instance": 3
+    }
+   ]
+  },
+  {
+   "id": "F35",
+   "family": "primary",
+   "task": "note",
+   "domain": "moving to a new city",
+   "rule": "status_prefix",
+   "new_rule": null,
+   "files": {},
+   "steps": [
+    {
+     "kind": "live",
+     "content": "Write a short note to Ines about moving to a new city.",
+     "correction": false,
+     "probe": null,
+     "instance": 1
+    },
+    {
+     "kind": "live",
+     "content": "Good, but from now on always begin your reply with 'STATUS:'. Write a short note to Ines about moving to a new city.",
+     "correction": true,
+     "probe": null,
+     "instance": 1
+    },
+    {
+     "kind": "block",
+     "index": 0,
+     "content": "",
+     "correction": false,
+     "probe": null,
+     "instance": null
+    },
+    {
+     "kind": "live",
+     "content": "Draft a brief message to Ines about moving to a new city.",
+     "correction": false,
+     "probe": {
+      "check": {
+       "kind": "prefix",
+       "value": "STATUS:"
+      }
+     },
+     "instance": 2
+    },
+    {
+     "kind": "block",
+     "index": 1,
+     "content": "",
+     "correction": false,
+     "probe": null,
+     "instance": null
+    },
+    {
+     "kind": "live",
+     "content": "Write a few lines to Ines about moving to a new city.",
+     "correction": false,
+     "probe": {
+      "check": {
+       "kind": "prefix",
+       "value": "STATUS:"
+      }
+     },
+     "instance": 3
+    }
+   ]
+  },
+  {
+   "id": "F36",
+   "family": "primary",
+   "task": "note",
+   "domain": "training a puppy",
+   "rule": "juniper_suffix",
+   "new_rule": null,
+   "files": {},
+   "steps": [
+    {
+     "kind": "live",
+     "content": "Write a short note to Kofi about training a puppy.",
+     "correction": false,
+     "probe": null,
+     "instance": 1
+    },
+    {
+     "kind": "live",
+     "content": "Do it like this from now on: sign every reply with '— Juniper'. Write a short note to Kofi about training a puppy.",
+     "correction": true,
+     "probe": null,
+     "instance": 1
+    },
+    {
+     "kind": "block",
+     "index": 0,
+     "content": "",
+     "correction": false,
+     "probe": null,
+     "instance": null
+    },
+    {
+     "kind": "live",
+     "content": "Draft a brief message to Kofi about training a puppy.",
+     "correction": false,
+     "probe": {
+      "check": {
+       "kind": "suffix",
+       "value": "— Juniper"
+      }
+     },
+     "instance": 2
+    },
+    {
+     "kind": "block",
+     "index": 1,
+     "content": "",
+     "correction": false,
+     "probe": null,
+     "instance": null
+    },
+    {
+     "kind": "live",
+     "content": "Write a few lines to Kofi about training a puppy.",
+     "correction": false,
+     "probe": {
+      "check": {
+       "kind": "suffix",
+       "value": "— Juniper"
+      }
+     },
+     "instance": 3
+    }
+   ]
+  },
+  {
+   "id": "F37",
+   "family": "primary",
+   "task": "note",
+   "domain": "keeping a shared calendar",
+   "rule": "lowercase",
+   "new_rule": null,
+   "files": {},
+   "steps": [
+    {
+     "kind": "live",
+     "content": "Write a short note to Anya about keeping a shared calendar.",
+     "correction": false,
+     "probe": null,
+     "instance": 1
+    },
+    {
+     "kind": "live",
+     "content": "That is right, but from now on write every reply in lowercase only. Write a short note to Anya about keeping a shared calendar.",
+     "correction": true,
+     "probe": null,
+     "instance": 1
+    },
+    {
+     "kind": "block",
+     "index": 0,
+     "content": "",
+     "correction": false,
+     "probe": null,
+     "instance": null
+    },
+    {
+     "kind": "live",
+     "content": "Draft a brief message to Anya about keeping a shared calendar.",
+     "correction": false,
+     "probe": {
+      "check": {
+       "kind": "all_lowercase"
+      }
+     },
+     "instance": 2
+    },
+    {
+     "kind": "block",
+     "index": 1,
+     "content": "",
+     "correction": false,
+     "probe": null,
+     "instance": null
+    },
+    {
+     "kind": "live",
+     "content": "Write a few lines to Anya about keeping a shared calendar.",
+     "correction": false,
+     "probe": {
+      "check": {
+       "kind": "all_lowercase"
+      }
+     },
+     "instance": 3
+    }
+   ]
+  },
+  {
+   "id": "F38",
+   "family": "primary",
+   "task": "note",
+   "domain": "reviewing a contract",
+   "rule": "uppercase",
+   "new_rule": null,
+   "files": {},
+   "steps": [
+    {
+     "kind": "live",
+     "content": "Write a short note to Ravi about reviewing a contract.",
+     "correction": false,
+     "probe": null,
+     "instance": 1
+    },
+    {
+     "kind": "live",
+     "content": "That is right, but from now on write every reply in uppercase only. Write a short note to Ravi about reviewing a contract.",
+     "correction": true,
+     "probe": null,
+     "instance": 1
+    },
+    {
+     "kind": "block",
+     "index": 0,
+     "content": "",
+     "correction": false,
+     "probe": null,
+     "instance": null
+    },
+    {
+     "kind": "live",
+     "content": "Draft a brief message to Ravi about reviewing a contract.",
+     "correction": false,
+     "probe": {
+      "check": {
+       "kind": "all_uppercase"
+      }
+     },
+     "instance": 2
+    },
+    {
+     "kind": "block",
+     "index": 1,
+     "content": "",
+     "correction": false,
+     "probe": null,
+     "instance": null
+    },
+    {
+     "kind": "live",
+     "content": "Write a few lines to Ravi about reviewing a contract.",
+     "correction": false,
+     "probe": {
+      "check": {
+       "kind": "all_uppercase"
+      }
+     },
+     "instance": 3
+    }
+   ]
+  },
+  {
+   "id": "F39",
+   "family": "primary",
+   "task": "note",
+   "domain": "making cold brew",
+   "rule": "no_bullets",
+   "new_rule": null,
+   "files": {},
+   "steps": [
+    {
+     "kind": "live",
+     "content": "Write a short note to Lena about making cold brew.",
+     "correction": false,
+     "probe": null,
+     "instance": 1
+    },
+    {
+     "kind": "live",
+     "content": "Not like that any more — from now on answer in plain prose, with no bullet lists. Write a short note to Lena about making cold brew.",
+     "correction": true,
+     "probe": null,
+     "instance": 1
+    },
+    {
+     "kind": "block",
+     "index": 0,
+     "content": "",
+     "correction": false,
+     "probe": null,
+     "instance": null
+    },
+    {
+     "kind": "live",
+     "content": "Draft a brief message to Lena about making cold brew.",
+     "correction": false,
+     "probe": {
+      "check": {
+       "kind": "no_bullets"
+      }
+     },
+     "instance": 2
+    },
+    {
+     "kind": "block",
+     "index": 1,
+     "content": "",
+     "correction": false,
+     "probe": null,
+     "instance": null
+    },
+    {
+     "kind": "live",
+     "content": "Write a few lines to Lena about making cold brew.",
+     "correction": false,
+     "probe": {
+      "check": {
+       "kind": "no_bullets"
+      }
+     },
+     "instance": 3
+    }
+   ]
+  },
+  {
+   "id": "F40",
+   "family": "primary",
+   "task": "note",
+   "domain": "restoring a bicycle",
+   "rule": "tl_dr_prefix",
+   "new_rule": null,
+   "files": {},
+   "steps": [
+    {
+     "kind": "live",
+     "content": "Write a short note to Oscar about restoring a bicycle.",
+     "correction": false,
+     "probe": null,
+     "instance": 1
+    },
+    {
+     "kind": "live",
+     "content": "Keep doing it that way from now on: start every reply with a line beginning 'TL;DR:'. Write a short note to Oscar about restoring a bicycle.",
+     "correction": true,
+     "probe": null,
+     "instance": 1
+    },
+    {
+     "kind": "block",
+     "index": 0,
+     "content": "",
+     "correction": false,
+     "probe": null,
+     "instance": null
+    },
+    {
+     "kind": "live",
+     "content": "Draft a brief message to Oscar about restoring a bicycle.",
+     "correction": false,
+     "probe": {
+      "check": {
+       "kind": "prefix",
+       "value": "TL;DR:"
+      }
+     },
+     "instance": 2
+    },
+    {
+     "kind": "block",
+     "index": 1,
+     "content": "",
+     "correction": false,
+     "probe": null,
+     "instance": null
+    },
+    {
+     "kind": "live",
+     "content": "Write a few lines to Oscar about restoring a bicycle.",
+     "correction": false,
+     "probe": {
+      "check": {
+       "kind": "prefix",
+       "value": "TL;DR:"
+      }
+     },
+     "instance": 3
+    }
+   ]
+  },
+  {
+   "id": "F41",
+   "family": "control",
+   "task": "list",
+   "domain": "writing a will",
+   "rule": null,
+   "new_rule": null,
+   "files": {},
+   "steps": [
+    {
+     "kind": "live",
+     "content": "List three practical tips for writing a will.",
+     "correction": false,
+     "probe": {
+      "check": {
+       "kind": "not",
+       "of": {
+        "kind": "any_of",
+        "of": [
+         {
+          "kind": "prefix",
+          "value": "STATUS:"
+         },
+         {
+          "kind": "prefix",
+          "value": "TL;DR:"
+         },
+         {
+          "kind": "suffix",
+          "value": "— Juniper"
+         }
+        ]
+       }
+      }
+     },
+     "instance": 1
+    },
+    {
+     "kind": "live",
+     "content": "Give me three tips for writing a will.",
+     "correction": false,
+     "probe": {
+      "check": {
+       "kind": "not",
+       "of": {
+        "kind": "any_of",
+        "of": [
+         {
+          "kind": "prefix",
+          "value": "STATUS:"
+         },
+         {
+          "kind": "prefix",
+          "value": "TL;DR:"
+         },
+         {
+          "kind": "suffix",
+          "value": "— Juniper"
+         }
+        ]
+       }
+      }
+     },
+     "instance": 2
+    },
+    {
+     "kind": "live",
+     "content": "What are three things worth knowing about writing a will?",
+     "correction": false,
+     "probe": {
+      "check": {
+       "kind": "not",
+       "of": {
+        "kind": "any_of",
+        "of": [
+         {
+          "kind": "prefix",
+          "value": "STATUS:"
+         },
+         {
+          "kind": "prefix",
+          "value": "TL;DR:"
+         },
+         {
+          "kind": "suffix",
+          "value": "— Juniper"
+         }
+        ]
+       }
+      }
+     },
+     "instance": 3
+    }
+   ]
+  },
+  {
+   "id": "F42",
+   "family": "control",
+   "task": "code",
+   "domain": "booking a cheap flight",
+   "rule": null,
+   "new_rule": null,
+   "files": {},
+   "steps": [
+    {
+     "kind": "live",
+     "content": "Write a short Python function that keeps track of booking a cheap flight.",
+     "correction": false,
+     "probe": {
+      "check": {
+       "kind": "not",
+       "of": {
+        "kind": "any_of",
+        "of": [
+         {
+          "kind": "prefix",
+          "value": "STATUS:"
+         },
+         {
+          "kind": "prefix",
+          "value": "TL;DR:"
+         },
+         {
+          "kind": "suffix",
+          "value": "— Juniper"
+         }
+        ]
+       }
+      }
+     },
+     "instance": 1
+    },
+    {
+     "kind": "live",
+     "content": "Show me a small Python function that summarizes booking a cheap flight.",
+     "correction": false,
+     "probe": {
+      "check": {
+       "kind": "not",
+       "of": {
+        "kind": "any_of",
+        "of": [
+         {
+          "kind": "prefix",
+          "value": "STATUS:"
+         },
+         {
+          "kind": "prefix",
+          "value": "TL;DR:"
+         },
+         {
+          "kind": "suffix",
+          "value": "— Juniper"
+         }
+        ]
+       }
+      }
+     },
+     "instance": 2
+    },
+    {
+     "kind": "live",
+     "content": "Write a Python function that ranks booking a cheap flight by priority.",
+     "correction": false,
+     "probe": {
+      "check": {
+       "kind": "not",
+       "of": {
+        "kind": "any_of",
+        "of": [
+         {
+          "kind": "prefix",
+          "value": "STATUS:"
+         },
+         {
+          "kind": "prefix",
+          "value": "TL;DR:"
+         },
+         {
+          "kind": "suffix",
+          "value": "— Juniper"
+         }
+        ]
+       }
+      }
+     },
+     "instance": 3
+    }
+   ]
+  },
+  {
+   "id": "F43",
+   "family": "control",
+   "task": "file",
+   "domain": "starting a podcast",
+   "rule": null,
+   "new_rule": null,
+   "files": {},
+   "steps": [
+    {
+     "kind": "live",
+     "content": "Save a short note about starting a podcast in my workspace.",
+     "correction": false,
+     "probe": {
+      "check": {
+       "kind": "not",
+       "of": {
+        "kind": "any_of",
+        "of": [
+         {
+          "kind": "prefix",
+          "value": "STATUS:"
+         },
+         {
+          "kind": "prefix",
+          "value": "TL;DR:"
+         },
+         {
+          "kind": "suffix",
+          "value": "— Juniper"
+         }
+        ]
+       }
+      }
+     },
+     "instance": 1
+    },
+    {
+     "kind": "live",
+     "content": "Write a note about starting a podcast into a file in my workspace.",
+     "correction": false,
+     "probe": {
+      "check": {
+       "kind": "not",
+       "of": {
+        "kind": "any_of",
+        "of": [
+         {
+          "kind": "prefix",
+          "value": "STATUS:"
+         },
+         {
+          "kind": "prefix",
+          "value": "TL;DR:"
+         },
+         {
+          "kind": "suffix",
+          "value": "— Juniper"
+         }
+        ]
+       }
+      }
+     },
+     "instance": 2
+    },
+    {
+     "kind": "live",
+     "content": "Put a short note about starting a podcast in a file for me.",
+     "correction": false,
+     "probe": {
+      "check": {
+       "kind": "not",
+       "of": {
+        "kind": "any_of",
+        "of": [
+         {
+          "kind": "prefix",
+          "value": "STATUS:"
+         },
+         {
+          "kind": "prefix",
+          "value": "TL;DR:"
+         },
+         {
+          "kind": "suffix",
+          "value": "— Juniper"
+         }
+        ]
+       }
+      }
+     },
+     "instance": 3
+    }
+   ]
+  },
+  {
+   "id": "F44",
+   "family": "control",
+   "task": "files",
+   "domain": "repotting houseplants",
+   "rule": null,
+   "new_rule": null,
+   "files": {
+    "repotting-houseplants-notes.txt": "kiwi-4821\nNotes on repotting houseplants.\n"
+   },
+   "steps": [
+    {
+     "kind": "live",
+     "content": "What is in my workspace, and what does repotting-houseplants-notes.txt say?",
+     "correction": false,
+     "probe": {
+      "check": {
+       "kind": "not",
+       "of": {
+        "kind": "any_of",
+        "of": [
+         {
+          "kind": "prefix",
+          "value": "STATUS:"
+         },
+         {
+          "kind": "prefix",
+          "value": "TL;DR:"
+         },
+         {
+          "kind": "suffix",
+          "value": "— Juniper"
+         }
+        ]
+       }
+      }
+     },
+     "instance": 1
+    },
+    {
+     "kind": "live",
+     "content": "List what is in my workspace and read repotting-houseplants-notes.txt for me.",
+     "correction": false,
+     "probe": {
+      "check": {
+       "kind": "not",
+       "of": {
+        "kind": "any_of",
+        "of": [
+         {
+          "kind": "prefix",
+          "value": "STATUS:"
+         },
+         {
+          "kind": "prefix",
+          "value": "TL;DR:"
+         },
+         {
+          "kind": "suffix",
+          "value": "— Juniper"
+         }
+        ]
+       }
+      }
+     },
+     "instance": 2
+    },
+    {
+     "kind": "live",
+     "content": "Show me the files in my workspace and the contents of repotting-houseplants-notes.txt.",
+     "correction": false,
+     "probe": {
+      "check": {
+       "kind": "not",
+       "of": {
+        "kind": "any_of",
+        "of": [
+         {
+          "kind": "prefix",
+          "value": "STATUS:"
+         },
+         {
+          "kind": "prefix",
+          "value": "TL;DR:"
+         },
+         {
+          "kind": "suffix",
+          "value": "— Juniper"
+         }
+        ]
+       }
+      }
+     },
+     "instance": 3
+    }
+   ]
+  },
+  {
+   "id": "F45",
+   "family": "control",
+   "task": "advice",
+   "domain": "keeping bees",
+   "rule": null,
+   "new_rule": null,
+   "files": {},
+   "steps": [
+    {
+     "kind": "live",
+     "content": "Recommend a plan for keeping bees and mention any caveat.",
+     "correction": false,
+     "probe": {
+      "check": {
+       "kind": "not",
+       "of": {
+        "kind": "any_of",
+        "of": [
+         {
+          "kind": "prefix",
+          "value": "STATUS:"
+         },
+         {
+          "kind": "prefix",
+          "value": "TL;DR:"
+         },
+         {
+          "kind": "suffix",
+          "value": "— Juniper"
+         }
+        ]
+       }
+      }
+     },
+     "instance": 1
+    },
+    {
+     "kind": "live",
+     "content": "What do you recommend for keeping bees, and what is the caveat?",
+     "correction": false,
+     "probe": {
+      "check": {
+       "kind": "not",
+       "of": {
+        "kind": "any_of",
+        "of": [
+         {
+          "kind": "prefix",
+          "value": "STATUS:"
+         },
+         {
+          "kind": "prefix",
+          "value": "TL;DR:"
+         },
+         {
+          "kind": "suffix",
+          "value": "— Juniper"
+         }
+        ]
+       }
+      }
+     },
+     "instance": 2
+    },
+    {
+     "kind": "live",
+     "content": "Suggest a plan for keeping bees, noting the caveat.",
+     "correction": false,
+     "probe": {
+      "check": {
+       "kind": "not",
+       "of": {
+        "kind": "any_of",
+        "of": [
+         {
+          "kind": "prefix",
+          "value": "STATUS:"
+         },
+         {
+          "kind": "prefix",
+          "value": "TL;DR:"
+         },
+         {
+          "kind": "suffix",
+          "value": "— Juniper"
+         }
+        ]
+       }
+      }
+     },
+     "instance": 3
+    }
+   ]
+  },
+  {
+   "id": "F46",
+   "family": "reversal",
+   "task": "list",
+   "domain": "running a marathon",
+   "rule": "status_prefix",
+   "new_rule": "tl_dr_prefix",
+   "files": {},
+   "steps": [
+    {
+     "kind": "live",
+     "content": "List three practical tips for running a marathon.",
+     "correction": false,
+     "probe": null,
+     "instance": 1
+    },
+    {
+     "kind": "live",
+     "content": "Good, but from now on always begin your reply with 'STATUS:'. List three practical tips for running a marathon.",
+     "correction": true,
+     "probe": null,
+     "instance": 1
+    },
+    {
+     "kind": "block",
+     "index": 0,
+     "content": "",
+     "correction": false,
+     "probe": null,
+     "instance": null
+    },
+    {
+     "kind": "live",
+     "content": "Give me three tips for running a marathon.",
+     "correction": false,
+     "probe": {
+      "check": {
+       "kind": "prefix",
+       "value": "STATUS:"
+      }
+     },
+     "instance": 2
+    },
+    {
+     "kind": "block",
+     "index": 1,
+     "content": "",
+     "correction": false,
+     "probe": null,
+     "instance": null
+    },
+    {
+     "kind": "live",
+     "content": "Keep doing it that way from now on: start every reply with a line beginning 'TL;DR:'. What are three things worth knowing about running a marathon?",
+     "correction": true,
+     "probe": {
+      "check": {
+       "kind": "all_of",
+       "of": [
+        {
+         "kind": "prefix",
+         "value": "TL;DR:"
+        },
+        {
+         "kind": "not",
+         "of": {
+          "kind": "prefix",
+          "value": "STATUS:"
+         }
+        }
+       ]
+      }
+     },
+     "instance": 3
+    }
+   ]
+  },
+  {
+   "id": "F47",
+   "family": "reversal",
+   "task": "note",
+   "domain": "choosing a mortgage",
+   "rule": "lowercase",
+   "new_rule": "uppercase",
+   "files": {},
+   "steps": [
+    {
+     "kind": "live",
+     "content": "Write a short note to Lena about choosing a mortgage.",
+     "correction": false,
+     "probe": null,
+     "instance": 1
+    },
+    {
+     "kind": "live",
+     "content": "That is right, but from now on write every reply in lowercase only. Write a short note to Lena about choosing a mortgage.",
+     "correction": true,
+     "probe": null,
+     "instance": 1
+    },
+    {
+     "kind": "block",
+     "index": 0,
+     "content": "",
+     "correction": false,
+     "probe": null,
+     "instance": null
+    },
+    {
+     "kind": "live",
+     "content": "Draft a brief message to Lena about choosing a mortgage.",
+     "correction": false,
+     "probe": {
+      "check": {
+       "kind": "all_lowercase"
+      }
+     },
+     "instance": 2
+    },
+    {
+     "kind": "block",
+     "index": 1,
+     "content": "",
+     "correction": false,
+     "probe": null,
+     "instance": null
+    },
+    {
+     "kind": "live",
+     "content": "That is right, but from now on write every reply in uppercase only. Write a few lines to Lena about choosing a mortgage.",
+     "correction": true,
+     "probe": {
+      "check": {
+       "kind": "all_of",
+       "of": [
+        {
+         "kind": "all_uppercase"
+        },
+        {
+         "kind": "not",
+         "of": {
+          "kind": "all_lowercase"
+         }
+        }
+       ]
+      }
+     },
+     "instance": 3
+    }
+   ]
+  },
+  {
+   "id": "F48",
+   "family": "reversal",
+   "task": "file",
+   "domain": "sharing photos",
+   "rule": "kebab_files",
+   "new_rule": "snake_files",
+   "files": {},
+   "steps": [
+    {
+     "kind": "live",
+     "content": "Save a short note about sharing photos in my workspace.",
+     "correction": false,
+     "probe": null,
+     "instance": 1
+    },
+    {
+     "kind": "live",
+     "content": "Rename things that way from now on: name every file you save in kebab-case. Save a short note about sharing photos in my workspace.",
+     "correction": true,
+     "probe": null,
+     "instance": 1
+    },
+    {
+     "kind": "block",
+     "index": 0,
+     "content": "",
+     "correction": false,
+     "probe": null,
+     "instance": null
+    },
+    {
+     "kind": "live",
+     "content": "Write a note about sharing photos into a file in my workspace.",
+     "correction": false,
+     "probe": {
+      "check": {
+       "kind": "kebab_files"
+      }
+     },
+     "instance": 2
+    },
+    {
+     "kind": "block",
+     "index": 1,
+     "content": "",
+     "correction": false,
+     "probe": null,
+     "instance": null
+    },
+    {
+     "kind": "live",
+     "content": "Use this naming from now on: name every file you save in snake_case. Put a short note about sharing photos in a file for me.",
+     "correction": true,
+     "probe": {
+      "check": {
+       "kind": "all_of",
+       "of": [
+        {
+         "kind": "snake_files"
+        },
+        {
+         "kind": "not",
+         "of": {
+          "kind": "kebab_files"
+         }
+        }
+       ]
+      }
+     },
+     "instance": 3
+    }
+   ]
+  },
+  {
+   "id": "F49",
+   "family": "reversal",
+   "task": "code",
+   "domain": "learning to swim",
+   "rule": "tab_indent",
+   "new_rule": "space_indent",
+   "files": {},
+   "steps": [
+    {
+     "kind": "live",
+     "content": "Write a short Python function that keeps track of learning to swim.",
+     "correction": false,
+     "probe": null,
+     "instance": 1
+    },
+    {
+     "kind": "live",
+     "content": "Change one thing and keep it: from now on indent code with tabs, never with spaces. Write a short Python function that keeps track of learning to swim.",
+     "correction": true,
+     "probe": null,
+     "instance": 1
+    },
+    {
+     "kind": "block",
+     "index": 0,
+     "content": "",
+     "correction": false,
+     "probe": null,
+     "instance": null
+    },
+    {
+     "kind": "live",
+     "content": "Show me a small Python function that summarizes learning to swim.",
+     "correction": false,
+     "probe": {
+      "check": {
+       "kind": "tab_indent"
+      }
+     },
+     "instance": 2
+    },
+    {
+     "kind": "block",
+     "index": 1,
+     "content": "",
+     "correction": false,
+     "probe": null,
+     "instance": null
+    },
+    {
+     "kind": "live",
+     "content": "Change one thing and keep it: from now on indent code with spaces, never with tabs. Write a Python function that ranks learning to swim by priority.",
+     "correction": true,
+     "probe": {
+      "check": {
+       "kind": "all_of",
+       "of": [
+        {
+         "kind": "space_indent"
+        },
+        {
+         "kind": "not",
+         "of": {
+          "kind": "tab_indent"
+         }
+        }
+       ]
+      }
+     },
+     "instance": 3
+    }
+   ]
+  },
+  {
+   "id": "F50",
+   "family": "reversal",
+   "task": "advice",
+   "domain": "staying focused at work",
+   "rule": "caveat_first",
+   "new_rule": "recommend_first",
+   "files": {},
+   "steps": [
+    {
+     "kind": "live",
+     "content": "Recommend a plan for staying focused at work and mention any caveat.",
+     "correction": false,
+     "probe": null,
+     "instance": 1
+    },
+    {
+     "kind": "live",
+     "content": "Order it this way from now on: put the caveat before the recommendation. Recommend a plan for staying focused at work and mention any caveat.",
+     "correction": true,
+     "probe": null,
+     "instance": 1
+    },
+    {
+     "kind": "block",
+     "index": 0,
+     "content": "",
+     "correction": false,
+     "probe": null,
+     "instance": null
+    },
+    {
+     "kind": "live",
+     "content": "What do you recommend for staying focused at work, and what is the caveat?",
+     "correction": false,
+     "probe": {
+      "check": {
+       "kind": "order_words",
+       "first": "caveat",
+       "second": "recommend"
+      }
+     },
+     "instance": 2
+    },
+    {
+     "kind": "block",
+     "index": 1,
+     "content": "",
+     "correction": false,
+     "probe": null,
+     "instance": null
+    },
+    {
+     "kind": "live",
+     "content": "Order it the other way from now on: put the recommendation before the caveat. Suggest a plan for staying focused at work, noting the caveat.",
+     "correction": true,
+     "probe": {
+      "check": {
+       "kind": "all_of",
+       "of": [
+        {
+         "kind": "order_words",
+         "first": "recommend",
+         "second": "caveat"
+        },
+        {
+         "kind": "not",
+         "of": {
+          "kind": "order_words",
+          "first": "caveat",
+          "second": "recommend"
+         }
+        }
+       ]
+      }
+     },
+     "instance": 3
+    }
+   ]
+  }
+ ]
+}

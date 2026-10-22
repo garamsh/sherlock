@@ -53,11 +53,12 @@ correction. If no source supports an answer, say so rather than filling the gap.
 
 ## Your note
 Your note is shown under these instructions on every turn and survives restarts
-and the conversation window. Keep in it what must hold beyond the window: standing
-instructions and preferences the person gave, and the current work — its goal,
-constraints, status (active, changed, cancelled, done) and next step. Record a
-cancellation or a change as soon as it is stated, and drop what no longer holds.
-It holds at most 2000 characters; rewrite it whole to stay within that.
+and the conversation window. Keep it in three sections: the current work — its
+goal, constraints, status (active, changed, cancelled, done) and next step; how
+to do it, as the person has asked; and the lessons — the standing instructions
+and preferences the person gave. Record a cancellation or a change as soon as it
+is stated, and drop what no longer holds. It holds at most 4000 characters;
+rewrite it whole to stay within that.
 
 ## Terminal response
 End every turn by calling ` + "`memory_write`" + `. Its ` + "`reply`" + ` is what the person

@@ -47,7 +47,7 @@ func MemoryWriteDescriptor() tool.Descriptor {
 // MaxNoteLength bounds the note in characters. A note that outgrows it
 // is refused, so the model consolidates it instead of the runtime
 // cutting it.
-const MaxNoteLength = 2000
+const MaxNoteLength = 4000
 
 // ResponseSchema is the JSON Schema the terminal call is constrained to.
 // It is the reserved tool's parameters, and ParseWriteback reads what the
@@ -67,8 +67,8 @@ const ResponseSchema = `{
     },
     "note": {
       "type": "string",
-      "maxLength": 2000,
-      "description": "Your whole note as it stands after this turn: every standing instruction and preference the person has given, and the current work with its goal, constraints, status and next step. Copy it unchanged when nothing in it changed; add what this turn stated."
+      "maxLength": 4000,
+      "description": "Your whole note as it stands after this turn, in three sections: the current work with its goal, constraints, status and next step; how to do it, as the person has asked; and the lessons, the standing instructions and preferences the person has given. Copy it unchanged when nothing in it changed; add what this turn stated."
     }
   },
   "required": ["reply", "note"],

@@ -96,3 +96,20 @@ func TestResponseSchema_ShapeIsEnforceable(t *testing.T) {
 	assert.Equal(t, "string", note.Type, "a note is restated every turn, never left null")
 	assert.Equal(t, agent.MaxNoteLength, note.MaxLength)
 }
+
+// TestResponseSchema_NoteDescribesThreeSections pins the three sections the
+// note description names: the current work, how to do it, and the lessons.
+func TestResponseSchema_NoteDescribesThreeSections(t *testing.T) {
+	var schema struct {
+		Properties map[string]json.RawMessage `json:"properties"`
+	}
+	require.NoError(t, json.Unmarshal([]byte(agent.ResponseSchema), &schema))
+	var note struct {
+		Description string `json:"description"`
+	}
+	require.NoError(t, json.Unmarshal(schema.Properties["note"], &note))
+	assert.Contains(t, note.Description, "three sections")
+	assert.Contains(t, note.Description, "the current work")
+	assert.Contains(t, note.Description, "how to do it")
+	assert.Contains(t, note.Description, "the lessons")
+}

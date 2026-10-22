@@ -70,8 +70,18 @@ func TestContract_TerminalCallCarriesReplyAndNote(t *testing.T) {
 	require.Contains(t, contract, "memory_write")
 	assert.Contains(t, contract, "`note`")
 	assert.Contains(t, contract, "copy it\nunchanged when nothing in it changed")
-	assert.Contains(t, contract, "at most 2000 characters")
+	assert.Contains(t, contract, "at most 4000 characters")
 	assert.NotContains(t, contract, "memory_ops")
+}
+
+// TestContract_NoteHasThreeSections pins the three sections the note
+// carries: the current work, how to do it, and the lessons.
+func TestContract_NoteHasThreeSections(t *testing.T) {
+	contract := agent.Contract
+	assert.Contains(t, contract, "three sections")
+	assert.Contains(t, contract, "the current work")
+	assert.Contains(t, contract, "how\nto do it")
+	assert.Contains(t, contract, "the lessons")
 }
 
 func TestContract_SearchResolvesReferences(t *testing.T) {

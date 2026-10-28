@@ -342,7 +342,7 @@ class ScoreTest(unittest.TestCase):
     """The scorer end to end on a two-family stand-in run, and the decision
     rule's guards."""
 
-    def stand_in(self, h_holds, s_holds):
+    def stand_in(self, h_holds, s_holds, h_reply=None):
         fams = [
             {"id": "W01", "kind": "writing", "group": "primary", "files": {}, "steps": [
                 {"kind": "live", "content": "a", "instance": 1, "task": {"kind": "bullet_count", "value": 3}, "probe": None},
@@ -355,7 +355,10 @@ class ScoreTest(unittest.TestCase):
         tmp = tempfile.mkdtemp()
         for arm, ok in (("H", h_holds), ("S", s_holds)):
             Path(tmp, arm).mkdir()
-            rec = {"episode": "W01", "turns": [{"step": 0, "reply": bad}, {"step": 2, "reply": good if ok else bad}]}
+            reply = good if ok else bad
+            if arm == "H" and h_reply is not None:
+                reply = h_reply
+            rec = {"episode": "W01", "turns": [{"step": 0, "reply": bad}, {"step": 2, "reply": reply}]}
             Path(tmp, arm, "results.jsonl").write_text(json.dumps(rec) + "\n")
         Path(tmp, "ledger").mkdir()
         Path(tmp, "ledger", "calls.jsonl").write_text(
@@ -371,6 +374,13 @@ class ScoreTest(unittest.TestCase):
         # A cached synthesis is charged to the arm it served.
         self.assertEqual(out["cost"]["by_arm_usd"], {"S": 0.01, "H": 0.01})
         self.assertEqual(out["cost"]["spent_usd"], 0.01)
+
+    def test_a_rule_kept_on_a_task_not_done_does_not_hold(self):
+        out = self.stand_in(True, False, h_reply="STATUS: I could not do it.")
+        row = out["families"]["W01"]["H"][1]
+        self.assertTrue(row["rule"])
+        self.assertFalse(row["task"])
+        self.assertFalse(row["held"])
 
     def test_one_discordant_pair_is_not_significant(self):
         out = self.stand_in(True, False)

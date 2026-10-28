@@ -1050,3 +1050,37 @@ func TestSessionRun_OvergrownNoteIsHandedBack(t *testing.T) {
 	assert.Contains(t, refusal.Content, "note too long")
 	assert.Equal(t, model.seen[1][len(model.seen[1])-2].ToolCalls[0].ID, refusal.ToolCallID, "the refusal answers the call that carried the note")
 }
+
+// turnIDRecorder records the turn identifier each Chat call ran under and
+// answers from the script it wraps.
+type turnIDRecorder struct {
+	*agent.ScriptedModel
+	ids []string
+}
+
+func (r *turnIDRecorder) Chat(ctx context.Context, messages []agent.Message, tools []tool.Descriptor) (agent.Response, error) {
+	r.ids = append(r.ids, agent.TurnID(ctx))
+	return r.ScriptedModel.Chat(ctx, messages, tools)
+}
+
+// TestSessionRun_EveryModelRequestOfATurnCarriesOneTurnID pins ADR 0029's
+// turn identifier: each turn mints one, every model request of that turn
+// runs under it, and the next turn's is a different one. Each turn makes
+// two requests, so "the same within a turn" is compared, not assumed.
+func TestSessionRun_EveryModelRequestOfATurnCarriesOneTurnID(t *testing.T) {
+	echo := agent.ScriptedStep{ToolCalls: []agent.ToolCall{{Name: "echo", Input: json.RawMessage(`{"text":"hi"}`)}}}
+	model := &turnIDRecorder{ScriptedModel: agent.NewScriptedModel(echo, finalStep("first"), echo, finalStep("second"))}
+	s := agent.NewSession(model, newFakeClientWith(newEchoTool()), agent.Options{})
+
+	_, err := s.Run(context.Background(), "task one")
+	require.NoError(t, err)
+	_, err = s.Run(context.Background(), "task two")
+	require.NoError(t, err)
+
+	require.Len(t, model.ids, 4, "each turn made two model requests")
+	assert.NotEmpty(t, model.ids[0])
+	assert.Equal(t, model.ids[0], model.ids[1], "both requests of the first turn carry its identifier")
+	assert.Equal(t, model.ids[2], model.ids[3], "both requests of the second turn carry its identifier")
+	assert.NotEqual(t, model.ids[0], model.ids[2], "two turns carry different identifiers")
+	assert.Empty(t, agent.TurnID(context.Background()), "a context outside a turn carries none")
+}

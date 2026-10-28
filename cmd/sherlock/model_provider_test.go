@@ -16,7 +16,8 @@ import (
 
 // modelEndpoint is a local stand-in for a model provider: it answers the
 // embeddings route with a fixed vector, every other route after delay
-// with 400, and records each request's path and credential headers. No
+// with 400, and records each request's path, credential headers and turn
+// header. No
 // request leaves the host.
 type modelEndpoint struct {
 	URL string
@@ -27,7 +28,7 @@ type modelEndpoint struct {
 
 // endpointRequest is what modelEndpoint recorded of one request.
 type endpointRequest struct {
-	Path, Authorization, APIKey string
+	Path, Authorization, APIKey, TurnID string
 }
 
 func newModelEndpoint(t *testing.T, delay time.Duration) *modelEndpoint {
@@ -37,6 +38,7 @@ func newModelEndpoint(t *testing.T, delay time.Duration) *modelEndpoint {
 		e.mu.Lock()
 		e.requests = append(e.requests, endpointRequest{
 			Path: r.URL.Path, Authorization: r.Header.Get("Authorization"), APIKey: r.Header.Get("x-api-key"),
+			TurnID: r.Header.Get("X-Turn-Id"),
 		})
 		e.mu.Unlock()
 		if r.URL.Path == "/v1/embeddings" {
@@ -212,10 +214,11 @@ func TestAgentCommand_EmbeddingSection(t *testing.T) {
 	})
 }
 
-// TestAgentCommand_KeyFileReachesTheModel runs a turn configured with
-// model.api-key-file (ADR 0029): the model request carries the key the
-// file holds, not the variable api-key-env defaults to.
-func TestAgentCommand_KeyFileReachesTheModel(t *testing.T) {
+// TestAgentCommand_KeyFileAndTurnIDReachTheModel runs a turn configured
+// with model.api-key-file (ADR 0029): the model request carries the key
+// the file holds, not the variable api-key-env defaults to, and the
+// turn's identifier in its header.
+func TestAgentCommand_KeyFileAndTurnIDReachTheModel(t *testing.T) {
 	t.Setenv("OPENAI_API_KEY", "from-the-environment")
 	keyPath := filepath.Join(t.TempDir(), "key")
 	require.NoError(t, os.WriteFile(keyPath, []byte("from-the-file\n"), 0o600))
@@ -227,4 +230,5 @@ func TestAgentCommand_KeyFileReachesTheModel(t *testing.T) {
 	req, ok := endpoint.request("/v1/chat/completions")
 	require.True(t, ok, "the turn called the chat-completions route")
 	assert.Equal(t, "Bearer from-the-file", req.Authorization)
+	assert.Regexp(t, "^[0-9a-f]{32}$", req.TurnID, "the request carries the turn's identifier")
 }

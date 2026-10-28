@@ -108,7 +108,6 @@ func (s *session) Run(ctx context.Context, task string) (response string, err er
 	s.turn++
 	s.sources = inboundSources(ctx, task)
 	ctx = tool.WithInReplyTo(ctx, drainedIDs(s.sources))
-	ctx = WithTurnID(ctx, mintTurnID())
 	s.failures = make(map[string]failedCall)
 	s.toolCalls = make(map[string]int)
 	s.emit(ctx, Event{Kind: EventTurnStarted, Turn: s.turn, Task: task})

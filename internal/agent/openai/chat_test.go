@@ -18,15 +18,13 @@ import (
 const okReply = `{"choices":[{"message":{"content":"ok"},"finish_reason":"stop"}]}`
 
 // gate is a chat-completions endpoint that accepts one bearer token and
-// answers every other with 401, recording each request's Authorization
-// and turn header.
+// answers every other with 401, recording each request's Authorization.
 type gate struct {
 	URL string
 
 	mu       sync.Mutex
 	accepted string
 	auths    []string
-	turnIDs  []string
 }
 
 func newGate(t *testing.T, accepted string) *gate {
@@ -37,7 +35,6 @@ func newGate(t *testing.T, accepted string) *gate {
 		defer g.mu.Unlock()
 		auth := r.Header.Get("Authorization")
 		g.auths = append(g.auths, auth)
-		g.turnIDs = append(g.turnIDs, r.Header.Get(agent.TurnIDHeader))
 		if auth != "Bearer "+g.accepted {
 			http.Error(w, `{"error":{"message":"invalid token"}}`, http.StatusUnauthorized)
 			return
@@ -56,11 +53,11 @@ func (g *gate) accept(token string) {
 	g.accepted = token
 }
 
-// seen returns the Authorization and turn header of every request so far.
-func (g *gate) seen() (auths, turnIDs []string) {
+// seen returns the Authorization of every request so far.
+func (g *gate) seen() []string {
 	g.mu.Lock()
 	defer g.mu.Unlock()
-	return append([]string(nil), g.auths...), append([]string(nil), g.turnIDs...)
+	return append([]string(nil), g.auths...)
 }
 
 // rotatingCredential returns its keys in order, then repeats the last,
@@ -94,17 +91,6 @@ func chatOnce(ctx context.Context, model *openai.Model) error {
 	return err
 }
 
-func TestChat_TurnIDTravelsAsTheTurnHeader(t *testing.T) {
-	g := newGate(t, "k")
-	model := newCredentialModel(t, g.URL, &rotatingCredential{keys: []string{"k"}})
-
-	require.NoError(t, chatOnce(agent.WithTurnID(t.Context(), "turn-1"), model))
-	require.NoError(t, chatOnce(t.Context(), model))
-
-	_, turnIDs := g.seen()
-	assert.Equal(t, []string{"turn-1", ""}, turnIDs, "a request outside a turn carries no turn header")
-}
-
 func TestChat_CredentialIsReadForEveryRequest(t *testing.T) {
 	g := newGate(t, "first")
 	credential := &rotatingCredential{keys: []string{"first", "second"}}
@@ -114,30 +100,28 @@ func TestChat_CredentialIsReadForEveryRequest(t *testing.T) {
 	g.accept("second")
 	require.NoError(t, chatOnce(t.Context(), model))
 
-	auths, _ := g.seen()
+	auths := g.seen()
 	assert.Equal(t, []string{"Bearer first", "Bearer second"}, auths,
 		"the second request carries the key as it reads now, with no new client")
 }
 
 // TestChat_RejectedCredentialIsReadAgainAndRetriedOnce pins ADR 0029's
 // recovery: a 401 reads the credential again and sends the request once
-// more, under the same turn. The fixed-key control shows the retry
+// more. The fixed-key control shows the retry
 // belongs to the credential: a key that cannot change is not retried.
 func TestChat_RejectedCredentialIsReadAgainAndRetriedOnce(t *testing.T) {
-	ctx := agent.WithTurnID(t.Context(), "turn-1")
+	ctx := t.Context()
 
 	g := newGate(t, "rotated")
 	model := newCredentialModel(t, g.URL, &rotatingCredential{keys: []string{"expired", "rotated"}})
 	require.NoError(t, chatOnce(ctx, model), "the re-read key recovers the call")
-	auths, turnIDs := g.seen()
-	assert.Equal(t, []string{"Bearer expired", "Bearer rotated"}, auths)
-	assert.Equal(t, []string{"turn-1", "turn-1"}, turnIDs, "the retry stays in the turn")
+	assert.Equal(t, []string{"Bearer expired", "Bearer rotated"}, g.seen())
 
 	fixed := newGate(t, "rotated")
 	fixedModel, err := openai.New(openai.Config{BaseURL: fixed.URL, Model: "auto", APIKey: "expired"})
 	require.NoError(t, err)
 	require.Error(t, chatOnce(ctx, fixedModel))
-	fixedAuths, _ := fixed.seen()
+	fixedAuths := fixed.seen()
 	assert.Len(t, fixedAuths, 1, "a fixed key is sent once")
 }
 
@@ -151,7 +135,7 @@ func TestChat_SecondRejectionFailsTheCallNamingTheSource(t *testing.T) {
 	var apiErr *openai.APIError
 	require.ErrorAs(t, err, &apiErr)
 	assert.Equal(t, http.StatusUnauthorized, apiErr.StatusCode)
-	auths, _ := g.seen()
+	auths := g.seen()
 	assert.Len(t, auths, 2, "one request and one retry, no more")
 	assert.Contains(t, err.Error(), "test-source /run/key")
 	assert.NotContains(t, err.Error(), "expired", "the error names the source, never the key")
@@ -165,7 +149,7 @@ func TestChat_UnreadableCredentialFailsTheCallNamingTheSource(t *testing.T) {
 	require.Error(t, err)
 	assert.Contains(t, err.Error(), "test-source /run/key")
 	assert.Contains(t, err.Error(), "no such file")
-	auths, _ := g.seen()
+	auths := g.seen()
 	assert.Empty(t, auths, "nothing is sent without a key")
 }
 

@@ -1,0 +1,2320 @@
+{
+ "controls": {
+  "H": {
+   "correction_in_window": 0,
+   "exercised": 4,
+   "primary": 4,
+   "probes": 20,
+   "recall_turns": 0,
+   "turns": 44
+  },
+  "S": {
+   "correction_in_window": 0,
+   "exercised": 4,
+   "primary": 4,
+   "probes": 20,
+   "recall_turns": 44,
+   "turns": 44
+  },
+  "exercise_holds": false,
+  "recall_holds": true,
+  "window_holds": true
+ },
+ "cost": {
+  "by_arm_usd": {
+   "H": 0.411008,
+   "S": 0.268784
+  },
+  "per_completed_task_usd": {
+   "H": 0.011417,
+   "S": 0.006556
+  },
+  "spent_usd": 0.489515
+ },
+ "families": {
+  "C01": {
+   "H": [
+    {
+     "error": "",
+     "instance": 1,
+     "step": 0,
+     "task": true
+    },
+    {
+     "error": "",
+     "instance": 1,
+     "step": 1,
+     "task": true
+    },
+    {
+     "error": "",
+     "held": true,
+     "instance": 2,
+     "rule": true,
+     "step": 3,
+     "task": true
+    },
+    {
+     "error": "",
+     "held": true,
+     "instance": 3,
+     "rule": true,
+     "step": 5,
+     "task": true
+    }
+   ],
+   "S": [
+    {
+     "error": "",
+     "instance": 1,
+     "step": 0,
+     "task": true
+    },
+    {
+     "error": "",
+     "instance": 1,
+     "step": 1,
+     "task": true
+    },
+    {
+     "error": "",
+     "held": true,
+     "instance": 2,
+     "rule": true,
+     "step": 3,
+     "task": true
+    },
+    {
+     "error": "",
+     "held": true,
+     "instance": 3,
+     "rule": true,
+     "step": 5,
+     "task": true
+    }
+   ]
+  },
+  "C02": {
+   "H": [
+    null,
+    null,
+    null,
+    null
+   ],
+   "S": [
+    null,
+    null,
+    null,
+    null
+   ]
+  },
+  "C03": {
+   "H": [
+    null,
+    null,
+    null,
+    null
+   ],
+   "S": [
+    null,
+    null,
+    null,
+    null
+   ]
+  },
+  "C04": {
+   "H": [
+    null,
+    null,
+    null,
+    null
+   ],
+   "S": [
+    null,
+    null,
+    null,
+    null
+   ]
+  },
+  "C05": {
+   "H": [
+    null,
+    null,
+    null,
+    null
+   ],
+   "S": [
+    null,
+    null,
+    null,
+    null
+   ]
+  },
+  "C06": {
+   "H": [
+    null,
+    null,
+    null,
+    null
+   ],
+   "S": [
+    null,
+    null,
+    null,
+    null
+   ]
+  },
+  "C07": {
+   "H": [
+    null,
+    null,
+    null,
+    null
+   ],
+   "S": [
+    null,
+    null,
+    null,
+    null
+   ]
+  },
+  "C08": {
+   "H": [
+    null,
+    null,
+    null,
+    null
+   ],
+   "S": [
+    null,
+    null,
+    null,
+    null
+   ]
+  },
+  "C09": {
+   "H": [
+    null,
+    null,
+    null,
+    null
+   ],
+   "S": [
+    null,
+    null,
+    null,
+    null
+   ]
+  },
+  "C10": {
+   "H": [
+    null,
+    null,
+    null,
+    null
+   ],
+   "S": [
+    null,
+    null,
+    null,
+    null
+   ]
+  },
+  "C11": {
+   "H": [
+    null,
+    null,
+    null,
+    null
+   ],
+   "S": [
+    null,
+    null,
+    null,
+    null
+   ]
+  },
+  "C12": {
+   "H": [
+    null,
+    null,
+    null,
+    null
+   ],
+   "S": [
+    null,
+    null,
+    null,
+    null
+   ]
+  },
+  "C13": {
+   "H": [
+    null,
+    null,
+    null,
+    null
+   ],
+   "S": [
+    null,
+    null,
+    null,
+    null
+   ]
+  },
+  "C14": {
+   "H": [
+    null,
+    null,
+    null,
+    null
+   ],
+   "S": [
+    null,
+    null,
+    null,
+    null
+   ]
+  },
+  "C15": {
+   "H": [
+    null,
+    null,
+    null,
+    null
+   ],
+   "S": [
+    null,
+    null,
+    null,
+    null
+   ]
+  },
+  "C16": {
+   "H": [
+    {
+     "error": "",
+     "held": true,
+     "instance": 1,
+     "rule": true,
+     "step": 0,
+     "task": true
+    },
+    {
+     "error": "",
+     "held": false,
+     "instance": 2,
+     "rule": true,
+     "step": 2,
+     "task": false
+    },
+    {
+     "error": "",
+     "held": false,
+     "instance": 3,
+     "rule": true,
+     "step": 4,
+     "task": false
+    }
+   ],
+   "S": [
+    {
+     "error": "",
+     "held": true,
+     "instance": 1,
+     "rule": true,
+     "step": 0,
+     "task": true
+    },
+    {
+     "error": "",
+     "held": true,
+     "instance": 2,
+     "rule": true,
+     "step": 2,
+     "task": true
+    },
+    {
+     "error": "",
+     "held": true,
+     "instance": 3,
+     "rule": true,
+     "step": 4,
+     "task": true
+    }
+   ]
+  },
+  "C17": {
+   "H": [
+    null,
+    null,
+    null
+   ],
+   "S": [
+    null,
+    null,
+    null
+   ]
+  },
+  "C18": {
+   "H": [
+    null,
+    null,
+    null
+   ],
+   "S": [
+    null,
+    null,
+    null
+   ]
+  },
+  "C19": {
+   "H": [
+    null,
+    null,
+    null
+   ],
+   "S": [
+    null,
+    null,
+    null
+   ]
+  },
+  "C20": {
+   "H": [
+    {
+     "error": "",
+     "instance": 1,
+     "step": 0,
+     "task": true
+    },
+    {
+     "error": "",
+     "instance": 1,
+     "step": 1,
+     "task": true
+    },
+    {
+     "error": "record conversation: synthesize conversation: model must call memory_summary exactly once",
+     "instance": 2,
+     "step": 3,
+     "task": true
+    },
+    {
+     "error": "",
+     "held": false,
+     "instance": 3,
+     "rule": true,
+     "step": 5,
+     "task": false
+    }
+   ],
+   "S": [
+    {
+     "error": "",
+     "instance": 1,
+     "step": 0,
+     "task": true
+    },
+    {
+     "error": "",
+     "instance": 1,
+     "step": 1,
+     "task": true
+    },
+    {
+     "error": "",
+     "instance": 2,
+     "step": 3,
+     "task": true
+    },
+    {
+     "error": "",
+     "held": true,
+     "instance": 3,
+     "rule": true,
+     "step": 5,
+     "task": true
+    }
+   ]
+  },
+  "C21": {
+   "H": [
+    null,
+    null,
+    null,
+    null
+   ],
+   "S": [
+    null,
+    null,
+    null,
+    null
+   ]
+  },
+  "C22": {
+   "H": [
+    null,
+    null,
+    null,
+    null
+   ],
+   "S": [
+    null,
+    null,
+    null,
+    null
+   ]
+  },
+  "C23": {
+   "H": [
+    null,
+    null,
+    null,
+    null
+   ],
+   "S": [
+    null,
+    null,
+    null,
+    null
+   ]
+  },
+  "K01": {
+   "H": [
+    {
+     "error": "",
+     "instance": 1,
+     "step": 0,
+     "task": true
+    },
+    {
+     "error": "",
+     "instance": 1,
+     "step": 1,
+     "task": true
+    },
+    {
+     "error": "",
+     "held": true,
+     "instance": 2,
+     "rule": true,
+     "step": 3,
+     "task": true
+    },
+    {
+     "error": "",
+     "held": true,
+     "instance": 3,
+     "rule": true,
+     "step": 5,
+     "task": true
+    }
+   ],
+   "S": [
+    {
+     "error": "",
+     "instance": 1,
+     "step": 0,
+     "task": true
+    },
+    {
+     "error": "",
+     "instance": 1,
+     "step": 1,
+     "task": true
+    },
+    {
+     "error": "",
+     "held": true,
+     "instance": 2,
+     "rule": true,
+     "step": 3,
+     "task": true
+    },
+    {
+     "error": "",
+     "held": true,
+     "instance": 3,
+     "rule": true,
+     "step": 5,
+     "task": true
+    }
+   ]
+  },
+  "K02": {
+   "H": [
+    null,
+    null,
+    null,
+    null
+   ],
+   "S": [
+    null,
+    null,
+    null,
+    null
+   ]
+  },
+  "K03": {
+   "H": [
+    null,
+    null,
+    null,
+    null
+   ],
+   "S": [
+    null,
+    null,
+    null,
+    null
+   ]
+  },
+  "K04": {
+   "H": [
+    null,
+    null,
+    null,
+    null
+   ],
+   "S": [
+    null,
+    null,
+    null,
+    null
+   ]
+  },
+  "K05": {
+   "H": [
+    null,
+    null,
+    null,
+    null
+   ],
+   "S": [
+    null,
+    null,
+    null,
+    null
+   ]
+  },
+  "K06": {
+   "H": [
+    null,
+    null,
+    null,
+    null
+   ],
+   "S": [
+    null,
+    null,
+    null,
+    null
+   ]
+  },
+  "K07": {
+   "H": [
+    null,
+    null,
+    null,
+    null
+   ],
+   "S": [
+    null,
+    null,
+    null,
+    null
+   ]
+  },
+  "K08": {
+   "H": [
+    null,
+    null,
+    null,
+    null
+   ],
+   "S": [
+    null,
+    null,
+    null,
+    null
+   ]
+  },
+  "K09": {
+   "H": [
+    null,
+    null,
+    null,
+    null
+   ],
+   "S": [
+    null,
+    null,
+    null,
+    null
+   ]
+  },
+  "K10": {
+   "H": [
+    null,
+    null,
+    null,
+    null
+   ],
+   "S": [
+    null,
+    null,
+    null,
+    null
+   ]
+  },
+  "K11": {
+   "H": [
+    null,
+    null,
+    null,
+    null
+   ],
+   "S": [
+    null,
+    null,
+    null,
+    null
+   ]
+  },
+  "K12": {
+   "H": [
+    null,
+    null,
+    null,
+    null
+   ],
+   "S": [
+    null,
+    null,
+    null,
+    null
+   ]
+  },
+  "K13": {
+   "H": [
+    null,
+    null,
+    null,
+    null
+   ],
+   "S": [
+    null,
+    null,
+    null,
+    null
+   ]
+  },
+  "K14": {
+   "H": [
+    null,
+    null,
+    null,
+    null
+   ],
+   "S": [
+    null,
+    null,
+    null,
+    null
+   ]
+  },
+  "K15": {
+   "H": [
+    null,
+    null,
+    null,
+    null
+   ],
+   "S": [
+    null,
+    null,
+    null,
+    null
+   ]
+  },
+  "K16": {
+   "H": [
+    {
+     "error": "",
+     "held": true,
+     "instance": 1,
+     "rule": true,
+     "step": 0,
+     "task": true
+    },
+    {
+     "error": "",
+     "held": true,
+     "instance": 2,
+     "rule": true,
+     "step": 2,
+     "task": true
+    },
+    {
+     "error": "",
+     "held": false,
+     "instance": 3,
+     "rule": true,
+     "step": 4,
+     "task": false
+    }
+   ],
+   "S": [
+    {
+     "error": "",
+     "held": true,
+     "instance": 1,
+     "rule": true,
+     "step": 0,
+     "task": true
+    },
+    {
+     "error": "",
+     "held": true,
+     "instance": 2,
+     "rule": true,
+     "step": 2,
+     "task": true
+    },
+    {
+     "error": "",
+     "held": false,
+     "instance": 3,
+     "rule": true,
+     "step": 4,
+     "task": false
+    }
+   ]
+  },
+  "K17": {
+   "H": [
+    null,
+    null,
+    null
+   ],
+   "S": [
+    null,
+    null,
+    null
+   ]
+  },
+  "K18": {
+   "H": [
+    null,
+    null,
+    null
+   ],
+   "S": [
+    null,
+    null,
+    null
+   ]
+  },
+  "K19": {
+   "H": [
+    null,
+    null,
+    null
+   ],
+   "S": [
+    null,
+    null,
+    null
+   ]
+  },
+  "K20": {
+   "H": [
+    {
+     "error": "",
+     "instance": 1,
+     "step": 0,
+     "task": true
+    },
+    {
+     "error": "",
+     "instance": 1,
+     "step": 1,
+     "task": true
+    },
+    {
+     "error": "",
+     "instance": 2,
+     "step": 3,
+     "task": false
+    },
+    {
+     "error": "",
+     "held": true,
+     "instance": 3,
+     "rule": true,
+     "step": 5,
+     "task": true
+    }
+   ],
+   "S": [
+    {
+     "error": "",
+     "instance": 1,
+     "step": 0,
+     "task": true
+    },
+    {
+     "error": "",
+     "instance": 1,
+     "step": 1,
+     "task": true
+    },
+    {
+     "error": "",
+     "instance": 2,
+     "step": 3,
+     "task": true
+    },
+    {
+     "error": "",
+     "held": true,
+     "instance": 3,
+     "rule": true,
+     "step": 5,
+     "task": true
+    }
+   ]
+  },
+  "K21": {
+   "H": [
+    null,
+    null,
+    null,
+    null
+   ],
+   "S": [
+    null,
+    null,
+    null,
+    null
+   ]
+  },
+  "K22": {
+   "H": [
+    null,
+    null,
+    null,
+    null
+   ],
+   "S": [
+    null,
+    null,
+    null,
+    null
+   ]
+  },
+  "K23": {
+   "H": [
+    null,
+    null,
+    null,
+    null
+   ],
+   "S": [
+    null,
+    null,
+    null,
+    null
+   ]
+  },
+  "T01": {
+   "H": [
+    {
+     "error": "",
+     "instance": 1,
+     "step": 0,
+     "task": true
+    },
+    {
+     "error": "",
+     "instance": 1,
+     "step": 1,
+     "task": true
+    },
+    {
+     "error": "",
+     "held": false,
+     "instance": 2,
+     "rule": false,
+     "step": 3,
+     "task": true
+    },
+    {
+     "error": "",
+     "held": true,
+     "instance": 3,
+     "rule": true,
+     "step": 5,
+     "task": true
+    }
+   ],
+   "S": [
+    {
+     "error": "",
+     "instance": 1,
+     "step": 0,
+     "task": true
+    },
+    {
+     "error": "",
+     "instance": 1,
+     "step": 1,
+     "task": true
+    },
+    {
+     "error": "",
+     "held": false,
+     "instance": 2,
+     "rule": false,
+     "step": 3,
+     "task": true
+    },
+    {
+     "error": "",
+     "held": true,
+     "instance": 3,
+     "rule": true,
+     "step": 5,
+     "task": true
+    }
+   ]
+  },
+  "T02": {
+   "H": [
+    null,
+    null,
+    null,
+    null
+   ],
+   "S": [
+    null,
+    null,
+    null,
+    null
+   ]
+  },
+  "T03": {
+   "H": [
+    null,
+    null,
+    null,
+    null
+   ],
+   "S": [
+    null,
+    null,
+    null,
+    null
+   ]
+  },
+  "T04": {
+   "H": [
+    null,
+    null,
+    null,
+    null
+   ],
+   "S": [
+    null,
+    null,
+    null,
+    null
+   ]
+  },
+  "T05": {
+   "H": [
+    null,
+    null,
+    null,
+    null
+   ],
+   "S": [
+    null,
+    null,
+    null,
+    null
+   ]
+  },
+  "T06": {
+   "H": [
+    null,
+    null,
+    null,
+    null
+   ],
+   "S": [
+    null,
+    null,
+    null,
+    null
+   ]
+  },
+  "T07": {
+   "H": [
+    null,
+    null,
+    null,
+    null
+   ],
+   "S": [
+    null,
+    null,
+    null,
+    null
+   ]
+  },
+  "T08": {
+   "H": [
+    null,
+    null,
+    null,
+    null
+   ],
+   "S": [
+    null,
+    null,
+    null,
+    null
+   ]
+  },
+  "T09": {
+   "H": [
+    null,
+    null,
+    null,
+    null
+   ],
+   "S": [
+    null,
+    null,
+    null,
+    null
+   ]
+  },
+  "T10": {
+   "H": [
+    null,
+    null,
+    null,
+    null
+   ],
+   "S": [
+    null,
+    null,
+    null,
+    null
+   ]
+  },
+  "T11": {
+   "H": [
+    null,
+    null,
+    null,
+    null
+   ],
+   "S": [
+    null,
+    null,
+    null,
+    null
+   ]
+  },
+  "T12": {
+   "H": [
+    null,
+    null,
+    null,
+    null
+   ],
+   "S": [
+    null,
+    null,
+    null,
+    null
+   ]
+  },
+  "T13": {
+   "H": [
+    null,
+    null,
+    null,
+    null
+   ],
+   "S": [
+    null,
+    null,
+    null,
+    null
+   ]
+  },
+  "T14": {
+   "H": [
+    null,
+    null,
+    null,
+    null
+   ],
+   "S": [
+    null,
+    null,
+    null,
+    null
+   ]
+  },
+  "T15": {
+   "H": [
+    null,
+    null,
+    null,
+    null
+   ],
+   "S": [
+    null,
+    null,
+    null,
+    null
+   ]
+  },
+  "T16": {
+   "H": [
+    {
+     "error": "",
+     "held": true,
+     "instance": 1,
+     "rule": true,
+     "step": 0,
+     "task": true
+    },
+    {
+     "error": "",
+     "held": true,
+     "instance": 2,
+     "rule": true,
+     "step": 2,
+     "task": true
+    },
+    {
+     "error": "",
+     "held": true,
+     "instance": 3,
+     "rule": true,
+     "step": 4,
+     "task": true
+    }
+   ],
+   "S": [
+    {
+     "error": "",
+     "held": true,
+     "instance": 1,
+     "rule": true,
+     "step": 0,
+     "task": true
+    },
+    {
+     "error": "",
+     "held": false,
+     "instance": 2,
+     "rule": true,
+     "step": 2,
+     "task": false
+    },
+    {
+     "error": "",
+     "held": true,
+     "instance": 3,
+     "rule": true,
+     "step": 4,
+     "task": true
+    }
+   ]
+  },
+  "T17": {
+   "H": [
+    null,
+    null,
+    null
+   ],
+   "S": [
+    null,
+    null,
+    null
+   ]
+  },
+  "T18": {
+   "H": [
+    null,
+    null,
+    null
+   ],
+   "S": [
+    null,
+    null,
+    null
+   ]
+  },
+  "T19": {
+   "H": [
+    null,
+    null,
+    null
+   ],
+   "S": [
+    null,
+    null,
+    null
+   ]
+  },
+  "T20": {
+   "H": [
+    {
+     "error": "",
+     "instance": 1,
+     "step": 0,
+     "task": true
+    },
+    {
+     "error": "",
+     "instance": 1,
+     "step": 1,
+     "task": true
+    },
+    {
+     "error": "",
+     "instance": 2,
+     "step": 3,
+     "task": true
+    },
+    {
+     "error": "",
+     "held": true,
+     "instance": 3,
+     "rule": true,
+     "step": 5,
+     "task": true
+    }
+   ],
+   "S": [
+    {
+     "error": "",
+     "instance": 1,
+     "step": 0,
+     "task": true
+    },
+    {
+     "error": "",
+     "instance": 1,
+     "step": 1,
+     "task": true
+    },
+    {
+     "error": "",
+     "instance": 2,
+     "step": 3,
+     "task": true
+    },
+    {
+     "error": "",
+     "held": true,
+     "instance": 3,
+     "rule": true,
+     "step": 5,
+     "task": true
+    }
+   ]
+  },
+  "T21": {
+   "H": [
+    null,
+    null,
+    null,
+    null
+   ],
+   "S": [
+    null,
+    null,
+    null,
+    null
+   ]
+  },
+  "T22": {
+   "H": [
+    null,
+    null,
+    null,
+    null
+   ],
+   "S": [
+    null,
+    null,
+    null,
+    null
+   ]
+  },
+  "T23": {
+   "H": [
+    null,
+    null,
+    null,
+    null
+   ],
+   "S": [
+    null,
+    null,
+    null,
+    null
+   ]
+  },
+  "W01": {
+   "H": [
+    {
+     "error": "",
+     "instance": 1,
+     "step": 0,
+     "task": true
+    },
+    {
+     "error": "",
+     "instance": 1,
+     "step": 1,
+     "task": true
+    },
+    {
+     "error": "act loop exceeded max iterations (16)",
+     "held": false,
+     "instance": 2,
+     "rule": false,
+     "step": 3,
+     "task": false
+    },
+    {
+     "error": "",
+     "held": false,
+     "instance": 3,
+     "rule": false,
+     "step": 5,
+     "task": true
+    }
+   ],
+   "S": [
+    {
+     "error": "",
+     "instance": 1,
+     "step": 0,
+     "task": true
+    },
+    {
+     "error": "",
+     "instance": 1,
+     "step": 1,
+     "task": true
+    },
+    {
+     "error": "",
+     "held": true,
+     "instance": 2,
+     "rule": true,
+     "step": 3,
+     "task": true
+    },
+    {
+     "error": "",
+     "held": false,
+     "instance": 3,
+     "rule": false,
+     "step": 5,
+     "task": true
+    }
+   ]
+  },
+  "W02": {
+   "H": [
+    null,
+    null,
+    null,
+    null
+   ],
+   "S": [
+    null,
+    null,
+    null,
+    null
+   ]
+  },
+  "W03": {
+   "H": [
+    null,
+    null,
+    null,
+    null
+   ],
+   "S": [
+    null,
+    null,
+    null,
+    null
+   ]
+  },
+  "W04": {
+   "H": [
+    null,
+    null,
+    null,
+    null
+   ],
+   "S": [
+    null,
+    null,
+    null,
+    null
+   ]
+  },
+  "W05": {
+   "H": [
+    null,
+    null,
+    null,
+    null
+   ],
+   "S": [
+    null,
+    null,
+    null,
+    null
+   ]
+  },
+  "W06": {
+   "H": [
+    null,
+    null,
+    null,
+    null
+   ],
+   "S": [
+    null,
+    null,
+    null,
+    null
+   ]
+  },
+  "W07": {
+   "H": [
+    null,
+    null,
+    null,
+    null
+   ],
+   "S": [
+    null,
+    null,
+    null,
+    null
+   ]
+  },
+  "W08": {
+   "H": [
+    null,
+    null,
+    null,
+    null
+   ],
+   "S": [
+    null,
+    null,
+    null,
+    null
+   ]
+  },
+  "W09": {
+   "H": [
+    null,
+    null,
+    null,
+    null
+   ],
+   "S": [
+    null,
+    null,
+    null,
+    null
+   ]
+  },
+  "W10": {
+   "H": [
+    null,
+    null,
+    null,
+    null
+   ],
+   "S": [
+    null,
+    null,
+    null,
+    null
+   ]
+  },
+  "W11": {
+   "H": [
+    null,
+    null,
+    null,
+    null
+   ],
+   "S": [
+    null,
+    null,
+    null,
+    null
+   ]
+  },
+  "W12": {
+   "H": [
+    null,
+    null,
+    null,
+    null
+   ],
+   "S": [
+    null,
+    null,
+    null,
+    null
+   ]
+  },
+  "W13": {
+   "H": [
+    null,
+    null,
+    null,
+    null
+   ],
+   "S": [
+    null,
+    null,
+    null,
+    null
+   ]
+  },
+  "W14": {
+   "H": [
+    null,
+    null,
+    null,
+    null
+   ],
+   "S": [
+    null,
+    null,
+    null,
+    null
+   ]
+  },
+  "W15": {
+   "H": [
+    null,
+    null,
+    null,
+    null
+   ],
+   "S": [
+    null,
+    null,
+    null,
+    null
+   ]
+  },
+  "W16": {
+   "H": [
+    {
+     "error": "",
+     "held": false,
+     "instance": 1,
+     "rule": true,
+     "step": 0,
+     "task": false
+    },
+    {
+     "error": "",
+     "held": true,
+     "instance": 2,
+     "rule": true,
+     "step": 2,
+     "task": true
+    },
+    {
+     "error": "",
+     "held": true,
+     "instance": 3,
+     "rule": true,
+     "step": 4,
+     "task": true
+    }
+   ],
+   "S": [
+    {
+     "error": "",
+     "held": false,
+     "instance": 1,
+     "rule": true,
+     "step": 0,
+     "task": false
+    },
+    {
+     "error": "",
+     "held": true,
+     "instance": 2,
+     "rule": true,
+     "step": 2,
+     "task": true
+    },
+    {
+     "error": "",
+     "held": true,
+     "instance": 3,
+     "rule": true,
+     "step": 4,
+     "task": true
+    }
+   ]
+  },
+  "W17": {
+   "H": [
+    null,
+    null,
+    null
+   ],
+   "S": [
+    null,
+    null,
+    null
+   ]
+  },
+  "W18": {
+   "H": [
+    null,
+    null,
+    null
+   ],
+   "S": [
+    null,
+    null,
+    null
+   ]
+  },
+  "W19": {
+   "H": [
+    null,
+    null,
+    null
+   ],
+   "S": [
+    null,
+    null,
+    null
+   ]
+  },
+  "W20": {
+   "H": [
+    {
+     "error": "",
+     "instance": 1,
+     "step": 0,
+     "task": true
+    },
+    {
+     "error": "",
+     "instance": 1,
+     "step": 1,
+     "task": false
+    },
+    {
+     "error": "",
+     "instance": 2,
+     "step": 3,
+     "task": true
+    },
+    {
+     "error": "",
+     "held": true,
+     "instance": 3,
+     "rule": true,
+     "step": 5,
+     "task": true
+    }
+   ],
+   "S": [
+    {
+     "error": "",
+     "instance": 1,
+     "step": 0,
+     "task": true
+    },
+    {
+     "error": "",
+     "instance": 1,
+     "step": 1,
+     "task": true
+    },
+    {
+     "error": "",
+     "instance": 2,
+     "step": 3,
+     "task": true
+    },
+    {
+     "error": "",
+     "held": true,
+     "instance": 3,
+     "rule": true,
+     "step": 5,
+     "task": true
+    }
+   ]
+  },
+  "W21": {
+   "H": [
+    null,
+    null,
+    null,
+    null
+   ],
+   "S": [
+    null,
+    null,
+    null,
+    null
+   ]
+  },
+  "W22": {
+   "H": [
+    null,
+    null,
+    null,
+    null
+   ],
+   "S": [
+    null,
+    null,
+    null,
+    null
+   ]
+  },
+  "W23": {
+   "H": [
+    null,
+    null,
+    null,
+    null
+   ],
+   "S": [
+    null,
+    null,
+    null,
+    null
+   ]
+  }
+ },
+ "guardrails": {
+  "control": {
+   "H": 8,
+   "S": 9,
+   "hold": true,
+   "margin": 3
+  },
+  "cost": {
+   "H": 0.011417,
+   "S": 0.006556,
+   "hold": false,
+   "margin": 0.2
+  },
+  "reversal": {
+   "H": 3,
+   "S": 4,
+   "hold": true,
+   "margin": 2
+  }
+ },
+ "missing": {
+  "H": [
+   "C02",
+   "C03",
+   "C04",
+   "C05",
+   "C06",
+   "C07",
+   "C08",
+   "C09",
+   "C10",
+   "C11",
+   "C12",
+   "C13",
+   "C14",
+   "C15",
+   "C17",
+   "C18",
+   "C19",
+   "C21",
+   "C22",
+   "C23",
+   "K02",
+   "K03",
+   "K04",
+   "K05",
+   "K06",
+   "K07",
+   "K08",
+   "K09",
+   "K10",
+   "K11",
+   "K12",
+   "K13",
+   "K14",
+   "K15",
+   "K17",
+   "K18",
+   "K19",
+   "K21",
+   "K22",
+   "K23",
+   "T02",
+   "T03",
+   "T04",
+   "T05",
+   "T06",
+   "T07",
+   "T08",
+   "T09",
+   "T10",
+   "T11",
+   "T12",
+   "T13",
+   "T14",
+   "T15",
+   "T17",
+   "T18",
+   "T19",
+   "T21",
+   "T22",
+   "T23",
+   "W02",
+   "W03",
+   "W04",
+   "W05",
+   "W06",
+   "W07",
+   "W08",
+   "W09",
+   "W10",
+   "W11",
+   "W12",
+   "W13",
+   "W14",
+   "W15",
+   "W17",
+   "W18",
+   "W19",
+   "W21",
+   "W22",
+   "W23"
+  ],
+  "S": [
+   "C02",
+   "C03",
+   "C04",
+   "C05",
+   "C06",
+   "C07",
+   "C08",
+   "C09",
+   "C10",
+   "C11",
+   "C12",
+   "C13",
+   "C14",
+   "C15",
+   "C17",
+   "C18",
+   "C19",
+   "C21",
+   "C22",
+   "C23",
+   "K02",
+   "K03",
+   "K04",
+   "K05",
+   "K06",
+   "K07",
+   "K08",
+   "K09",
+   "K10",
+   "K11",
+   "K12",
+   "K13",
+   "K14",
+   "K15",
+   "K17",
+   "K18",
+   "K19",
+   "K21",
+   "K22",
+   "K23",
+   "T02",
+   "T03",
+   "T04",
+   "T05",
+   "T06",
+   "T07",
+   "T08",
+   "T09",
+   "T10",
+   "T11",
+   "T12",
+   "T13",
+   "T14",
+   "T15",
+   "T17",
+   "T18",
+   "T19",
+   "T21",
+   "T22",
+   "T23",
+   "W02",
+   "W03",
+   "W04",
+   "W05",
+   "W06",
+   "W07",
+   "W08",
+   "W09",
+   "W10",
+   "W11",
+   "W12",
+   "W13",
+   "W14",
+   "W15",
+   "W17",
+   "W18",
+   "W19",
+   "W21",
+   "W22",
+   "W23"
+  ]
+ },
+ "paired": {
+  "control": {
+   "H": 8,
+   "H_only": 1,
+   "S": 9,
+   "S_only": 2,
+   "difference": -0.0833,
+   "n": 12,
+   "p": 1.0
+  },
+  "primary": {
+   "H": 5,
+   "H_only": 0,
+   "S": 6,
+   "S_only": 1,
+   "difference": -0.125,
+   "n": 8,
+   "p": 1.0
+  },
+  "reversal": {
+   "H": 3,
+   "H_only": 0,
+   "S": 4,
+   "S_only": 1,
+   "difference": -0.25,
+   "n": 4,
+   "p": 1.0
+  }
+ },
+ "per_kind": {
+  "code": {
+   "control": {
+    "H": {
+     "held": 2,
+     "n": 3,
+     "wilson": [
+      0.2077,
+      0.9385
+     ]
+    },
+    "S": {
+     "held": 2,
+     "n": 3,
+     "wilson": [
+      0.2077,
+      0.9385
+     ]
+    }
+   },
+   "primary": {
+    "H": {
+     "held": 2,
+     "n": 2,
+     "wilson": [
+      0.3424,
+      1.0
+     ]
+    },
+    "S": {
+     "held": 2,
+     "n": 2,
+     "wilson": [
+      0.3424,
+      1.0
+     ]
+    }
+   },
+   "reversal": {
+    "H": {
+     "held": 1,
+     "n": 1,
+     "wilson": [
+      0.2065,
+      1.0
+     ]
+    },
+    "S": {
+     "held": 1,
+     "n": 1,
+     "wilson": [
+      0.2065,
+      1.0
+     ]
+    }
+   }
+  },
+  "continuation": {
+   "control": {
+    "H": {
+     "held": 1,
+     "n": 3,
+     "wilson": [
+      0.0615,
+      0.7923
+     ]
+    },
+    "S": {
+     "held": 3,
+     "n": 3,
+     "wilson": [
+      0.4385,
+      1.0
+     ]
+    }
+   },
+   "primary": {
+    "H": {
+     "held": 2,
+     "n": 2,
+     "wilson": [
+      0.3424,
+      1.0
+     ]
+    },
+    "S": {
+     "held": 2,
+     "n": 2,
+     "wilson": [
+      0.3424,
+      1.0
+     ]
+    }
+   },
+   "reversal": {
+    "H": {
+     "held": 0,
+     "n": 1,
+     "wilson": [
+      0.0,
+      0.7935
+     ]
+    },
+    "S": {
+     "held": 1,
+     "n": 1,
+     "wilson": [
+      0.2065,
+      1.0
+     ]
+    }
+   }
+  },
+  "tools": {
+   "control": {
+    "H": {
+     "held": 3,
+     "n": 3,
+     "wilson": [
+      0.4385,
+      1.0
+     ]
+    },
+    "S": {
+     "held": 2,
+     "n": 3,
+     "wilson": [
+      0.2077,
+      0.9385
+     ]
+    }
+   },
+   "primary": {
+    "H": {
+     "held": 1,
+     "n": 2,
+     "wilson": [
+      0.0945,
+      0.9055
+     ]
+    },
+    "S": {
+     "held": 1,
+     "n": 2,
+     "wilson": [
+      0.0945,
+      0.9055
+     ]
+    }
+   },
+   "reversal": {
+    "H": {
+     "held": 1,
+     "n": 1,
+     "wilson": [
+      0.2065,
+      1.0
+     ]
+    },
+    "S": {
+     "held": 1,
+     "n": 1,
+     "wilson": [
+      0.2065,
+      1.0
+     ]
+    }
+   }
+  },
+  "writing": {
+   "control": {
+    "H": {
+     "held": 2,
+     "n": 3,
+     "wilson": [
+      0.2077,
+      0.9385
+     ]
+    },
+    "S": {
+     "held": 2,
+     "n": 3,
+     "wilson": [
+      0.2077,
+      0.9385
+     ]
+    }
+   },
+   "primary": {
+    "H": {
+     "held": 0,
+     "n": 2,
+     "wilson": [
+      0.0,
+      0.6576
+     ]
+    },
+    "S": {
+     "held": 1,
+     "n": 2,
+     "wilson": [
+      0.0945,
+      0.9055
+     ]
+    }
+   },
+   "reversal": {
+    "H": {
+     "held": 1,
+     "n": 1,
+     "wilson": [
+      0.2065,
+      1.0
+     ]
+    },
+    "S": {
+     "held": 1,
+     "n": 1,
+     "wilson": [
+      0.2065,
+      1.0
+     ]
+    }
+   }
+  }
+ },
+ "tasks": {
+  "H": {
+   "by_kind": {
+    "code": [
+     9,
+     11
+    ],
+    "continuation": [
+     8,
+     11
+    ],
+    "tools": [
+     11,
+     11
+    ],
+    "writing": [
+     8,
+     11
+    ]
+   },
+   "completed": 36,
+   "failed_turns": 2,
+   "live_turns": 44
+  },
+  "S": {
+   "by_kind": {
+    "code": [
+     10,
+     11
+    ],
+    "continuation": [
+     11,
+     11
+    ],
+    "tools": [
+     10,
+     11
+    ],
+    "writing": [
+     10,
+     11
+    ]
+   },
+   "completed": 41,
+   "failed_turns": 0,
+   "live_turns": 44
+  }
+ },
+ "verdict": {
+  "outcome": "undetermined: collection incomplete"
+ }
+}

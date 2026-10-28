@@ -156,3 +156,62 @@ The PM changed the model at the pre-pilot gate (PR #1168, decision of 2026-10-28
 - `b95712c6f66898e9386c51cd51817bd8d616a6aa` drops `require_parameters`. The request is still routed only to `minimax/fp8` with fallbacks off, and OpenRouter ignores the parameter that endpoint lacks.
 - The refused attempt's ledger and record are kept under [`evidence/pilot-routing-404/`](evidence/pilot-routing-404/), and the pilot starts again in a fresh directory.
 - `harness/proxy.go` is now SHA-256 `21bf8dfe9a62069fc1ebf827ebb2743f738f551f776ef1a7386e400af656a336`.
+
+## Amendment 2 — pilot record (2026-10-28, after the pilot, before any collection call)
+
+This amendment records the pilot. The PM's brief calls it "Amendment 1"; that number had already gone to the model change. Evidence is under [`evidence/pilot/`](evidence/pilot/): results, transcripts, the ledger, and `scores.json` from `score.py evidence/pilot`. The pilot ran the twelve families of §Budget and collection in both arms on `minimax/minimax-m2` at `minimax/fp8`, from 10:47Z to 11:21Z.
+
+### Spend
+
+| Reading of `GET /api/v1/key` | Time (UTC) | `usage` (USD) | `limit` (USD) |
+|---|---|---:|---:|
+| before the pilot | 2026-10-28T10:45:20Z | 0.007 | 50 |
+| during the pilot (the PM's reading) | 2026-10-28T10:55:03Z | 0.0700 | — |
+| after the pilot | 2026-10-28T11:21:22Z | 0.49056313 | 50 |
+
+- **The pilot's spend** is USD 0.4836 by the key, or USD 0.4895 by the ledger. The ledger holds 530 paid calls, each with the cost OpenRouter reported, and 400 synthesis cache hits. The ledger is USD 0.006 above the key's delta, inside the spend control's USD 0.05.
+- The key is shared, so the delta bounds the pilot's spend rather than isolating it.
+- The refused attempt of Amendment 1a cost nothing.
+
+### Cost per episode
+
+An arm is charged its paid calls plus what each cache hit first cost (§Endpoint). OpenRouter reports completion tokens with M2's reasoning tokens included, and its reported cost covers them.
+
+| Arm | Episodes | USD charged | USD per episode | Act calls (per live turn) | Act tokens in / out | Paid synthesis tokens in / out |
+|---|---:|---:|---:|---:|---|---|
+| S | 12 | 0.2688 | 0.0224 | 125 (2.84) | 468,031 / 23,860 | 34,041 / 21,867 |
+| H | 12 | 0.4110 | 0.0343 | 238 (5.41) | 882,617 / 36,930 | 53,859 / 37,623 |
+
+- 108 of H's 238 act calls ended in prose with no tool call, against 19 of S's 125. The session then asks again for the terminal call, which is most of H's extra calls.
+- Cost per completed task in the pilot was USD 0.0114 for H against USD 0.0066 for S, 74% higher. The guardrail allows 20%. The pilot is not scored for the verdict.
+
+### Projection for collection
+
+- **Shared-cache basis:** 92 families at the pilot's spend per family pair (USD 0.4895 / 12 = USD 0.0408) come to USD 3.75.
+- **No-cache basis:** the sum of the two arms' per-episode charges (USD 0.0567) comes to USD 5.22.
+- **With half again for re-runs and variance:** at most USD 7.8.
+- **Fit:** this is under USD 24.51, the study ceiling less the pilot's ledger spend, with more than three times margin.
+
+### The tool-calling check on M2
+
+| Criterion | Required | Result |
+|---|---|---|
+| Live turns ending through the terminal call without error | ≥ 90% | 86 of 88 (97.7%). S 44 of 44. H 42 of 44: W01 step 3 ran out of iterations, and one turn failed to record its conversation after three unusable syntheses. |
+| Synthesis calls answered with one usable `memory_summary` call | ≥ 80% | Paid answers only: 119 of 167 (71.3%), **fails**. Counting answers served from the cache: 519 of 567 (91.5%), passes. |
+| A successful `file_write` in code, file-work and continuation turns | ≥ 50% | 65 of 66 (98.5%). S 33 of 33, H 32 of 33. |
+
+- **How usable was counted.** The ledger does not record a response's tool call, only its `finish_reason`. A paid synthesis counts as usable when it finished on `tool_calls`. The 48 that finished on `stop` carried no tool call and are unusable on any reading, so 71.3% is an upper bound for paid answers.
+- **Where the unusable syntheses are.**
+  - By arm: S 62 of 64 usable, H 57 of 103.
+  - All 46 unusable H syntheses come from two continuation episodes, C01 (25) and C20 (21). Those episodes took 817 s and 976 s.
+  - They left 10 batches pending in H after three attempts each, which production retries at the next completion.
+  - What in those batches made M2 answer in prose cannot be read from the evidence, because the proxy keeps no request bodies.
+- **§Model leaves the denominator unstated.** It does not say whether cache-served answers count. The amendment does not choose: under the paid-answer reading M2 fails, and the PM's ruling of 2026-10-28 is to stop and report. Collection does not start until the PM rules on the reading.
+
+### Controls in the pilot
+
+- **Window:** no probe turn's restored history held a correction, 0 of 20 probes in each arm. Holds.
+- **Recall:** the recall block was in 44 of 44 S turns and 0 of 44 H turns. Holds.
+- **Exercise:** each arm kept the correction in 4 of 4 primary families: S's note non-empty, and a successful H `memory_file_write`. `score.py` reports `exercise_holds` false only because its floor of 30 is set for the 60 primary families of collection.
+- **Spend:** the ledger is within USD 0.006 of the key. Holds.
+- **Scorer near miss not foreseen.** S's W01 probe at step 5 begins `**STATUS:**`, with the prefix in bold, and the prefix check fails it. §Controls lists a prefix in mid-reply as a near miss, not a prefix in emphasis. Whether emphasis around a required prefix keeps the rule is a question for the PM. The scorer is unchanged.

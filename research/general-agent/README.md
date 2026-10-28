@@ -29,9 +29,9 @@ python3 research/general-agent/models.py                                    # re
 
 ## Status
 
-- Corpus, scorer, harness, model ladder and preregistration are committed.
-- The pilot has not run: no `OPENROUTER_API_KEY` was available to the session that prepared the study, so no paid call has been made and no spend has been read.
-- The collection projection is the estimate in the preregistration §Budget and collection, which Amendment 1 replaces with the pilot's measured cost.
+- Corpus, scorer, harness and preregistration are committed. The model is `minimax/minimax-m2` (preregistration Amendment 1).
+- The pilot ran on 2026-10-28 and spent USD 0.4836 by the key's usage, or USD 0.4895 by the ledger. Preregistration Amendment 2 records its cost per episode, the tool-calling check, its controls and a projected collection cost of at most USD 7.8.
+- Collection has not started. Under the paid-answer reading of the check, M2 answered 71.3% of syntheses with a usable call, short of the 80% required. The PM decides the reading before collection.
 
 ## Limits
 

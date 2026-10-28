@@ -49,7 +49,7 @@ type Factory struct {
 	RequireStore bool
 	// NewModel returns the chat model for the agent's session.
 	NewModel func(agentID string) agent.Model
-	// Embedder ranks mid episodes by similarity for recall.
+	// Embedder ranks mid episodes by similarity for memory_search.
 	Embedder agent.Embedder
 	// Ego is the session ego; empty selects the agent package's embedded
 	// default (the platform contract is appended regardless).
@@ -67,8 +67,8 @@ type Factory struct {
 }
 
 // New builds the agent runtime: it opens (creating on first use) the
-// memory store and the session, then wires source-linked recall, inspection,
-// event, and context-compaction hooks.
+// memory store and the session, then wires source-linked search and
+// inspection, the memory files, event, and context-compaction hooks.
 func (f *Factory) New(ctx context.Context, agentID string, events agent.EventSink) (*Runtime, error) {
 	store, err := f.openStore()
 	if err != nil {
@@ -98,7 +98,6 @@ func (f *Factory) New(ctx context.Context, agentID string, events agent.EventSin
 		initial = append(initial, agent.Message{Role: m.Role, Content: m.Content})
 	}
 	session := agent.NewSession(model, f.Tools, agent.Options{
-		Recaller:             agentmemory.ConversationRecall{Store: store},
 		Conversation:         store,
 		Summarizer:           summarizer,
 		InitialHistory:       initial,

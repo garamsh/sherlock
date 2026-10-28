@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
+	"hash/fnv"
 	"path/filepath"
 	"strings"
 	"testing"
@@ -173,4 +174,26 @@ func TestRecordTurn_ThreeAnswersWithoutTheCallLeaveTheBatchPending(t *testing.T)
 	require.NoError(t, err)
 	require.Len(t, episodes, 1)
 	assert.Equal(t, "Launch moved to Friday.", episodes[0].Summary)
+}
+
+// wordEmbedder counts each word into a hashed dimension, so texts sharing
+// words are similar and texts sharing none are orthogonal.
+type wordEmbedder struct{}
+
+func (wordEmbedder) Embed(_ context.Context, text string) ([]float32, error) {
+	vector := make([]float32, 4096)
+	for _, word := range strings.Fields(strings.ToLower(text)) {
+		hash := fnv.New32a()
+		_, _ = hash.Write([]byte(strings.Trim(word, ".,;:?!")))
+		vector[hash.Sum32()%4096]++
+	}
+	return vector, nil
+}
+
+func checkpoint(content string) []agent.SourceMessage {
+	var messages []agent.SourceMessage
+	for i := 0; i < 4; i++ {
+		messages = append(messages, agent.SourceMessage{Role: agent.RoleUser, Content: content})
+	}
+	return messages
 }

@@ -115,14 +115,9 @@ func TestConversation_UnsupportedQuestionHasNoEvidence(t *testing.T) {
 	reply, err := rt.Session.Run(ctx, "When is the lunar launch?")
 	require.NoError(t, err)
 	assert.Equal(t, "I don't have a source for that.", reply)
-	var outcome agent.RecallOutcome
 	for _, e := range events.events {
-		if e.Kind == agent.EventRecall {
-			outcome = e.RecallOutcome
-		}
 		assert.NotEqual(t, agent.MemoryInspectTool, e.ToolName)
 	}
-	assert.Equal(t, agent.RecallEmpty, outcome)
 	require.NoError(t, rt.Close(ctx))
 }
 
@@ -154,12 +149,14 @@ func TestConversation_QueuePreservesOriginalInboundID(t *testing.T) {
 func TestConversation_RelatedCandidateDoesNotSupportMissingDate(t *testing.T) {
 	ctx := context.Background()
 	path := filepath.Join(t.TempDir(), "memory.db")
-	seed, err := sqlite.OpenConversation(path, nil)
+	seed, err := sqlite.OpenConversation(path, wordEmbedder{})
 	require.NoError(t, err)
-	require.NoError(t, seed.RecordTurn(ctx, []agent.SourceMessage{{Role: agent.RoleUser, Content: "The lunar mission uses the Aurora capsule."}, {Role: agent.RoleAssistant, Content: "Noted."}}, firstSummary{}))
+	require.NoError(t, seed.RecordTurn(ctx, []agent.SourceMessage{{Role: agent.RoleUser, Content: "The lunar mission uses the Aurora capsule."}, {Role: agent.RoleAssistant, Content: "Noted."},
+		{Role: agent.RoleUser, Content: "Its crew is three people."}, {Role: agent.RoleAssistant, Content: "Noted."}}, firstSummary{}))
 	require.NoError(t, seed.Close())
 	model := summaryScript(
-		writebackStep(`{"reply":"I found the capsule name but no launch date in the available source.","note":null}`),
+		agent.ScriptedStep{ToolCalls: []agent.ToolCall{{Name: agent.MemorySearchTool, Input: json.RawMessage(`{"query":"lunar mission launch date"}`)}}},
+		writebackStep(`{"reply":"I found the capsule name but no launch date in the available source."}`),
 	)
 	events := &conversationEvents{}
 	rt, err := (&gateway.Factory{MemoryPath: path, NewModel: func(string) agent.Model { return model }, Embedder: wordEmbedder{}, Tools: noTools()}).New(ctx, "a", events)
@@ -167,13 +164,13 @@ func TestConversation_RelatedCandidateDoesNotSupportMissingDate(t *testing.T) {
 	reply, err := rt.Session.Run(ctx, "When is the lunar mission launching?")
 	require.NoError(t, err)
 	assert.Contains(t, reply, "no launch date")
-	var count int
+	var found string
 	for _, e := range events.events {
-		if e.Kind == agent.EventRecall {
-			count = e.RecalledCount
+		if e.Kind == agent.EventToolCall && e.ToolName == agent.MemorySearchTool {
+			found = e.ToolResult
 		}
 	}
-	assert.Greater(t, count, 0, "a related candidate was retrieved, so this is an answer control, not an empty-search case")
+	assert.Contains(t, found, "Aurora", "a related candidate was retrieved, so this is an answer control, not an empty-search case")
 	require.NoError(t, rt.Close(ctx))
 }
 
@@ -253,15 +250,17 @@ func (m *leadingModel) Chat(ctx context.Context, messages []agent.Message, descr
 	return m.inner.Chat(ctx, messages, descriptors)
 }
 
-// TestConversation_NoteSurvivesCompactionAndRestart writes a note on the
-// first turn, lets the two-message window drop that turn, and restarts: the
-// note still leads the context, where the turn that stated it does not.
-func TestConversation_NoteSurvivesCompactionAndRestart(t *testing.T) {
+// TestConversation_MemoryFilesSurviveCompactionAndRestart writes USER.md
+// on the first turn, lets the two-message window drop that turn, and
+// restarts: the file still leads the context, where the turn that stated
+// the rule does not.
+func TestConversation_MemoryFilesSurviveCompactionAndRestart(t *testing.T) {
 	ctx := context.Background()
 	path := filepath.Join(t.TempDir(), "memory.db")
 	model := &leadingModel{inner: summaryScript(
-		writebackStep(`{"reply":"Noted.","note":"Standing instruction: indent code with tabs."}`),
-		writebackStep(`{"reply":"Filler answered.","note":null}`),
+		agent.ScriptedStep{ToolCalls: []agent.ToolCall{{Name: agent.MemoryFileWriteTool, Input: json.RawMessage(`{"file":"USER.md","content":"Standing instruction: indent code with tabs."}`)}}},
+		writebackStep(`{"reply":"Noted."}`),
+		writebackStep(`{"reply":"Filler answered."}`),
 	)}
 	f := &gateway.Factory{MemoryPath: path, NewModel: func(string) agent.Model { return model }, Embedder: wordEmbedder{}, Tools: noTools(), MaxHistoryMessages: 2}
 	rt, err := f.New(ctx, "a", nil)
@@ -280,11 +279,11 @@ func TestConversation_NoteSurvivesCompactionAndRestart(t *testing.T) {
 	_, err = restarted.Session.Run(ctx, "Write me a loop.")
 	require.NoError(t, err)
 
-	require.Len(t, model.leading, 2)
-	assert.Contains(t, model.leading[0], "## Your note\n(empty)", "the control: no note before one is written")
-	assert.Contains(t, model.leading[1], "## Your note\nStanding instruction: indent code with tabs.")
+	require.Len(t, model.leading, 3)
+	assert.Contains(t, model.leading[0], "### USER.md\n(empty)", "the control: no file before one is written")
+	assert.Contains(t, model.leading[2], "### USER.md\nStanding instruction: indent code with tabs.")
 	require.Len(t, restartedModel.leading, 1)
-	assert.Contains(t, restartedModel.leading[0], "## Your note\nStanding instruction: indent code with tabs.")
+	assert.Contains(t, restartedModel.leading[0], "### USER.md\nStanding instruction: indent code with tabs.")
 	for _, m := range restarted.Session.History() {
 		assert.NotEqual(t, "Always indent code with tabs.", m.Content, "the window no longer holds the turn that stated the rule")
 	}

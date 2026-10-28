@@ -169,7 +169,7 @@ func TestGateway_EndToEnd(t *testing.T) {
 
 	// The SSE subscriber observed the loop events of both turns, in
 	// order: turn 1 fully finishes before turn 2 starts.
-	got := collectEvents(t, events, 10)
+	got := collectEvents(t, events, 8)
 	var kinds []string
 	var startedTasks []string
 	for _, e := range got {
@@ -182,13 +182,12 @@ func TestGateway_EndToEnd(t *testing.T) {
 	assert.Contains(t, startedTasks[0], "] unknown: first",
 		"the turn input renders the message with its ID and sender (ADR 0015)")
 	assert.Contains(t, startedTasks[1], "] unknown: second")
-	// A recall event per turn: #630 wired the read step, so every turn
-	// resolves its task into an address before the act loop (ADR 0019).
-	// The writeback fires once per turn, when the turn ends on the
+	// No recall event: nothing is read before the act loop. The
+	// writeback fires once per turn, when the turn ends on the
 	// reserved call, rather than once per model response (issue #615).
 	assert.Equal(t, []string{
-		"turn_started", "recall", "tool_call", "writeback", "turn_finished",
-		"turn_started", "recall", "tool_call", "writeback", "turn_finished",
+		"turn_started", "tool_call", "writeback", "turn_finished",
+		"turn_started", "tool_call", "writeback", "turn_finished",
 	}, kinds)
 
 	// One agent per process: a message naming another agent ID gets 404.

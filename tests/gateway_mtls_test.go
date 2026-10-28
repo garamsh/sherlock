@@ -248,7 +248,7 @@ func TestGatewayMTLS_AuthenticatesCallers(t *testing.T) {
 	assert.Equal(t, http.StatusAccepted, resp.StatusCode)
 	resp.Body.Close()
 
-	got := collectEvents(t, events, 7)
+	got := collectEvents(t, events, 6)
 	assert.Equal(t, "turn_started", got[0]["kind"])
 	assert.Equal(t, "turn_finished", got[len(got)-1]["kind"])
 

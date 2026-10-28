@@ -13,40 +13,49 @@ import (
 	"github.com/garamsh/sherlock/internal/tool"
 )
 
-// noteStore is a stateful conversation store: it keeps the note, the
-// recorded turns and every search query, and answers searches and the walk
-// with fixed hits.
-type noteStore struct {
+// fileStore is a stateful conversation store: it keeps the agent's files,
+// the recorded turns and every search query, and answers searches and the
+// walk with fixed hits.
+type fileStore struct {
 	agent.ConversationMemory
-	note     string
-	setNotes []string
-	turns    [][]agent.SourceMessage
-	queries  []string
-	limits   []int
-	hits     []agent.ConversationHit
-	linked   agent.Linked
+	files   map[string]string
+	writes  []string
+	turns   [][]agent.SourceMessage
+	queries []string
+	limits  []int
+	hits    []agent.ConversationHit
+	linked  agent.Linked
 }
 
-func (s *noteStore) Note(context.Context) (string, error) { return s.note, nil }
+func (s *fileStore) AgentFiles(context.Context) (map[string]string, error) {
+	out := map[string]string{}
+	for path, content := range s.files {
+		out[path] = content
+	}
+	return out, nil
+}
 
-func (s *noteStore) SetNote(_ context.Context, note string) error {
-	s.note = note
-	s.setNotes = append(s.setNotes, note)
+func (s *fileStore) SetAgentFile(_ context.Context, path, content string) error {
+	if s.files == nil {
+		s.files = map[string]string{}
+	}
+	s.files[path] = content
+	s.writes = append(s.writes, path)
 	return nil
 }
 
-func (s *noteStore) RecordTurn(_ context.Context, sources []agent.SourceMessage, _ agent.ConversationSummarizer) error {
+func (s *fileStore) RecordTurn(_ context.Context, sources []agent.SourceMessage, _ agent.ConversationSummarizer) error {
 	s.turns = append(s.turns, sources)
 	return nil
 }
 
-func (s *noteStore) Search(_ context.Context, query string, limit int) ([]agent.ConversationHit, error) {
+func (s *fileStore) Search(_ context.Context, query string, limit int) ([]agent.ConversationHit, error) {
 	s.queries = append(s.queries, query)
 	s.limits = append(s.limits, limit)
 	return s.hits, nil
 }
 
-func (s *noteStore) Linked(context.Context, string) (agent.Linked, error) { return s.linked, nil }
+func (s *fileStore) Linked(context.Context, string) (agent.Linked, error) { return s.linked, nil }
 
 // recordingModel scripts responses and keeps what each call was shown.
 type recordingModel struct {
@@ -67,7 +76,7 @@ func searchCall(query string) agent.ToolCall {
 }
 
 func TestSessionRun_SearchRanksWithTheModelsQuery(t *testing.T) {
-	store := &noteStore{hits: []agent.ConversationHit{{ID: 7, Summary: " The Lisbon offsite is booked for 42 people. ", SourceFirst: 25, SourceLast: 28}}}
+	store := &fileStore{hits: []agent.ConversationHit{{ID: 7, Summary: " The Lisbon offsite is booked for 42 people. ", SourceFirst: 25, SourceLast: 28}}}
 	model := &recordingModel{inner: agent.NewScriptedModel(
 		agent.ScriptedStep{ToolCalls: []agent.ToolCall{searchCall("Lisbon offsite headcount")}},
 		finalStep("42 people."),
@@ -92,7 +101,7 @@ func TestSessionRun_SearchTakesSimilarAndWalkEpisodesInTurn(t *testing.T) {
 	episode := func(id int64) agent.ConversationHit {
 		return agent.ConversationHit{ID: id, Summary: fmt.Sprintf("episode %d", id), SourceFirst: 4*id - 3, SourceLast: 4 * id}
 	}
-	store := &noteStore{
+	store := &fileStore{
 		hits: []agent.ConversationHit{episode(7), episode(8), episode(9)},
 		linked: agent.Linked{Seeds: []string{"rodend"}, Hits: []agent.LinkedHit{
 			{ConversationHit: episode(8), Subject: "gebind components"},
@@ -125,7 +134,7 @@ func TestSessionRun_SearchTakesSimilarAndWalkEpisodesInTurn(t *testing.T) {
 }
 
 func TestSessionRun_SearchRefusesAnEmptyQuery(t *testing.T) {
-	store := &noteStore{}
+	store := &fileStore{}
 	model := &recordingModel{inner: agent.NewScriptedModel(
 		agent.ScriptedStep{ToolCalls: []agent.ToolCall{searchCall("   ")}},
 		agent.ScriptedStep{ToolCalls: []agent.ToolCall{searchCall("offsite")}},
@@ -160,5 +169,5 @@ func TestSessionRun_SearchNeedsConversationMemory(t *testing.T) {
 		return out
 	}
 	assert.NotContains(t, names(agent.Options{}), agent.MemorySearchTool)
-	assert.Contains(t, names(agent.Options{Conversation: &noteStore{}}), agent.MemorySearchTool)
+	assert.Contains(t, names(agent.Options{Conversation: &fileStore{}}), agent.MemorySearchTool)
 }

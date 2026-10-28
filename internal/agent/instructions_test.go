@@ -60,18 +60,25 @@ func TestContract_SourceInspectionAndUnsupportedAnswer(t *testing.T) {
 	contract := agent.Contract
 	assert.Contains(t, contract, "memory_inspect")
 	assert.Contains(t, contract, "exact original wording")
-	assert.Contains(t, contract, "A candidate is a lead")
-	assert.Contains(t, contract, "If no source supports an answer, say so")
-	assert.Contains(t, contract, "explicit\ncorrection")
+	assert.Contains(t, contract, "a lead and not\n  proof")
+	assert.Contains(t, contract, "If no source\n  supports an answer, say so")
+	assert.Contains(t, contract, "explicit correction")
 }
 
-func TestContract_TerminalCallCarriesReplyAndNote(t *testing.T) {
+func TestContract_TerminalCallCarriesTheReplyAlone(t *testing.T) {
 	contract := agent.Contract
 	require.Contains(t, contract, "memory_write")
-	assert.Contains(t, contract, "`note`")
-	assert.Contains(t, contract, "copy it\nunchanged when nothing in it changed")
-	assert.Contains(t, contract, "at most 2000 characters")
+	assert.Contains(t, contract, "`reply`")
+	assert.NotContains(t, contract, "`note`")
 	assert.NotContains(t, contract, "memory_ops")
+}
+
+func TestContract_MemoryFilesAndSkillsAreTheAgentsToWrite(t *testing.T) {
+	contract := agent.Contract
+	for _, name := range []string{"memory_file_write", "USER.md", "MEMORY.md", "skill_write", "skill_view"} {
+		assert.Contains(t, contract, name)
+	}
+	assert.NotContains(t, contract, "Recalled memories")
 }
 
 func TestContract_SearchResolvesReferences(t *testing.T) {

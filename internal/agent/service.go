@@ -3,7 +3,6 @@ package agent
 import (
 	"context"
 	"encoding/json"
-	"errors"
 	"fmt"
 	"log/slog"
 
@@ -22,9 +21,8 @@ const maxToolCallsPerTurn = 6
 // Session is one rolling conversation per agent (ADR 0006, ADR 0016):
 // it holds the history and runs one turn per call to Run.
 type Session interface {
-	// Run executes one turn of the memory lifecycle — frame, recall, act,
-	// writeback — and returns the reply field of the model's final
-	// response.
+	// Run executes one turn — act, then writeback — and returns the
+	// reply field of the model's final response.
 	Run(ctx context.Context, task string) (string, error)
 	// History returns a copy of the conversation so far.
 	History() []Message
@@ -32,7 +30,6 @@ type Session interface {
 
 // Options wires the session's hook points. Nil interfaces are no-ops.
 type Options struct {
-	Recaller       Recaller
 	Events         EventSink
 	Compactor      Compactor
 	Conversation   ConversationMemory
@@ -56,8 +53,8 @@ type session struct {
 	tools ToolClient
 	opts  Options
 	// instructions is the composed ego, operator instructions and
-	// contract; lead puts it, with the saved note, at the head of
-	// history every turn.
+	// contract; lead puts it, with the memory files and the skill
+	// index, at the head of history every turn.
 	instructions string
 	history      []Message
 	sources      []SourceMessage
@@ -100,8 +97,9 @@ func (s *session) History() []Message {
 	return append([]Message(nil), s.history...)
 }
 
-// Run executes one turn: frame the task, recall linked candidates, act,
-// and persist visible conversation after the terminal response. Every turn ends
+// Run executes one turn: act on the task with the memory files in view,
+// and persist visible conversation after the terminal response. Older
+// conversation enters only through a search the model makes. Every turn ends
 // with exactly one terminal event: turn_finished on success, turn_failed
 // on error.
 func (s *session) Run(ctx context.Context, task string) (response string, err error) {
@@ -120,14 +118,7 @@ func (s *session) Run(ctx context.Context, task string) (response string, err er
 	if err := s.lead(ctx); err != nil {
 		return "", err
 	}
-	recalled, err := s.recall(ctx, task)
-	if err != nil {
-		return "", err
-	}
-	s.history = append(s.history,
-		Message{Role: RoleSystem, Content: frameContext(task, recalled)},
-		Message{Role: RoleUser, Content: task},
-	)
+	s.history = append(s.history, Message{Role: RoleUser, Content: task})
 
 	for range s.opts.MaxIterations {
 		if err := s.compact(ctx); err != nil {
@@ -139,21 +130,11 @@ func (s *session) Run(ctx context.Context, task string) (response string, err er
 		}
 		write, calls := splitWriteback(resp.ToolCalls)
 		if write != nil {
-			reply, note, err := ParseWriteback(string(write.Input))
-			if errors.Is(err, ErrNoteTooLong) {
-				// The reply is not lost to an overgrown note: the call
-				// gets its refusal as a result and the model asks again.
-				s.emit(ctx, Event{Kind: EventWritebackError, Turn: s.turn, Error: err.Error()})
-				s.history = append(s.history,
-					Message{Role: RoleAssistant, Content: resp.Content, ToolCalls: []ToolCall{*write}},
-					Message{Role: RoleTool, Name: write.Name, ToolCallID: write.ID, Content: err.Error() + "; shorten the note and call " + MemoryWriteTool + " again"},
-				)
-				continue
-			}
+			reply, err := ParseWriteback(string(write.Input))
 			if err != nil {
 				return "", err
 			}
-			return s.finish(ctx, reply, note)
+			return s.finish(ctx, reply)
 		}
 		s.history = append(s.history, Message{
 			Role:      RoleAssistant,
@@ -178,15 +159,15 @@ func (s *session) Run(ctx context.Context, task string) (response string, err er
 }
 
 // modelTools is what the model is shown: the operator's tools plus the
-// reserved writeback. The reserved descriptor is added here rather than
-// by a provider so every provider advertises it the same way, and it is
-// not in the tool client, so no operator tool can be reached by that
-// name.
+// reserved calls. The reserved descriptors are added here rather than by
+// a provider so every provider advertises them the same way, and they
+// are not in the tool client, so no operator tool can be reached by
+// their names.
 func (s *session) modelTools() []tool.Descriptor {
 	installed := s.tools.List()
-	out := make([]tool.Descriptor, 0, len(installed)+2)
+	out := make([]tool.Descriptor, 0, len(installed)+6)
 	for _, d := range installed {
-		if d.Name == MemoryWriteTool || d.Name == MemoryInspectTool || d.Name == MemorySearchTool {
+		if reserved[d.Name] {
 			// An operator tool cannot take the reserved name: the
 			// session would route its calls to the writeback and the
 			// operator's tool would never run. Dropping it is visible
@@ -199,9 +180,16 @@ func (s *session) modelTools() []tool.Descriptor {
 	}
 	out = append(out, MemoryWriteDescriptor())
 	if s.opts.Conversation != nil {
-		out = append(out, MemoryInspectDescriptor(), MemorySearchDescriptor())
+		out = append(out, MemoryInspectDescriptor(), MemorySearchDescriptor(),
+			MemoryFileWriteDescriptor(), SkillViewDescriptor(), SkillWriteDescriptor())
 	}
 	return out
+}
+
+// reserved names the calls the session answers itself.
+var reserved = map[string]bool{
+	MemoryWriteTool: true, MemoryInspectTool: true, MemorySearchTool: true,
+	MemoryFileWriteTool: true, SkillViewTool: true, SkillWriteTool: true,
 }
 
 // splitWriteback separates the reserved writeback call from the tool
@@ -224,29 +212,21 @@ func splitWriteback(calls []ToolCall) (*ToolCall, []ToolCall) {
 	return write, rest
 }
 
-// finish records the turn the model ended with its reply and note.
+// finish records the turn the model ended with its reply.
 // A turn's history keeps the reply rather than the call that carried
 // it. The writeback call is the turn's last act and nothing answers it,
 // so leaving it in history leaves a tool call with no result — which a
 // provider rejects on the next turn, and did: MiniMax returns HTTP 400
 // "tool call result does not follow tool call" on the turn after the
 // first, which made a rolling session unusable past turn one (#630).
-//
-// The sources are saved before the note, so a failed note write leaves
-// the turn's conversation durable and the previous note in place.
-func (s *session) finish(ctx context.Context, reply string, note *string) (string, error) {
+func (s *session) finish(ctx context.Context, reply string) (string, error) {
 	s.history = append(s.history, Message{Role: RoleAssistant, Content: reply})
 	if s.opts.Conversation != nil {
 		if err := s.opts.Conversation.RecordTurn(ctx, append(append([]SourceMessage(nil), s.sources...), SourceMessage{Role: RoleAssistant, Content: reply}), s.opts.Summarizer); err != nil {
 			return "", fmt.Errorf("record conversation: %w", err)
 		}
-		if note != nil {
-			if err := s.opts.Conversation.SetNote(ctx, *note); err != nil {
-				return "", fmt.Errorf("save note: %w", err)
-			}
-		}
 	}
-	s.emit(ctx, Event{Kind: EventWriteback, Turn: s.turn, Note: note})
+	s.emit(ctx, Event{Kind: EventWriteback, Turn: s.turn})
 	s.emit(ctx, Event{Kind: EventTurnFinished, Turn: s.turn, Response: reply})
 	return reply, nil
 }
@@ -255,8 +235,7 @@ func (s *session) finish(ctx context.Context, reply string, note *string) (strin
 // turn. It names the tool rather than restating the contract, which the
 // descriptor already carries.
 func writebackRequiredNotice() string {
-	return "Your turn is not finished. Call " + MemoryWriteTool +
-		" with your reply and your whole note."
+	return "Your turn is not finished. Call " + MemoryWriteTool + " with your reply."
 }
 
 // execute runs one tool call through the protocol client and feeds the
@@ -303,18 +282,20 @@ func (s *session) execute(ctx context.Context, call ToolCall) {
 	s.emit(ctx, event)
 }
 
+// memoryCalls are the reserved calls the session answers from memory.
+var memoryCalls = map[string]func(context.Context, ConversationMemory, json.RawMessage) (string, error){
+	MemoryInspectTool:   inspectMemory,
+	MemorySearchTool:    searchMemory,
+	MemoryFileWriteTool: writeMemoryFile,
+	SkillViewTool:       viewSkill,
+	SkillWriteTool:      writeSkill,
+}
+
 // invoke dispatches one tool call through the protocol client, returning
 // the result or the error text together with whether the call failed.
 func (s *session) invoke(ctx context.Context, call ToolCall) (string, bool) {
-	if call.Name == MemoryInspectTool && s.opts.Conversation != nil {
-		out, err := inspectMemory(ctx, s.opts.Conversation, call.Input)
-		if err != nil {
-			return err.Error(), true
-		}
-		return out, false
-	}
-	if call.Name == MemorySearchTool && s.opts.Conversation != nil {
-		out, err := searchMemory(ctx, s.opts.Conversation, call.Input)
+	if answer, ok := memoryCalls[call.Name]; ok && s.opts.Conversation != nil {
+		out, err := answer(ctx, s.opts.Conversation, call.Input)
 		if err != nil {
 			return err.Error(), true
 		}
@@ -362,39 +343,18 @@ func toolBudgetNotice(name, description string) string {
 	return notice
 }
 
-func (s *session) recall(ctx context.Context, task string) (Recalled, error) {
-	if s.opts.Recaller == nil {
-		return Recalled{}, nil
-	}
-	recalled, err := s.opts.Recaller.Recall(ctx, task)
-	if err != nil {
-		return Recalled{}, fmt.Errorf("recall: %w", err)
-	}
-	var ids []string
-	for _, m := range recalled.Memories {
-		ids = append(ids, m.ID)
-	}
-	s.emit(ctx, Event{
-		Kind:          EventRecall,
-		Turn:          s.turn,
-		RecalledIDs:   ids,
-		RecalledCount: len(ids),
-		RecallOutcome: recalled.Outcome,
-	})
-	return recalled, nil
-}
-
-// lead puts the instructions, followed by the saved note, at the head of
-// history. It runs every turn, because the note can change between turns
-// and a restored or compacted history must not keep a stale one.
+// lead puts the instructions, followed by the memory files and the skill
+// index, at the head of history. It runs every turn, because the files
+// can change between turns and a restored or compacted history must not
+// keep stale ones.
 func (s *session) lead(ctx context.Context) error {
 	content := s.instructions
 	if s.opts.Conversation != nil {
-		note, err := s.opts.Conversation.Note(ctx)
+		files, err := s.opts.Conversation.AgentFiles(ctx)
 		if err != nil {
-			return fmt.Errorf("read note: %w", err)
+			return fmt.Errorf("read memory files: %w", err)
 		}
-		content += noteSection(note)
+		content += memorySection(files)
 	}
 	if len(s.history) > 0 && s.history[0].Role == RoleSystem {
 		s.history[0].Content = content
@@ -402,16 +362,6 @@ func (s *session) lead(ctx context.Context) error {
 	}
 	s.history = append([]Message{{Role: RoleSystem, Content: content}}, s.history...)
 	return nil
-}
-
-// noteSection renders the saved note under the instructions, stating an
-// empty note apart so the model knows it has none rather than that it is
-// missing.
-func noteSection(note string) string {
-	if note == "" {
-		return "\n\n## Your note\n(empty)"
-	}
-	return "\n\n## Your note\n" + note
 }
 
 func (s *session) compact(ctx context.Context) error {
@@ -431,27 +381,4 @@ func (s *session) emit(ctx context.Context, e Event) {
 	if s.opts.Events != nil {
 		s.opts.Events.Emit(ctx, e)
 	}
-}
-
-// frameContext composes the per-turn system block: the task statement
-// (frame) followed by the recalled memories, with an explicit statement
-// when recall came back empty (ADR 0006 step 2).
-// frameContext renders the turn's task and what recall reached. The two
-// emptinesses are stated apart (ADR 0019): a question memory could not
-// place is not a question memory had no answer to, and a model told the
-// second when the first happened is being told something false.
-func frameContext(task string, recalled Recalled) string {
-	out := "## Current task\n" + task + "\n\n## Recalled memories\n"
-	if len(recalled.Memories) == 0 {
-		switch recalled.Outcome {
-		case RecallUnplaced:
-			return out + "Memory was not consulted: this task did not resolve to an address."
-		default:
-			return out + "No relevant memories."
-		}
-	}
-	for _, m := range recalled.Memories {
-		out += fmt.Sprintf("- [%s] (%s): %s\n", m.ID, m.Age, m.Content)
-	}
-	return out
 }

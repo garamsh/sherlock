@@ -4,7 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
-	"strconv"
+	"fmt"
 	"strings"
 	"sync"
 	"testing"
@@ -17,12 +17,10 @@ import (
 	"github.com/garamsh/sherlock/internal/tool"
 )
 
-// replyOnly renders the response document (agent.ResponseSchema) for a
-// turn that leaves the note unchanged.
+// replyOnly renders the response document (agent.ResponseSchema).
 func replyOnly(text string) string {
 	out, err := json.Marshal(struct {
-		Reply string  `json:"reply"`
-		Note  *string `json:"note"`
+		Reply string `json:"reply"`
 	}{Reply: text})
 	if err != nil {
 		panic(err)
@@ -41,27 +39,6 @@ func finalStep(text string) agent.ScriptedStep {
 // writebackCall is one reserved writeback call carrying a document.
 func writebackCall(document string) agent.ToolCall {
 	return agent.ToolCall{Name: agent.MemoryWriteTool, Input: json.RawMessage(document)}
-}
-
-// fakeRecaller scripts the recall hook: it returns fixed memories and
-// records the task statements it was queried with.
-type fakeRecaller struct {
-	memories []agent.RecalledMemory
-	tasks    []string
-	outcome  agent.RecallOutcome
-	err      error
-}
-
-func (f *fakeRecaller) Recall(_ context.Context, task string) (agent.Recalled, error) {
-	f.tasks = append(f.tasks, task)
-	if f.err != nil {
-		return agent.Recalled{}, f.err
-	}
-	outcome := f.outcome
-	if outcome == "" {
-		outcome = agent.RecallAddressed
-	}
-	return agent.Recalled{Memories: f.memories, Outcome: outcome}, nil
 }
 
 // fakeEvents records the emitted events in order.
@@ -187,59 +164,52 @@ func TestSessionRun_ScriptedMultiTurnScenario(t *testing.T) {
 			},
 		},
 		agent.ScriptedStep{
-			ToolCalls: []agent.ToolCall{writebackCall(`{"reply":"The echo said hi.","note":null}`)},
+			ToolCalls: []agent.ToolCall{writebackCall(`{"reply":"The echo said hi."}`)},
 		},
 	)
-	recaller := &fakeRecaller{memories: []agent.RecalledMemory{
-		{ID: "m1", Content: "user drinks tea", Age: "2d"},
-	}}
 	events := &fakeEvents{}
 
 	s := agent.NewSession(model, newFakeClientWith(newEchoTool()), agent.Options{
-		Recaller: recaller,
-		Events:   events,
+		Events: events,
 	})
 
 	final, err := s.Run(context.Background(), "what did the echo say?")
 	require.NoError(t, err)
 	assert.Equal(t, "The echo said hi.", final)
 
-	// Frame and recall anchored the turn, behind the injected instructions.
-	require.Equal(t, []string{"what did the echo say?"}, recaller.tasks)
+	// The task follows the injected instructions directly: nothing is
+	// recalled before the act loop.
 	history := s.History()
-	require.Len(t, history, 6)
+	require.Len(t, history, 5)
 	assert.Equal(t, agent.RoleSystem, history[0].Role)
 	assert.Equal(t, agent.ComposeInstructions("", ""), history[0].Content)
-	assert.Equal(t, agent.RoleSystem, history[1].Role)
-	assert.Contains(t, history[1].Content, "## Current task\nwhat did the echo say?")
-	assert.Contains(t, history[1].Content, "- [m1] (2d): user drinks tea")
-	assert.Equal(t, agent.RoleUser, history[2].Role)
-	assert.Equal(t, agent.RoleAssistant, history[3].Role)
-	require.Len(t, history[3].ToolCalls, 1)
-	assert.Equal(t, "echo", history[3].ToolCalls[0].Name)
-	assert.NotEmpty(t, history[3].ToolCalls[0].ID, "scripted model assigns tool-call IDs")
+	assert.Equal(t, agent.RoleUser, history[1].Role)
+	assert.Equal(t, "what did the echo say?", history[1].Content)
+	assert.Equal(t, agent.RoleAssistant, history[2].Role)
+	require.Len(t, history[2].ToolCalls, 1)
+	assert.Equal(t, "echo", history[2].ToolCalls[0].Name)
+	assert.NotEmpty(t, history[2].ToolCalls[0].ID, "scripted model assigns tool-call IDs")
 
 	// The tool result was incorporated before the final response.
-	assert.Equal(t, agent.RoleTool, history[4].Role)
-	assert.Equal(t, `{"echo":"hi"}`, history[4].Content)
-	assert.Equal(t, history[3].ToolCalls[0].ID, history[4].ToolCallID)
-	assert.Equal(t, agent.RoleAssistant, history[5].Role)
+	assert.Equal(t, agent.RoleTool, history[3].Role)
+	assert.Equal(t, `{"echo":"hi"}`, history[3].Content)
+	assert.Equal(t, history[2].ToolCalls[0].ID, history[3].ToolCallID)
+	assert.Equal(t, agent.RoleAssistant, history[4].Role)
 
 	// Events fired in order within the turn.
 	require.Equal(t, []agent.EventKind{
 		agent.EventTurnStarted,
-		agent.EventRecall,
 		agent.EventToolCall,
 		agent.EventWriteback,
 		agent.EventTurnFinished,
 	}, events.kinds())
 	assert.Equal(t, "what did the echo say?", events.events[0].Task)
-	toolEvent := events.events[2]
+	toolEvent := events.events[1]
 	assert.Equal(t, "echo", toolEvent.ToolName)
 	assert.JSONEq(t, `{"text":"hi"}`, string(toolEvent.ToolInput))
 	assert.Equal(t, `{"echo":"hi"}`, toolEvent.ToolResult)
 	assert.False(t, toolEvent.ToolFailed)
-	assert.Equal(t, "The echo said hi.", events.events[4].Response)
+	assert.Equal(t, "The echo said hi.", events.events[3].Response)
 	for _, e := range events.events {
 		assert.Equal(t, 1, e.Turn)
 	}
@@ -261,55 +231,11 @@ func TestSessionRun_RollingSession(t *testing.T) {
 	assert.Equal(t, "second", second)
 
 	// One rolling session: history accumulates, turn numbers increment.
-	assert.Len(t, s.History(), 7)
+	assert.Len(t, s.History(), 5)
 	assert.Equal(t, 1, events.events[0].Turn)
 	last := events.events[len(events.events)-1]
 	assert.Equal(t, agent.EventTurnFinished, last.Kind)
 	assert.Equal(t, 2, last.Turn)
-}
-
-func TestSessionRun_NoRecallStatesAbsence(t *testing.T) {
-	model := agent.NewScriptedModel(
-		finalStep("ok"),
-	)
-	s := agent.NewSession(model, newFakeClient(), agent.Options{})
-
-	_, err := s.Run(context.Background(), "anything")
-	require.NoError(t, err)
-	assert.Contains(t, s.History()[1].Content, "No relevant memories.")
-}
-
-// TestSessionRun_RecallEventEmitted pins issue #325: a turn whose recall
-// returns memories emits exactly one recall event carrying the injected
-// IDs and their count, so the monitoring stream shows what memory
-// entered the context.
-func TestSessionRun_RecallEventEmitted(t *testing.T) {
-	model := agent.NewScriptedModel(
-		finalStep("done"),
-	)
-	recaller := &fakeRecaller{memories: []agent.RecalledMemory{
-		{ID: "m1", Content: "user drinks tea", Age: "2d"},
-		{ID: "m2", Content: "user lives in Lisbon", Age: "5d"},
-	}}
-	events := &fakeEvents{}
-	s := agent.NewSession(model, newFakeClient(), agent.Options{
-		Recaller: recaller,
-		Events:   events,
-	})
-
-	_, err := s.Run(context.Background(), "what does the user drink?")
-	require.NoError(t, err)
-
-	var recallEvents []agent.Event
-	for _, e := range events.events {
-		if e.Kind == agent.EventRecall {
-			recallEvents = append(recallEvents, e)
-		}
-	}
-	require.Len(t, recallEvents, 1, "exactly one recall event per turn")
-	assert.Equal(t, []string{"m1", "m2"}, recallEvents[0].RecalledIDs)
-	assert.Equal(t, 2, recallEvents[0].RecalledCount)
-	assert.Equal(t, 1, recallEvents[0].Turn)
 }
 
 // TestSessionRun_ModelSeesTheReservedWritebackTool pins the half of the
@@ -391,66 +317,6 @@ func TestSessionRun_HistoryLeavesNoUnansweredToolCall(t *testing.T) {
 	}
 	assert.Equal(t, "done", history[len(history)-1].Content,
 		"the turn's last message is the reply, not the call that carried it")
-}
-
-// TestSessionRun_TheTwoEmptinessesReachTheModelApart is ADR 0019's
-// split held where it matters: what the model is told. A question memory
-// could not place is not a question memory had no answer to, and a model
-// told the second when the first happened is being told something false.
-// The recall event carries the same distinction for the operator.
-func TestSessionRun_TheTwoEmptinessesReachTheModelApart(t *testing.T) {
-	tests := []struct {
-		name      string
-		outcome   agent.RecallOutcome
-		wantFrame string
-		notFrame  string
-	}{
-		{
-			name:      "placed nothing",
-			outcome:   agent.RecallUnplaced,
-			wantFrame: "did not resolve to an address",
-			notFrame:  "No relevant memories.",
-		},
-		{
-			name:      "held nothing",
-			outcome:   agent.RecallEmpty,
-			wantFrame: "No relevant memories.",
-			notFrame:  "did not resolve to an address",
-		},
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			model := agent.NewScriptedModel(finalStep("ok"))
-			events := &fakeEvents{}
-			s := agent.NewSession(model, newFakeClient(), agent.Options{
-				Recaller: &fakeRecaller{outcome: tt.outcome},
-				Events:   events,
-			})
-
-			_, err := s.Run(context.Background(), "task")
-			require.NoError(t, err)
-
-			var frame string
-			for _, m := range s.History() {
-				if strings.Contains(m.Content, "## Recalled memories") {
-					frame = m.Content
-				}
-			}
-			require.NotEmpty(t, frame)
-			assert.Contains(t, frame, tt.wantFrame)
-			assert.NotContains(t, frame, tt.notFrame)
-
-			var recall agent.Event
-			for _, e := range events.events {
-				if e.Kind == agent.EventRecall {
-					recall = e
-				}
-			}
-			require.Equal(t, agent.EventRecall, recall.Kind, "the turn emits a recall event")
-			assert.Equal(t, tt.outcome, recall.RecallOutcome,
-				"the stream carries which emptiness it was")
-		})
-	}
 }
 
 // TestSessionRun_ProseInsteadOfAWritebackDoesNotEndTheTurn is issue
@@ -557,7 +423,7 @@ func TestSessionRun_UnknownToolFeedsErrorBack(t *testing.T) {
 	require.NoError(t, err)
 	assert.Equal(t, "recovered", final)
 
-	toolMsg := s.History()[4]
+	toolMsg := s.History()[3]
 	assert.Equal(t, agent.RoleTool, toolMsg.Role)
 	assert.Contains(t, toolMsg.Content, "tool not found")
 	// turn_started, then the tool call: the writeback event fires once
@@ -917,11 +783,10 @@ func TestSessionRun_InstructionsAreFirstSystemMessage(t *testing.T) {
 	require.NoError(t, err)
 
 	messages := model.calls[0]
-	require.GreaterOrEqual(t, len(messages), 3)
+	require.Len(t, messages, 2)
 	assert.Equal(t, agent.RoleSystem, messages[0].Role)
 	assert.Equal(t, agent.ComposeInstructions("", ""), messages[0].Content)
-	assert.Equal(t, agent.RoleSystem, messages[1].Role, "frame context follows the instructions")
-	assert.Equal(t, agent.RoleUser, messages[2].Role)
+	assert.Equal(t, agent.RoleUser, messages[1].Role, "the task follows the instructions")
 }
 
 func TestSessionRun_CustomEgoKeepsContract(t *testing.T) {
@@ -991,49 +856,38 @@ func TestSessionRun_InstructionsSurviveCompaction(t *testing.T) {
 		"the instructions still lead the history the model sees after a compaction")
 }
 
-func TestSessionRun_NoteLeadsEveryTurnAndIsReplaced(t *testing.T) {
-	store := &noteStore{}
+func TestSessionRun_MemoryFilesLeadEveryTurn(t *testing.T) {
+	store := &fileStore{}
 	model := &recordingModel{inner: agent.NewScriptedModel(
-		agent.ScriptedStep{ToolCalls: []agent.ToolCall{writebackCall(`{"reply":"Noted.","note":"Indent code with tabs."}`)}},
+		agent.ScriptedStep{ToolCalls: []agent.ToolCall{{Name: agent.MemoryFileWriteTool, Input: json.RawMessage(`{"file":"USER.md","content":" Indent code with tabs. "}`)}}},
+		finalStep("Noted."),
 		finalStep("Here it is."),
 	)}
-	events := &fakeEvents{}
-	s := agent.NewSession(model, newFakeClient(), agent.Options{Conversation: store, Events: events})
+	s := agent.NewSession(model, newFakeClient(), agent.Options{Conversation: store})
 
 	_, err := s.Run(context.Background(), "Always indent code with tabs.")
 	require.NoError(t, err)
 	_, err = s.Run(context.Background(), "Write me a loop.")
 	require.NoError(t, err)
 
-	assert.Equal(t, agent.ComposeInstructions("", "")+"\n\n## Your note\n(empty)", model.seen[0][0].Content, "an unwritten note is stated as empty")
-	assert.Equal(t, agent.ComposeInstructions("", "")+"\n\n## Your note\nIndent code with tabs.", model.seen[1][0].Content, "the next turn leads with the saved note")
-	assert.Equal(t, []string{"Indent code with tabs."}, store.setNotes, "a null note saves nothing")
+	empty := "\n\n## Your memory files\n### USER.md\n(empty)\n### MEMORY.md\n(empty)\n\n## Your skills\n(none)"
+	saved := "\n\n## Your memory files\n### USER.md\nIndent code with tabs.\n### MEMORY.md\n(empty)\n\n## Your skills\n(none)"
+	assert.Equal(t, agent.ComposeInstructions("", "")+empty, model.seen[0][0].Content, "unwritten files are stated as empty")
+	assert.Equal(t, agent.ComposeInstructions("", "")+saved, model.seen[2][0].Content, "the next turn leads with the saved file")
+	assert.Equal(t, []string{"USER.md"}, store.writes, "only the call writes a file; ending the turn writes none")
 	require.Len(t, store.turns, 2, "sources are recorded on both turns")
-
-	var notes []*string
-	for _, e := range events.events {
-		if e.Kind == agent.EventWriteback {
-			notes = append(notes, e.Note)
-		}
-	}
-	require.Len(t, notes, 2)
-	require.NotNil(t, notes[0])
-	assert.Equal(t, "Indent code with tabs.", *notes[0])
-	assert.Nil(t, notes[1], "an unchanged note is reported as unchanged")
 }
 
-// TestSessionRun_OvergrownNoteIsHandedBack keeps the reply when the note is
-// too long: the call is refused as its own result and the model tries
-// again, where a malformed call would fail the turn.
-func TestSessionRun_OvergrownNoteIsHandedBack(t *testing.T) {
-	long := make([]byte, agent.MaxNoteLength+1)
-	for i := range long {
-		long[i] = 'x'
-	}
-	store := &noteStore{}
+// TestSessionRun_OvergrownMemoryFileIsRefused hands a write past the file's
+// bound back to the model as a failed call and keeps the saved file; a
+// write at the bound, the control, is saved.
+func TestSessionRun_OvergrownMemoryFileIsRefused(t *testing.T) {
+	at := strings.Repeat("é", 1375)
+	store := &fileStore{}
 	model := &recordingModel{inner: agent.NewScriptedModel(
-		agent.ScriptedStep{ToolCalls: []agent.ToolCall{writebackCall(`{"reply":"Done.","note":` + strconv.Quote(string(long)) + `}`)}},
-		agent.ScriptedStep{ToolCalls: []agent.ToolCall{writebackCall(`{"reply":"Done.","note":"short"}`)}},
+		agent.ScriptedStep{ToolCalls: []agent.ToolCall{{Name: agent.MemoryFileWriteTool, Input: json.RawMessage(`{"file":"USER.md","content":"` + at + `x"}`)}}},
+		agent.ScriptedStep{ToolCalls: []agent.ToolCall{{Name: agent.MemoryFileWriteTool, Input: json.RawMessage(`{"file":"USER.md","content":"` + at + `"}`)}}},
+		finalStep("Done."),
 	)}
 	events := &fakeEvents{}
 	s := agent.NewSession(model, newFakeClient(), agent.Options{Conversation: store, Events: events})
@@ -1041,12 +895,89 @@ func TestSessionRun_OvergrownNoteIsHandedBack(t *testing.T) {
 	reply, err := s.Run(context.Background(), "task")
 	require.NoError(t, err)
 	assert.Equal(t, "Done.", reply)
-	assert.Equal(t, []string{"short"}, store.setNotes, "only the note within the bound is saved")
-	assert.Contains(t, events.kinds(), agent.EventWritebackError)
+	assert.Equal(t, map[string]string{"USER.md": at}, store.files, "only the write within the bound is saved")
 
-	require.Len(t, model.seen, 2, "the overgrown note is refused and the model is asked again")
-	refusal := model.seen[1][len(model.seen[1])-1]
-	assert.Equal(t, agent.RoleTool, refusal.Role)
-	assert.Contains(t, refusal.Content, "note too long")
-	assert.Equal(t, model.seen[1][len(model.seen[1])-2].ToolCalls[0].ID, refusal.ToolCallID, "the refusal answers the call that carried the note")
+	var calls []agent.Event
+	for _, e := range events.events {
+		if e.Kind == agent.EventToolCall {
+			calls = append(calls, e)
+		}
+	}
+	require.Len(t, calls, 2)
+	assert.True(t, calls[0].ToolFailed)
+	assert.Contains(t, calls[0].ToolResult, "USER.md is 1376 characters, at most 1375")
+	assert.False(t, calls[1].ToolFailed)
+}
+
+// TestSessionRun_SkillsAreIndexedAndLoadedOnDemand shows a written skill's
+// description in every later turn's instructions and its body only in the
+// result of the call that loads it.
+func TestSessionRun_SkillsAreIndexedAndLoadedOnDemand(t *testing.T) {
+	store := &fileStore{}
+	model := &recordingModel{inner: agent.NewScriptedModel(
+		agent.ScriptedStep{ToolCalls: []agent.ToolCall{{Name: agent.SkillWriteTool, Input: json.RawMessage(`{"name":"python-module","description":"How the person wants a Python module written.","body":"Start the file with the SPDX line."}`)}}},
+		finalStep("Saved."),
+		agent.ScriptedStep{ToolCalls: []agent.ToolCall{{Name: agent.SkillViewTool, Input: json.RawMessage(`{"name":"python-module"}`)}}},
+		finalStep("Written."),
+	)}
+	events := &fakeEvents{}
+	s := agent.NewSession(model, newFakeClient(), agent.Options{Conversation: store, Events: events})
+
+	_, err := s.Run(context.Background(), "Remember how I want modules written.")
+	require.NoError(t, err)
+	_, err = s.Run(context.Background(), "Write a module.")
+	require.NoError(t, err)
+
+	lead := model.seen[2][0].Content
+	assert.Contains(t, lead, "## Your skills\n- python-module: How the person wants a Python module written.")
+	assert.NotContains(t, lead, "Start the file with the SPDX line.", "the body is not in context until loaded")
+	var loaded string
+	for _, e := range events.events {
+		if e.Kind == agent.EventToolCall && e.ToolName == agent.SkillViewTool {
+			loaded = e.ToolResult
+		}
+	}
+	assert.Equal(t, "Start the file with the SPDX line.", loaded)
+}
+
+// TestSessionRun_SkillWriteRefusals refuses a name that is not kebab-case
+// and a seventeenth skill, and saves a well-formed one as the control.
+func TestSessionRun_SkillWriteRefusals(t *testing.T) {
+	full := &fileStore{files: map[string]string{}}
+	for i := range 16 {
+		full.files[fmt.Sprintf("skills/s%d.md", i)] = "d\n\nb"
+	}
+	tests := []struct {
+		name    string
+		store   *fileStore
+		input   string
+		refused string
+	}{
+		{name: "not kebab-case", store: &fileStore{}, input: `{"name":"Python Module","description":"d","body":"b"}`, refused: "kebab-case"},
+		{name: "past the skill limit", store: full, input: `{"name":"one-more","description":"d","body":"b"}`, refused: "16 skills"},
+		{name: "replacing at the limit", store: full, input: `{"name":"s3","description":"d2","body":"b2"}`},
+		{name: "well-formed", store: &fileStore{}, input: `{"name":"one-more","description":"d","body":"b"}`},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			model := agent.NewScriptedModel(
+				agent.ScriptedStep{ToolCalls: []agent.ToolCall{{Name: agent.SkillWriteTool, Input: json.RawMessage(tt.input)}}},
+				finalStep("ok"),
+			)
+			events := &fakeEvents{}
+			s := agent.NewSession(model, newFakeClient(), agent.Options{Conversation: tt.store, Events: events})
+			_, err := s.Run(context.Background(), "task")
+			require.NoError(t, err)
+			call := events.events[1]
+			require.Equal(t, agent.EventToolCall, call.Kind)
+			if tt.refused != "" {
+				assert.True(t, call.ToolFailed)
+				assert.Contains(t, call.ToolResult, tt.refused)
+				assert.Empty(t, tt.store.writes)
+				return
+			}
+			assert.False(t, call.ToolFailed, call.ToolResult)
+			assert.Len(t, tt.store.writes, 1)
+		})
+	}
 }

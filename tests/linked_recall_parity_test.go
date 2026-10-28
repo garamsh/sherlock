@@ -15,7 +15,6 @@ import (
 	"github.com/stretchr/testify/require"
 
 	"github.com/garamsh/sherlock/internal/agent"
-	agentmemory "github.com/garamsh/sherlock/internal/agent/memory"
 	"github.com/garamsh/sherlock/internal/memory/sqlite"
 	"github.com/garamsh/sherlock/internal/tool"
 )
@@ -209,8 +208,8 @@ func (noTools) Call(context.Context, string, json.RawMessage) (json.RawMessage, 
 
 // TestLinkedRecall_MatchesTheStudiedSettingOnItsRecordedProbes builds #916's
 // store through the production write path from its recorded syntheses and
-// entities, then runs production recall on all 470 probes and
-// memory_search on all 505 hop statements. Each must deliver the items
+// entities, then runs memory_search on all 505 hop statements, its 470
+// probes checking the setup only. Each search must deliver the items
 // b4-model-attr recorded offline, in its order, with its kinds and its
 // attribution openings. No model is called.
 func TestLinkedRecall_MatchesTheStudiedSettingOnItsRecordedProbes(t *testing.T) {
@@ -295,27 +294,6 @@ func TestLinkedRecall_MatchesTheStudiedSettingOnItsRecordedProbes(t *testing.T) 
 	attributed, plain = walked(hops)
 	require.Equal(t, []int{555, 284}, []int{attributed, plain}, "the setup: memory_search's walk items")
 
-	t.Run("recall", func(t *testing.T) {
-		for _, want := range probes {
-			t.Run(want.Probe, func(t *testing.T) {
-				t.Parallel()
-				recalled, err := (agentmemory.ConversationRecall{Store: store}).Recall(ctx, queries[want.key()])
-				require.NoError(t, err)
-				var wantIDs, gotIDs []string
-				for _, it := range want.Items {
-					wantIDs = append(wantIDs, fmt.Sprint(it.ID))
-				}
-				for _, m := range recalled.Memories {
-					gotIDs = append(gotIDs, m.ID)
-				}
-				require.Equal(t, wantIDs, gotIDs, "the items and their order")
-				for i, it := range want.Items {
-					assert.Equal(t, it.Kind, recalled.Memories[i].Age, "item %d", i)
-					assert.Equal(t, fmt.Sprintf("%s [mid:%d sources:%d-%d; summary, not verified source text]", strings.TrimSpace(it.Text), it.ID, it.First, it.Last), recalled.Memories[i].Content, "item %d", i)
-				}
-			})
-		}
-	})
 	t.Run("memory_search", func(t *testing.T) {
 		for _, want := range hops {
 			t.Run(want.key(), func(t *testing.T) {

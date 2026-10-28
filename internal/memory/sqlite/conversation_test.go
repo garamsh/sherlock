@@ -341,71 +341,84 @@ CREATE TRIGGER conversation_mid_insert AFTER INSERT ON conversation_mid BEGIN IN
 	assert.Zero(t, fts)
 }
 
-func TestNote_EmptyUntilSetThenReplacedAndReopened(t *testing.T) {
+func TestAgentFiles_EmptyUntilSetThenReplacedAndReopened(t *testing.T) {
 	ctx := context.Background()
 	path := filepath.Join(t.TempDir(), "memory.db")
 	store, err := sqlite.OpenConversation(path, wordEmbedder{})
 	require.NoError(t, err)
-	note, err := store.Note(ctx)
+	files, err := store.AgentFiles(ctx)
 	require.NoError(t, err)
-	assert.Empty(t, note, "a store no note was written to has an empty note")
+	assert.Empty(t, files, "a store no file was written to has none")
 
-	require.NoError(t, store.SetNote(ctx, "Indent code with tabs."))
-	require.NoError(t, store.SetNote(ctx, "Indent code with tabs. Current work: the Oslo packing list."))
+	require.NoError(t, store.SetAgentFile(ctx, agent.UserFile, "Indent code with tabs."))
+	require.NoError(t, store.SetAgentFile(ctx, agent.UserFile, "Indent code with tabs. Name files in kebab-case."))
+	require.NoError(t, store.SetAgentFile(ctx, "skills/python-module.md", "How to write a module.\n\nStart with the SPDX line."))
 	require.NoError(t, store.Close())
 
 	reopened, err := sqlite.OpenConversation(path, wordEmbedder{})
 	require.NoError(t, err)
 	defer reopened.Close()
-	note, err = reopened.Note(ctx)
+	files, err = reopened.AgentFiles(ctx)
 	require.NoError(t, err)
-	assert.Equal(t, "Indent code with tabs. Current work: the Oslo packing list.", note, "the latest note replaces the earlier one and survives a restart")
+	assert.Equal(t, map[string]string{
+		agent.UserFile:            "Indent code with tabs. Name files in kebab-case.",
+		"skills/python-module.md": "How to write a module.\n\nStart with the SPDX line.",
+	}, files, "the latest write replaces the earlier one and survives a restart")
 }
 
-func TestNote_CredentialsAreNotPersisted(t *testing.T) {
+func TestAgentFiles_CredentialsAreNotPersisted(t *testing.T) {
 	ctx := context.Background()
 	store, err := sqlite.OpenConversation(filepath.Join(t.TempDir(), "memory.db"), wordEmbedder{})
 	require.NoError(t, err)
 	defer store.Close()
-	require.NoError(t, store.SetNote(ctx, "Deploy with password: hunter22 to the staging host."))
-	note, err := store.Note(ctx)
+	require.NoError(t, store.SetAgentFile(ctx, agent.MemoryFile, "Deploy with password: hunter22 to the staging host."))
+	files, err := store.AgentFiles(ctx)
 	require.NoError(t, err)
-	assert.NotContains(t, note, "hunter22")
-	assert.Contains(t, note, "staging host", "the rest of the note is kept")
+	assert.NotContains(t, files[agent.MemoryFile], "hunter22")
+	assert.Contains(t, files[agent.MemoryFile], "staging host", "the rest of the file is kept")
 }
 
-// TestNote_DatabaseFromBeforeTheNoteOpensWithAnEmptyNote opens a file
-// written before the note existed: its conversation survives, the note
-// starts empty, and it can be written.
-func TestNote_DatabaseFromBeforeTheNoteOpensWithAnEmptyNote(t *testing.T) {
+// TestAgentFiles_ANoteFromBeforeMemoryFilesBecomesMemoryMD opens a file
+// whose note was saved before memory files existed: the note becomes
+// MEMORY.md once, and a later edit to MEMORY.md is not overwritten by it on
+// the next open. An empty note, the control, creates no file.
+func TestAgentFiles_ANoteFromBeforeMemoryFilesBecomesMemoryMD(t *testing.T) {
 	ctx := context.Background()
-	path := filepath.Join(t.TempDir(), "memory.db")
-	store, err := sqlite.OpenConversation(path, wordEmbedder{})
-	require.NoError(t, err)
-	require.NoError(t, store.RecordTurn(ctx, episodeSources("The telescope is the Kepler-9 refractor."), firstSummary{}))
-	require.NoError(t, store.Close())
-	db, err := sql.Open("sqlite", path)
-	require.NoError(t, err)
-	_, err = db.Exec(`DROP TABLE conversation_note`)
-	require.NoError(t, err)
-	var tables int
-	require.NoError(t, db.QueryRow(`SELECT count(*) FROM sqlite_master WHERE name='conversation_note'`).Scan(&tables))
-	require.Zero(t, tables, "the setup produced a file without the note table")
-	require.NoError(t, db.Close())
+	for _, tt := range []struct {
+		name string
+		note string
+		want map[string]string
+	}{
+		{name: "saved note", note: "Indent code with tabs.", want: map[string]string{agent.MemoryFile: "Indent code with tabs."}},
+		{name: "empty note", note: "", want: map[string]string{}},
+	} {
+		t.Run(tt.name, func(t *testing.T) {
+			path := filepath.Join(t.TempDir(), "memory.db")
+			store, err := sqlite.OpenConversation(path, wordEmbedder{})
+			require.NoError(t, err)
+			require.NoError(t, store.Close())
+			db, err := sql.Open("sqlite", path)
+			require.NoError(t, err)
+			_, err = db.Exec(`DELETE FROM agent_file; INSERT INTO conversation_note(id,content) VALUES (1,?)`, tt.note)
+			require.NoError(t, err)
+			require.NoError(t, db.Close())
 
-	reopened, err := sqlite.OpenConversation(path, wordEmbedder{})
-	require.NoError(t, err)
-	defer reopened.Close()
-	note, err := reopened.Note(ctx)
-	require.NoError(t, err)
-	assert.Empty(t, note)
-	sources, err := reopened.Recent(ctx, 10)
-	require.NoError(t, err)
-	assert.NotEmpty(t, sources, "the conversation from before the note is kept")
-	require.NoError(t, reopened.SetNote(ctx, "Indent code with tabs."))
-	note, err = reopened.Note(ctx)
-	require.NoError(t, err)
-	assert.Equal(t, "Indent code with tabs.", note)
+			reopened, err := sqlite.OpenConversation(path, wordEmbedder{})
+			require.NoError(t, err)
+			files, err := reopened.AgentFiles(ctx)
+			require.NoError(t, err)
+			assert.Equal(t, tt.want, files)
+			require.NoError(t, reopened.SetAgentFile(ctx, agent.MemoryFile, "Rewritten."))
+			require.NoError(t, reopened.Close())
+
+			again, err := sqlite.OpenConversation(path, wordEmbedder{})
+			require.NoError(t, err)
+			defer again.Close()
+			files, err = again.AgentFiles(ctx)
+			require.NoError(t, err)
+			assert.Equal(t, "Rewritten.", files[agent.MemoryFile], "the note is copied once, not over a later edit")
+		})
+	}
 }
 
 // A message ID is unique within its sender, so two senders may commit the

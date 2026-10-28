@@ -60,7 +60,7 @@ type LinkedHit struct {
 	Subject string
 }
 
-// FoundEpisode is a mid episode recall or memory_search delivers, and
+// FoundEpisode is a mid episode memory_search delivers, and
 // whether the entity walk delivered it.
 type FoundEpisode struct {
 	ConversationHit

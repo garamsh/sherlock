@@ -33,13 +33,13 @@ func (s episodicSeed) Summarize(context.Context, []string) (agent.Synthesis, err
 }
 
 type episodicEvents struct {
-	retrieved       []string
+	searched        bool
 	inspectedSource bool
 }
 
 func (e *episodicEvents) Emit(_ context.Context, event agent.Event) {
-	if event.Kind == agent.EventRecall {
-		e.retrieved = event.RecalledIDs
+	if event.Kind == agent.EventToolCall && event.ToolName == agent.MemorySearchTool && !event.ToolFailed {
+		e.searched = true
 	}
 	if event.Kind == agent.EventToolCall && event.ToolName == agent.MemoryInspectTool && !event.ToolFailed && strings.Contains(event.ToolResult, "Silver Pine") {
 		e.inspectedSource = true
@@ -47,7 +47,7 @@ func (e *episodicEvents) Emit(_ context.Context, event agent.Event) {
 }
 
 // tiedEmbedder gives every text the same vector. The probe measures synthesis
-// and inspection, not similarity, so recall falls back to recency.
+// and inspection, not similarity.
 type tiedEmbedder struct{}
 
 func (tiedEmbedder) Embed(context.Context, string) ([]float32, error) { return []float32{1}, nil }
@@ -61,7 +61,7 @@ func (episodicNoTools) Call(context.Context, string, json.RawMessage) (json.RawM
 }
 
 // TestEpisodicMemory_LiveProbe uses scripted history only to reach a batch
-// boundary; startup synthesis, recall, inspection decisions, and answer are live.
+// boundary; startup synthesis, search, inspection decisions, and answer are live.
 func TestEpisodicMemory_LiveProbe(t *testing.T) {
 	if os.Getenv("SHERLOCK_EPISODIC_MEMORY_PROBE") != "1" {
 		t.Skip("live episodic probe requires explicit opt-in")
@@ -148,7 +148,7 @@ func TestEpisodicMemory_LiveProbe(t *testing.T) {
 	pending, err := store.PendingSources(ctx)
 	require.NoError(t, err)
 	midCorrected := len(mids) == 1 && strings.Contains(mids[0].Summary, "Silver Pine")
-	report := map[string]any{"model": recallModelName, "scripted_setup_sources": 56, "pending_correction_sources": 4, "spend": meter.Spend(), "mid_contains_correction": midCorrected, "retrieved_ids": events.retrieved, "exact_correction_source_inspected": events.inspectedSource, "answer_contains_current_value": strings.Contains(reply, "Silver Pine"), "runtime_failed": runErr != nil, "pending_source_count": len(pending), "limits": "8 calls, 20000 input tokens, 4000 output tokens, no retries; byte-based input reservation may stop early"}
+	report := map[string]any{"model": recallModelName, "scripted_setup_sources": 56, "pending_correction_sources": 4, "spend": meter.Spend(), "mid_contains_correction": midCorrected, "searched": events.searched, "exact_correction_source_inspected": events.inspectedSource, "answer_contains_current_value": strings.Contains(reply, "Silver Pine"), "runtime_failed": runErr != nil, "pending_source_count": len(pending), "limits": "8 calls, 20000 input tokens, 4000 output tokens, no retries; byte-based input reservation may stop early"}
 	if destination := os.Getenv("SHERLOCK_EPISODIC_MEMORY_REPORT"); destination != "" {
 		writeJSON(t, destination, report)
 	}

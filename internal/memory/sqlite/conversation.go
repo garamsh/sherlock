@@ -46,6 +46,10 @@ CREATE TABLE IF NOT EXISTS conversation_note (
  id INTEGER PRIMARY KEY CHECK(id = 1),
  content TEXT NOT NULL
 );
+CREATE TABLE IF NOT EXISTS agent_file (
+ path TEXT PRIMARY KEY,
+ content TEXT NOT NULL
+) WITHOUT ROWID;
 DROP TRIGGER IF EXISTS conversation_mid_insert;
 DROP TABLE IF EXISTS conversation_mid_fts;
 `
@@ -242,24 +246,32 @@ func (s *Store) RecentMid(ctx context.Context, limit int) ([]agent.ConversationH
 	return out, nil
 }
 
-// Note returns the agent's note, empty when none has been saved.
-func (s *Store) Note(ctx context.Context) (string, error) {
-	var content string
-	err := s.db.QueryRowContext(ctx, `SELECT content FROM conversation_note WHERE id=1`).Scan(&content)
-	if errors.Is(err, sql.ErrNoRows) {
-		return "", nil
-	}
+// AgentFiles returns the agent's memory files and skills by path.
+func (s *Store) AgentFiles(ctx context.Context) (map[string]string, error) {
+	rows, err := s.db.QueryContext(ctx, `SELECT path,content FROM agent_file`)
 	if err != nil {
-		return "", fmt.Errorf("read note: %v", err)
+		return nil, fmt.Errorf("read agent files: %v", err)
 	}
-	return content, nil
+	defer rows.Close()
+	out := map[string]string{}
+	for rows.Next() {
+		var path, content string
+		if err := rows.Scan(&path, &content); err != nil {
+			return nil, fmt.Errorf("read agent files: %v", err)
+		}
+		out[path] = content
+	}
+	if err := rows.Err(); err != nil {
+		return nil, fmt.Errorf("read agent files: %v", err)
+	}
+	return out, nil
 }
 
-// SetNote replaces the agent's note. Credentials are redacted before it is
-// saved, as they are from sources.
-func (s *Store) SetNote(ctx context.Context, content string) error {
-	if _, err := s.db.ExecContext(ctx, `INSERT INTO conversation_note(id,content) VALUES (1,?) ON CONFLICT(id) DO UPDATE SET content=excluded.content`, redactSecrets(content)); err != nil {
-		return fmt.Errorf("save note: %v", err)
+// SetAgentFile replaces one of the agent's files. Credentials are redacted
+// before it is saved, as they are from sources.
+func (s *Store) SetAgentFile(ctx context.Context, path, content string) error {
+	if _, err := s.db.ExecContext(ctx, `INSERT INTO agent_file(path,content) VALUES (?,?) ON CONFLICT(path) DO UPDATE SET content=excluded.content`, path, redactSecrets(content)); err != nil {
+		return fmt.Errorf("save agent file: %v", err)
 	}
 	return nil
 }
@@ -463,6 +475,11 @@ func prepareConversation(db *sql.DB) error {
 	}
 	_, err = tx.Exec(conversationSchema)
 	if err != nil {
+		return err
+	}
+	// A note from before memory files becomes MEMORY.md, once: the row it
+	// creates stops the copy from repeating.
+	if _, err := tx.Exec(`INSERT OR IGNORE INTO agent_file(path,content) SELECT ?, content FROM conversation_note WHERE id=1 AND content <> ''`, agent.MemoryFile); err != nil {
 		return err
 	}
 	var embedded int

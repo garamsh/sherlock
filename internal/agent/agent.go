@@ -9,7 +9,7 @@ import (
 type Role string
 
 const (
-	// RoleSystem marks runtime-injected context (frame and recall blocks).
+	// RoleSystem marks runtime-injected context (the instructions and memory files).
 	RoleSystem Role = "system"
 	// RoleUser marks an inbound task from the person talking to the agent.
 	RoleUser Role = "user"
@@ -45,64 +45,20 @@ type Response struct {
 	ToolCalls []ToolCall
 }
 
-// RecalledMemory is one long-term memory entry injected into context during
-// the recall step, shown to the model with its ID and age.
-type RecalledMemory struct {
-	ID      string
-	Content string
-	Age     string
-}
-
-// RecallOutcome says how the read step ended, so an operator can tell a
-// question memory was never asked from a question it had no answer to.
-// ADR 0019 requires the two apart: the design's accuracy cannot be
-// measured here, so the running system is the only place that evidence
-// comes from, and a stream that collapses "memory was not consulted"
-// into "memory was empty" teaches nothing.
-type RecallOutcome string
-
-const (
-	// RecallUnplaced means the step reached no address: it named no
-	// subject, so nothing was read.
-	RecallUnplaced RecallOutcome = "unplaced"
-	// RecallAddressed means the address the step placed held something.
-	RecallAddressed RecallOutcome = "addressed"
-	// RecallWidened means the address held nothing and the subject
-	// answered instead. It is reported because ADR 0019 defers an
-	// ordering until a subject read is observed to exceed the budget,
-	// and this is what would show one.
-	RecallWidened RecallOutcome = "widened"
-	// RecallEmpty means an address was placed and neither it nor the
-	// subject held anything.
-	RecallEmpty RecallOutcome = "empty"
-)
-
-// Recalled is what the recall step produced: the memories injected and
-// how the read reached them.
-type Recalled struct {
-	Memories []RecalledMemory
-	Outcome  RecallOutcome
-}
-
 // EventKind identifies a loop lifecycle event.
 type EventKind string
 
 const (
-	// EventTurnStarted fires once per Run, before frame and recall.
+	// EventTurnStarted fires once per Run, before the act loop.
 	EventTurnStarted EventKind = "turn_started"
-	// EventRecall fires once per Run after the recall step, carrying the
-	// injected memory IDs and their count, so subscribers see what
-	// memory entered the context each turn (issue #325). Sessions
-	// without a Recaller emit nothing.
-	EventRecall EventKind = "recall"
-	// EventWriteback fires once per completed turn, after the terminal
-	// call's note, if it wrote one, is saved.
+	// EventWriteback fires once per completed turn, after its sources
+	// are saved.
 	EventWriteback EventKind = "writeback"
 	// EventWritebackError fires when a turn's writeback did not
-	// arrive: the model called no writeback tool (issue #615), wrote a
-	// note past MaxNoteLength, or called it with arguments that are not
-	// JSON (issue #93). The first two are not terminal — the session
-	// says what is wrong and asks again — and the third fails the turn.
+	// arrive: the model called no writeback tool (issue #615), or called
+	// it with arguments that are not JSON (issue #93). The first is not
+	// terminal — the session says what is wrong and asks again — and the
+	// second fails the turn.
 	EventWritebackError EventKind = "writeback_error"
 	// EventToolCall fires after each tool execution.
 	EventToolCall EventKind = "tool_call"
@@ -114,31 +70,19 @@ const (
 )
 
 // Event is one structured loop event for the gateway monitoring stream.
-// Which fields are set depends on Kind: Task on turn_started,
-// RecalledIDs and RecalledCount on recall, Note on writeback, the Tool*
+// Which fields are set depends on Kind: Task on turn_started, the Tool*
 // fields on tool_call, Response on turn_finished, Error on turn_failed
 // and writeback_error.
 type Event struct {
-	Kind EventKind
-	Turn int
-	Task string
-	// Note is the note a writeback saved; nil means the turn left it
-	// unchanged.
-	Note       *string
+	Kind       EventKind
+	Turn       int
+	Task       string
 	ToolName   string
 	ToolInput  json.RawMessage
 	ToolResult string
 	ToolFailed bool
 	Response   string
 	Error      string
-	// RecalledIDs names the memories the recall step injected this turn;
-	// RecalledCount is their number.
-	RecalledIDs   []string
-	RecalledCount int
-	// RecallOutcome says how the read step reached what it injected, so
-	// an unplaced question and an empty address are distinguishable on
-	// the stream (ADR 0019). Empty on every event but recall.
-	RecallOutcome RecallOutcome
 	// MessageIDs names the inbound messages the turn drained; the
 	// gateway stamps it on terminal events (ADR 0015). The session
 	// never sets it.
@@ -166,8 +110,3 @@ var (
 // It fails the turn: the arguments are the only place the reply arrives,
 // so a malformed one leaves nothing to hand back (issue #615).
 var ErrMalformedWriteback = errors.New("malformed memory writeback")
-
-// ErrNoteTooLong marks a note past MaxNoteLength. It does not fail the
-// turn: the session returns it to the model as the call's result and asks
-// for a shorter note.
-var ErrNoteTooLong = errors.New("note too long")

@@ -12,17 +12,15 @@ import (
 // MemorySearchTool is the reserved call that ranks mid episodes by
 // similarity to a query the model writes during its turn, beside the
 // episodes the entity walk reaches from the names the query contains.
-// Pre-turn recall reads with the raw task text; this lets the model search
-// again with the conversation in view.
+// It is the only way older conversation reaches the model.
 const MemorySearchTool = "memory_search"
 
-// maxSearchResults bounds one search, matching the similar episodes
-// pre-turn recall offers.
+// maxSearchResults bounds one search.
 const maxSearchResults = 5
 
 // MemorySearchDescriptor is the reserved search call as the model sees it.
 func MemorySearchDescriptor() tool.Descriptor {
-	return tool.Descriptor{Name: MemorySearchTool, Description: "Search older conversation for mid episodes similar to a query. Write the query as a standalone statement of what you need, resolving references such as \"that\" or \"what I said earlier\" from the conversation and your note. Results are summaries with source intervals, not verified text; read exact wording with memory_inspect.", InputSchema: json.RawMessage(`{"type":"object","properties":{"query":{"type":"string","minLength":1}},"required":["query"],"additionalProperties":false}`)}
+	return tool.Descriptor{Name: MemorySearchTool, Description: "Search older conversation for mid episodes similar to a query. Write the query as a standalone statement of what you need, resolving references such as \"that\" or \"what I said earlier\" from the conversation and your memory files. Results are summaries with source intervals, not verified text; read exact wording with memory_inspect.", InputSchema: json.RawMessage(`{"type":"object","properties":{"query":{"type":"string","minLength":1}},"required":["query"],"additionalProperties":false}`)}
 }
 
 // searchHit is one search result as the model reads it.

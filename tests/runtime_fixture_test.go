@@ -2,7 +2,6 @@ package tests
 
 import (
 	"bytes"
-	"context"
 	"crypto/sha256"
 	"crypto/x509"
 	"encoding/hex"
@@ -24,8 +23,6 @@ import (
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-
-	"github.com/garamsh/sherlock/internal/memory/sqlite"
 )
 
 // The fixture's identity (#937). The agent ID is a GRN, served verbatim
@@ -945,32 +942,4 @@ func exitCode(err error) int {
 		return exit.ExitCode()
 	}
 	return -1
-}
-
-// TestFixtureNoteGuard_ReportsRedactedInput sets each wording through the
-// real store, which redacts a credential-shaped note before saving it, then
-// copies and verifies the store as the fixture does. The wording run-3 used
-// trips the guard; the fixture's current note passes it, which is the
-// control showing the guard accepts a note the store keeps.
-func TestFixtureNoteGuard_ReportsRedactedInput(t *testing.T) {
-	stored := func(t *testing.T, note string) snapshotReport {
-		t.Helper()
-		dir := t.TempDir()
-		require.NoError(t, os.MkdirAll(filepath.Join(dir, "agent"), 0o755))
-		store, err := sqlite.OpenConversation(filepath.Join(dir, "agent", "memory.db"), tiedEmbedder{})
-		require.NoError(t, err)
-		require.NoError(t, store.SetNote(context.Background(), note))
-		require.NoError(t, store.Close())
-		snapshot := filepath.Join(dir, "snapshot")
-		fixtureSnapshot(t, "copy", filepath.Join(dir, "agent", "memory.db"), snapshot)
-		return fixtureVerify(t, snapshot)
-	}
-
-	run3 := "fixture token: amber-heron-937"
-	err := fixtureNoteGuard(stored(t, run3), run3)
-	require.Error(t, err, "the store redacts %q, so the guard reports it", run3)
-	assert.Contains(t, err.Error(), "fixture input redacted")
-
-	assert.NoError(t, fixtureNoteGuard(stored(t, fixtureNote), fixtureNote),
-		"the store keeps %q as set", fixtureNote)
 }

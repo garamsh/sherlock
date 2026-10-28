@@ -417,7 +417,9 @@ func TestFactory_ToolClientDescriptorsReachSession(t *testing.T) {
 	for _, d := range model.actTools() {
 		// The reserved calls are the platform's addition to what the
 		// model sees, not part of the operator's list.
-		if d.Name == agent.MemoryWriteTool || d.Name == agent.MemoryInspectTool || d.Name == agent.MemorySearchTool {
+		switch d.Name {
+		case agent.MemoryWriteTool, agent.MemoryInspectTool, agent.MemorySearchTool,
+			agent.MemoryFileWriteTool, agent.SkillViewTool, agent.SkillWriteTool:
 			continue
 		}
 		names = append(names, d.Name)

@@ -214,31 +214,19 @@ func (h *handler) status(w http.ResponseWriter, r *http.Request) {
 }
 
 // eventPayload is the wire form of one loop event on the SSE stream.
-// Which fields are set depends on Kind (see agent.Event). Note is set on a
-// writeback event that saved one; its absence means the note is unchanged.
+// Which fields are set depends on Kind (see agent.Event).
 type eventPayload struct {
 	AgentID    string          `json:"agent_id"`
 	Kind       agent.EventKind `json:"kind"`
 	Turn       int             `json:"turn"`
 	Task       string          `json:"task,omitempty"`
-	Note       *string         `json:"note,omitempty"`
 	ToolName   string          `json:"tool_name,omitempty"`
 	ToolInput  json.RawMessage `json:"tool_input,omitempty"`
 	ToolResult string          `json:"tool_result,omitempty"`
 	ToolFailed bool            `json:"tool_failed,omitempty"`
 	Response   string          `json:"response,omitempty"`
 	Error      string          `json:"error,omitempty"`
-	// RecalledIDs and RecalledCount carry the recall event's injected
-	// memories (issue #325); RecallOutcome says how the read step
-	// reached them, so a question memory could not place is
-	// distinguishable on the stream from one it had no answer to
-	// (ADR 0019). Without it an operator cannot tell whether the read
-	// step works, and the running system is the only place that
-	// evidence comes from.
-	RecalledIDs   []string            `json:"recalled_ids,omitempty"`
-	RecalledCount int                 `json:"recalled_count,omitempty"`
-	RecallOutcome agent.RecallOutcome `json:"recall_outcome,omitempty"`
-	MessageIDs    []string            `json:"message_ids,omitempty"`
+	MessageIDs []string        `json:"message_ids,omitempty"`
 }
 
 // events streams the agent's loop events as server-sent events.
@@ -273,21 +261,17 @@ func (h *handler) events(w http.ResponseWriter, r *http.Request) {
 				return
 			}
 			data, err := json.Marshal(eventPayload{
-				AgentID:       agentID,
-				Kind:          e.Kind,
-				Turn:          e.Turn,
-				Task:          e.Task,
-				Note:          e.Note,
-				ToolName:      e.ToolName,
-				ToolInput:     e.ToolInput,
-				ToolResult:    e.ToolResult,
-				ToolFailed:    e.ToolFailed,
-				Response:      e.Response,
-				Error:         e.Error,
-				RecalledIDs:   e.RecalledIDs,
-				RecalledCount: e.RecalledCount,
-				RecallOutcome: e.RecallOutcome,
-				MessageIDs:    e.MessageIDs,
+				AgentID:    agentID,
+				Kind:       e.Kind,
+				Turn:       e.Turn,
+				Task:       e.Task,
+				ToolName:   e.ToolName,
+				ToolInput:  e.ToolInput,
+				ToolResult: e.ToolResult,
+				ToolFailed: e.ToolFailed,
+				Response:   e.Response,
+				Error:      e.Error,
+				MessageIDs: e.MessageIDs,
 			})
 			if err != nil {
 				h.logger.Error("encode event failed", "op", "events", "agent_id", agentID, "error", err)

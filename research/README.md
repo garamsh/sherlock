@@ -28,6 +28,7 @@ Research records the questions, methods, evidence, conclusions, and limits behin
 - [Mutation survey](mutation-survey/README.md) — behavior that the repository's tests did or did not catch.
 - [Recall specificity](recall-specificity/README.md) — the former agent's answers to questions at three levels of specificity.
 - [Task continuation](task-continuation/README.md) — continuation across live history, process restart, and artifacts alone.
+- [General agent](general-agent/README.md) — preregistered test for #1164, superseding #1153, of the shipped loop against a file-and-skill loop in the style of Claude Code and Hermes (bounded memory files the agent edits, skills loaded on demand, search instead of pre-turn recall) on coding, writing, file work and continuation, where a correction given on the first instance must hold after it leaves the window; collection has not started.
 
 ## Recording a study
 

@@ -134,7 +134,7 @@ func TestRun_EveryLiveStepRunsThroughTheProductionRuntime(t *testing.T) {
 	require.NotEmpty(t, upstream.requests)
 	for _, req := range upstream.requests {
 		assert.JSONEq(t, `"pinned/model"`, string(req["model"]))
-		assert.JSONEq(t, `{"only":["Pinned"],"allow_fallbacks":false,"require_parameters":true}`, string(req["provider"]))
+		assert.JSONEq(t, `{"only":["Pinned"],"allow_fallbacks":false}`, string(req["provider"]))
 		assert.JSONEq(t, `{"include":true}`, string(req["usage"]))
 	}
 	spent, _ := p.ledger.state()

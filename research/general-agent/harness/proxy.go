@@ -113,14 +113,17 @@ func requestKind(body []byte) string {
 
 // pinned rewrites a request for the study: the one model, routed only to
 // the one provider with no fallback, an output bound where it has none,
-// and usage accounting on, so the response reports what it cost.
+// and usage accounting on, so the response reports what it cost. It does
+// not require the provider to support every parameter: production sends
+// parallel_tool_calls, which MiniMax-M2's endpoint at the study's price
+// does not list, and OpenRouter then finds no endpoint.
 func pinned(body []byte, model, provider string, bound int) ([]byte, error) {
 	var doc map[string]json.RawMessage
 	if err := json.Unmarshal(body, &doc); err != nil {
 		return nil, err
 	}
 	doc["model"], _ = json.Marshal(model)
-	doc["provider"], _ = json.Marshal(map[string]any{"only": []string{provider}, "allow_fallbacks": false, "require_parameters": true})
+	doc["provider"], _ = json.Marshal(map[string]any{"only": []string{provider}, "allow_fallbacks": false})
 	doc["usage"] = json.RawMessage(`{"include":true}`)
 	if _, ok := doc["max_tokens"]; !ok {
 		doc["max_tokens"] = json.RawMessage(fmt.Sprint(bound))

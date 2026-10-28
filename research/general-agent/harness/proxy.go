@@ -141,6 +141,10 @@ type proxyConfig struct {
 	ceiling            float64
 	model, provider    string
 	price              price
+	// bodies, when set, records every request the proxy sends and the
+	// answer it returns in bodies.jsonl, for diagnosis. The key travels in
+	// a header and is in neither.
+	bodies bool
 }
 
 // proxy forwards the arms' chat requests to OpenRouter under the ledger.
@@ -159,6 +163,22 @@ type proxy struct {
 	cache    map[string]cacheEntry
 	inflight map[string]chan struct{}
 	cacheLog io.Writer
+
+	bodiesMu  sync.Mutex
+	bodiesLog io.Writer
+}
+
+// exchangeBody is one request as sent upstream and the answer returned
+// to the arm.
+type exchangeBody struct {
+	Time     time.Time       `json:"time"`
+	Arm      string          `json:"arm"`
+	Episode  string          `json:"episode"`
+	Phase    string          `json:"phase"`
+	Kind     string          `json:"kind"`
+	Status   int             `json:"status"`
+	Request  json.RawMessage `json:"request"`
+	Response json.RawMessage `json:"response"`
 }
 
 type cacheEntry struct {
@@ -195,7 +215,22 @@ func newProxy(cfg proxyConfig) (*proxy, func(), error) {
 		client: &http.Client{Timeout: 5 * time.Minute},
 		log:    calls, cache: cache, inflight: map[string]chan struct{}{}, cacheLog: cacheLog,
 	}
-	return p, func() { calls.Close(); cacheLog.Close() }, nil
+	closers := []io.Closer{calls, cacheLog}
+	if cfg.bodies {
+		bodies, err := os.OpenFile(filepath.Join(cfg.dir, "bodies.jsonl"), os.O_CREATE|os.O_APPEND|os.O_WRONLY, 0o644)
+		if err != nil {
+			calls.Close()
+			cacheLog.Close()
+			return nil, nil, err
+		}
+		p.bodiesLog = bodies
+		closers = append(closers, bodies)
+	}
+	return p, func() {
+		for _, c := range closers {
+			c.Close()
+		}
+	}, nil
 }
 
 func loadCache(path string) (map[string]cacheEntry, error) {
@@ -292,6 +327,7 @@ func (p *proxy) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	status, resp, usd := p.forward(r.Context(), base, out)
+	p.recordBodies(base, status, out, resp)
 	if kind == "synthesis" && status == http.StatusOK && summarized(resp) {
 		p.store(base.RequestSHA256, resp, usd)
 	}
@@ -475,4 +511,18 @@ func (p *proxy) record(c call) {
 func quote(s string) string {
 	b, _ := json.Marshal(s)
 	return string(b)
+}
+
+func (p *proxy) recordBodies(base call, status int, request, response []byte) {
+	if p.bodiesLog == nil {
+		return
+	}
+	if !json.Valid(response) {
+		response = []byte(quote(string(response)))
+	}
+	line, _ := json.Marshal(exchangeBody{Time: time.Now().UTC(), Arm: base.Arm, Episode: base.Episode, Phase: base.Phase,
+		Kind: base.Kind, Status: status, Request: request, Response: response})
+	p.bodiesMu.Lock()
+	defer p.bodiesMu.Unlock()
+	_, _ = p.bodiesLog.Write(append(line, '\n'))
 }

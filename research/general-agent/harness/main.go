@@ -50,6 +50,7 @@ func runProxy(args []string) error {
 	provider := fs.String("provider", "", "the one OpenRouter provider every request is routed to")
 	inputUSD := fs.Float64("input-usd", 0, "USD per million input tokens at the pinned provider, for reservations")
 	outputUSD := fs.Float64("output-usd", 0, "USD per million output tokens at the pinned provider, for reservations")
+	bodies := fs.Bool("bodies", false, "record every request and answer in bodies.jsonl, for diagnosis")
 	_ = fs.Parse(args)
 	key := os.Getenv("OPENROUTER_API_KEY")
 	if key == "" || *dir == "" || *ceiling <= 0 || *model == "" || *provider == "" || *inputUSD <= 0 || *outputUSD <= 0 {
@@ -57,7 +58,7 @@ func runProxy(args []string) error {
 	}
 	p, closeLogs, err := newProxy(proxyConfig{
 		upstream: *upstream, key: key, dir: *dir, ceiling: *ceiling, model: *model, provider: *provider,
-		price: price{input: *inputUSD / 1e6, output: *outputUSD / 1e6},
+		price: price{input: *inputUSD / 1e6, output: *outputUSD / 1e6}, bodies: *bodies,
 	})
 	if err != nil {
 		return err

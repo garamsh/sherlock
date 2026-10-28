@@ -275,6 +275,38 @@ func TestProxy_ACachedSynthesisIsChargedWhatItFirstCost(t *testing.T) {
 	assert.Equal(t, 0.0001, calls[1].CachedUSD, "and the arm it served is charged what it first cost")
 }
 
+// TestProxy_BodiesHoldTheExchangeAndNotTheKey records a request and its
+// answer in bodies mode, and neither carries the key the proxy sent
+// upstream. The control is the upstream itself, which did receive the key.
+func TestProxy_BodiesHoldTheExchangeAndNotTheKey(t *testing.T) {
+	var gotAuth string
+	up := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		gotAuth = r.Header.Get("Authorization")
+		(&fakeUpstream{}).ServeHTTP(w, r)
+	}))
+	defer up.Close()
+	p, closeLogs, err := newProxy(proxyConfig{upstream: up.URL, key: "test-key", dir: t.TempDir(), ceiling: 1,
+		model: "pinned/model", provider: "Pinned", price: price{input: 1e-8, output: 1e-8}, bodies: true})
+	require.NoError(t, err)
+	srv := httptest.NewServer(p)
+	defer srv.Close()
+	resp, err := http.Post(srv.URL+"/H/C01/live0/v1/chat/completions", "application/json",
+		strings.NewReader(`{"model":"m","messages":[{"role":"user","content":"write the next part"}]}`))
+	require.NoError(t, err)
+	resp.Body.Close()
+	closeLogs()
+
+	assert.Equal(t, "Bearer test-key", gotAuth)
+	data, err := os.ReadFile(filepath.Join(p.cfg.dir, "bodies.jsonl"))
+	require.NoError(t, err)
+	var body exchangeBody
+	require.NoError(t, json.Unmarshal(data, &body))
+	assert.Equal(t, "C01", body.Episode)
+	assert.Contains(t, string(body.Request), "write the next part")
+	assert.Contains(t, string(body.Response), "memory_write")
+	assert.NotContains(t, string(data), "test-key")
+}
+
 func TestIsInfra(t *testing.T) {
 	assert.True(t, isInfra(&openai.APIError{StatusCode: 429}))
 	assert.True(t, isInfra(&openai.APIError{StatusCode: 502}))

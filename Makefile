@@ -168,7 +168,7 @@ build:
 # never built, and the message names that list as the selection (#1095).
 build-tools:
 	@built=0; \
-	for tool in file_read file_write file_list shell_exec message_send github_push github_open_issue github_open_pull_request github_comment; do \
+	for tool in file_read file_write file_list shell_exec message_send github_push github_open_issue github_open_pull_request github_comment image_generate; do \
 		CGO_ENABLED=0 go build -o tools/$$tool/$$tool ./tools/$$tool/ || exit $$?; \
 		test -x tools/$$tool/$$tool || { echo "build-tools: go build wrote tools/$$tool/$$tool without the execute bit; ./tools/$$tool/ must be a main package"; exit 1; }; \
 		built=$$((built + 1)); \

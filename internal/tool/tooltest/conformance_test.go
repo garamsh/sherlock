@@ -136,6 +136,7 @@ func TestCheckSchema_AcceptsEveryBuiltinDocument(t *testing.T) {
 	for _, name := range []string{
 		"file_read", "file_write", "file_list", "message_send", "shell_exec",
 		"github_push", "github_open_issue", "github_open_pull_request", "github_comment",
+		"image_generate",
 	} {
 		t.Run(name, func(t *testing.T) {
 			input, output := tooltest.ManifestSchemas(t, tooltest.ReadManifest(t, name))

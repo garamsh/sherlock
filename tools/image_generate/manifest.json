@@ -1,0 +1,46 @@
+{
+	"name": "image_generate",
+	"description": "Generate one image from a text prompt and write it into the agent's workspace at path, replacing any file there. The endpoint chooses the format and the path's extension is not checked, so the returned media type says what was written. Returns the path written, the image's media type, and the cost the image endpoint reported in USD (null when it reported none). The image itself is not returned; read or send the file to use it.",
+	"command": "image_generate",
+	"input_schema": {
+		"type": "object",
+		"properties": {
+			"prompt": {
+				"type": "string",
+				"minLength": 1
+			},
+			"path": {
+				"type": "string",
+				"minLength": 1
+			}
+		},
+		"required": [
+			"prompt",
+			"path"
+		],
+		"additionalProperties": false
+	},
+	"output_schema": {
+		"type": "object",
+		"properties": {
+			"path": {
+				"type": "string"
+			},
+			"media_type": {
+				"type": "string"
+			},
+			"cost_usd": {
+				"type": [
+					"number",
+					"null"
+				]
+			}
+		},
+		"required": [
+			"path",
+			"media_type",
+			"cost_usd"
+		],
+		"additionalProperties": false
+	}
+}

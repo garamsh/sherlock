@@ -398,7 +398,7 @@ func buildSherlockBinary(t *testing.T) string {
 
 	toolsDir := toolsDirForTest(t)
 	for _, tool := range []string{"file_read", "file_write", "file_list", "shell_exec", "message_send",
-		"github_push", "github_open_issue", "github_open_pull_request", "github_comment"} {
+		"github_push", "github_open_issue", "github_open_pull_request", "github_comment", "image_generate"} {
 		toolBuild := exec.Command("go", "build", "-o",
 			filepath.Join(toolsDir, tool, tool), "./tools/"+tool)
 		toolBuild.Dir = ".." // the module root

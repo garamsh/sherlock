@@ -57,10 +57,15 @@ func TestSetSpawnEnv_CoversWhatTheShippedToolsRead(t *testing.T) {
 	// is a stolen secret (ADR 0003, ADR 0013), and the platform does not
 	// dispatch secrets (ADR 0009). GITHUB_API_BASE is not a secret but is
 	// the operator's too — it retargets the API for an enterprise host,
-	// and the default is the public one.
+	// and the default is the public one. The IMAGE_* variables configure
+	// image_generate's endpoint, model and key the same way.
 	operatorSupplied := map[string]bool{
-		"GH_TOKEN":        true,
-		"GITHUB_API_BASE": true,
+		"GH_TOKEN":           true,
+		"GITHUB_API_BASE":    true,
+		"IMAGE_API_BASE":     true,
+		"IMAGE_API_KEY":      true,
+		"IMAGE_API_KEY_FILE": true,
+		"IMAGE_MODEL":        true,
 	}
 	platformSet := map[string]bool{
 		tool.WorkspaceAddrEnv:   true,

@@ -21,6 +21,7 @@ var imageLayoutTools = []string{
 	"github_open_issue",
 	"github_open_pull_request",
 	"github_push",
+	"image_generate",
 	"message_send",
 	"shell_exec",
 }

@@ -134,3 +134,18 @@ SHA-256 of the inputs:
 - `harness/run.go`: `81fb0dee75913f2652998385d3c6c585f52d098e15eca687322b81125db3beb1`
 - `harness/workspace.go`: `ac2c147d8d1647d4421efc1b36b92fb09c2b8788158897ed3fc4951ec71385f3`
 - `evidence/models.json`: `b5c4d26548a8edd873de562c038ec45bc33e1a84eb6a2cb3196b481fd0bc7c23`
+
+## Amendment 1 — the model is MiniMax-M2 (2026-10-28, before the first paid call)
+
+The PM changed the model at the pre-pilot gate (PR #1168, decision of 2026-10-28T10:44:19Z). This amendment replaces §Model's ladder and its rule "the first rung that works". Nothing else in this file changes.
+
+- **Model.** `minimax/minimax-m2` for both arms and every call, pinned to OpenRouter's `minimax/fp8` endpoint with fallbacks off. Its list price, read on 2026-10-28 from `https://openrouter.ai/api/v1/models/minimax/minimax-m2/endpoints`, is USD 0.255 per million input tokens and USD 1.020 per million output tokens. That endpoint lists `tools` and a 204,800-token context. The proxy runs with `-model minimax/minimax-m2 -provider minimax/fp8 -input-usd 0.255 -output-usd 1.02`.
+- **Reason.**
+  - The deployed agent calls MiniMax-M2 (garamsh/garam#1645), and every earlier study in `research/` ran on it, so a result on M2 speaks for the deployed agent and can be compared with them.
+  - A null on the cheapest model would not answer the question: it could mean that H does not help, or that the model cannot use files and skills at all.
+- **The tool-calling check stays, as a validity gate.** The pilot applies §Model's three criteria to M2. If M2 fails any of them, the study stops and reports, with no fallback to another model. [`evidence/models.json`](evidence/models.json) and the ladder stay as the record of what was planned.
+- **The pilot's record is Amendment 2.** It holds the check's result, the measured cost per episode per arm and the projection.
+- **Projection on M2, before the pilot.** M2's reasoning tokens are billed as output. MiniMax-M2's completions in #862, #864 and #870 averaged 213–233 tokens per act call and 198–240 per synthesis, with 90th percentiles of 386–417 and 300–406 (`research/agent-context/evidence/{stage2,confirm,unmixed}/ledger/calls.jsonl`, uncached calls with HTTP 200). Act prompts averaged about 4,300 tokens there, at a window of 32.
+  - With three act calls of about 5,000 input tokens per live turn and up to 30 syntheses of about 380 input tokens per family, both arms come to about 12.7 million input tokens. The output is about 1.8 million at those means, or 3.1 million at the 90th percentiles.
+  - That is USD 5.1 at the means and USD 6.3 at the 90th percentiles. The pilot replaces this estimate.
+- **Output bound.** The proxy's bound stays at 2,048 tokens per act call and 1,024 per synthesis. Both are above the 90th percentiles above.

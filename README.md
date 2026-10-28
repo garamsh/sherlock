@@ -137,6 +137,7 @@ Agent keys (`sherlock agent`; see `configs/agent.yaml` for an example):
 | `model.base-url` | — | `https://api.openai.com/v1` (any OpenAI-compatible endpoint, e.g. MiniMax/Ollama/vLLM — see §Endpoints, and how far each is verified) |
 | `model.model` | — | `gpt-4o-mini` |
 | `model.api-key-env` | — | `OPENAI_API_KEY` (name of the env var holding the key — the key itself never goes in the config file) |
+| `model.api-key-file` | — | unset (path of a file holding the key, for a short-lived token the platform rewrites while the agent runs: read again for every request, and once more to retry a request answered with 401. When set, `model.api-key-env` is not read, and setting both fails startup — see §A gateway that issues short-lived tokens) |
 | `model.timeout` | — | `60s` (one chat-completions request; raise for slow local endpoints like CPU-served Ollama/vLLM) |
 | `embedding.base-url` | — | unset (an OpenAI-compatible `/embeddings` API root, hosted or local — see §Embeddings. Required unless `model.provider` is `mock`, which embeds offline and reads no `embedding:` key) |
 | `embedding.model` | — | unset (embedding model name, e.g. `BAAI/bge-base-en-v1.5`) |
@@ -175,6 +176,20 @@ The key never goes in the file — `api-key-env` names the environment variable 
 Models the endpoint lists: `MiniMax-M3`, `MiniMax-M2.7`, `MiniMax-M2.7-highspeed`, `MiniMax-M2.5`, `MiniMax-M2.5-highspeed`, `MiniMax-M2.1`, `MiniMax-M2.1-highspeed`, `MiniMax-M2`. `https://api.minimaxi.com/v1` and `https://api.minimax.chat/v1` both answer 401; only `api.minimax.io` authenticates.
 
 **One asymmetry an operator has to know, because "OpenAI-compatible" does not imply it.** On this endpoint a *tool* schema is enforced — a call returns the declared function with well-formed JSON arguments — while a *response* schema is not: `response_format: json_schema` is accepted with HTTP 200 and ignored. Tool calling holds; the response schema is decoration. The agent no longer sends a response format at all: the memory writeback travels as a reserved tool call and a turn does not end until the model makes it (#615), so this asymmetry costs an operator nothing here. It is recorded because it is the kind of difference that is met after a turn rather than at the config line. Probed 2026-08-17 on `MiniMax-M2`, `MiniMax-M2.1`, `MiniMax-M2.5-highspeed` and `MiniMax-M3`; re-check against the endpoint before relying on either half.
+
+#### A gateway that issues short-lived tokens
+
+An endpoint that authenticates the agent with a token that expires — garam's AI gateway is the case this was built for — takes the token from a file rather than from an environment variable, because a variable cannot change under a running process:
+
+```yaml
+model:
+  provider: openai-compatible
+  base-url: https://ai.garam.sh/v1
+  model: auto
+  api-key-file: /var/run/sherlock/model-token
+```
+
+The platform rewrites the file, and should replace it atomically (a new file renamed over the old one). The agent reads it for every model request, so a new token takes effect on the next request without a restart, and a request answered with 401 reads it once more and is sent once more. A file that cannot be read, or holds nothing, fails startup; one that goes missing later fails the model call with an error naming the file, and the agent keeps running (ADR 0029). Mount it into the agent container only, never the workspace's (ADR 0003).
 
 #### Embeddings
 

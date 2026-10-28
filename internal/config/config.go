@@ -134,7 +134,8 @@ type TLSConfig struct {
 
 // ModelConfig selects the chat model under the model: section. The API
 // key itself never appears here: APIKeyEnv names the environment
-// variable holding it (ADR 0003).
+// variable holding it (ADR 0003), or APIKeyFile the file the platform
+// writes it to (ADR 0029).
 type ModelConfig struct {
 	// Provider selects the wire protocol the endpoint speaks, not the
 	// vendor behind it: "mock" (scripted), "openai-compatible" (the
@@ -151,6 +152,11 @@ type ModelConfig struct {
 	Model string `mapstructure:"model"`
 	// APIKeyEnv names the environment variable holding the API key.
 	APIKeyEnv string `mapstructure:"api-key-env"`
+	// APIKeyFile, when set, is the path of a file holding the API key,
+	// read again for every request so a key the platform rewrites takes
+	// effect without a restart. APIKeyEnv is then not read, and Resolve
+	// refuses an api-key-env set beside it.
+	APIKeyFile string `mapstructure:"api-key-file"`
 	// Timeout bounds one chat-completions request; <= 0 leaves the
 	// provider's default in place.
 	Timeout time.Duration `mapstructure:"timeout"`
@@ -216,8 +222,9 @@ func Resolve(fs *pflag.FlagSet) (Config, error) {
 	v.SetDefault("model.provider", defaultModelProvider)
 	v.SetDefault("model.base-url", defaultModelBaseURL)
 	v.SetDefault("model.model", defaultModelName)
-	v.SetDefault("model.api-key-env", defaultModelKeyEnv)
+	v.SetDefault(modelKeyEnvKey, defaultModelKeyEnv)
 	v.SetDefault("model.timeout", defaultModelTimeout)
+	v.SetDefault(modelKeyFileKey, "")
 	// Keys with neither a flag nor a default still get an empty default,
 	// so the env layer (SHERLOCK_TLS_CERT, …) reaches Unmarshal when the
 	// key is absent from the config file (issue #228).
@@ -262,7 +269,35 @@ func Resolve(fs *pflag.FlagSet) (Config, error) {
 	if err := checkIssuers(cfg.Issuers, cfg.RequireSignature); err != nil {
 		return Config{}, err
 	}
+	if err := checkModelKeySource(v, cfg.Model); err != nil {
+		return Config{}, err
+	}
 	return cfg, nil
+}
+
+// modelKeyEnvKey and modelKeyFileKey are the two config keys that name
+// where the model's API key is read from, and modelKeyEnvEnv the
+// environment variable modelKeyEnvKey binds to.
+const (
+	modelKeyEnvKey  = "model.api-key-env"
+	modelKeyFileKey = "model.api-key-file"
+	modelKeyEnvEnv  = "SHERLOCK_MODEL_API_KEY_ENV"
+)
+
+// checkModelKeySource refuses a model section that names both key
+// sources. api-key-env has a default, so only one the operator wrote —
+// in the file or through the environment — counts as named; without
+// this check the file would win silently and the variable the operator
+// set would never be read.
+func checkModelKeySource(v *viper.Viper, model ModelConfig) error {
+	if model.APIKeyFile == "" {
+		return nil
+	}
+	if _, ok := os.LookupEnv(modelKeyEnvEnv); !ok && !v.InConfig(modelKeyEnvKey) {
+		return nil
+	}
+	return fmt.Errorf("config: %s and %s are both set; name one source for the model's API key",
+		modelKeyFileKey, modelKeyEnvKey)
 }
 
 // toolPinsKey is the config key holding the operator's accepted tool

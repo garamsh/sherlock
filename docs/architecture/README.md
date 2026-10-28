@@ -54,7 +54,7 @@ One pod per agent, two containers (ADR 0017): the agent container is the agent's
 - `0017` — the agent is the self; the workspace is the data plane; tools are scripts with manifests (pod-per-agent)
 - `0018` — a retrieved memory carries a path to its source
 - `0019` — recall older conversation by embedding similarity and an entity walk beside recency, and let the agent search again during work
-- `0020` — the image repositories are immutable, and a consumer references an image by digest
+- `0020` — each image is published to one immutable repository, and a consumer references an image by digest
 - `0021` — first-party tool executables are baked into the sherlock-agent image; no separate sherlock/tools image is published
 - `0022` — the running agent reports what it loaded, and drains its in-flight turn on SIGTERM
 - `0023` — the system is partitioned by domain, and a domain depends on a sibling one way through its declared surface

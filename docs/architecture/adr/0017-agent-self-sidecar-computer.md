@@ -1,7 +1,7 @@
 # ADR 0017: The agent is the self; the workspace is the data plane — pod-per-agent, and tools are scripts with manifests
 
 > Status: accepted
-> Date: 2026-08-09 (revised in place 2026-08-13; 2026-08-14; 2026-08-17; 2026-09-25)
+> Date: 2026-08-09 (revised in place 2026-08-13; 2026-08-14; 2026-08-17; 2026-09-25; 2026-10-28)
 
 ## Contents
 - Context
@@ -64,7 +64,7 @@ There is no compile-time tool registry, no runtime plugin loader, no wire protoc
 
 ### What tools look like in this repository
 
-- **First-party tools** we ship (`file_read`, `file_write`, `file_list`, `shell_exec`, `message_send`, `github_push`, `github_open_issue`, `github_open_pull_request`, `github_comment`, and any new tool the architecture implies) live as `tools/<name>/` directories under this repository: each contains `manifest.json` and an executable that implements the manifest's contract. The language is the tool author's choice. The platform's stdio runner spawns the executable on demand.
+- **First-party tools** we ship (`file_read`, `file_write`, `file_list`, `shell_exec`, `message_send`, `github_push`, `github_open_issue`, `github_open_pull_request`, `github_comment`, `image_generate`, and any new tool the architecture implies) live as `tools/<name>/` directories under this repository: each contains `manifest.json` and an executable that implements the manifest's contract. The language is the tool author's choice. The platform's stdio runner spawns the executable on demand.
 - **Third-party tools** follow the same shape; nothing in the platform's treatment distinguishes them structurally from first-party tools.
 
 ### Required tools

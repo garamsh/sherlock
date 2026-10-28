@@ -252,13 +252,14 @@ func TestChat_NonSuccessStatusIsReportedAsAPIError(t *testing.T) {
 }
 
 // keyGate is a Messages endpoint that accepts one x-api-key and answers
-// every other with 401, recording each request's key.
+// every other with 401, recording each request's key and turn header.
 type keyGate struct {
 	URL string
 
 	mu       sync.Mutex
 	accepted string
 	keys     []string
+	turnIDs  []string
 }
 
 func newKeyGate(t *testing.T, accepted string) *keyGate {
@@ -269,6 +270,7 @@ func newKeyGate(t *testing.T, accepted string) *keyGate {
 		defer g.mu.Unlock()
 		key := r.Header.Get("X-Api-Key")
 		g.keys = append(g.keys, key)
+		g.turnIDs = append(g.turnIDs, r.Header.Get(agent.TurnIDHeader))
 		if key != g.accepted {
 			http.Error(w, `{"type":"error","error":{"type":"authentication_error"}}`, http.StatusUnauthorized)
 			return
@@ -280,11 +282,11 @@ func newKeyGate(t *testing.T, accepted string) *keyGate {
 	return g
 }
 
-// seen returns the key of every request so far.
-func (g *keyGate) seen() []string {
+// seen returns the key and turn header of every request so far.
+func (g *keyGate) seen() (keys, turnIDs []string) {
 	g.mu.Lock()
 	defer g.mu.Unlock()
-	return append([]string(nil), g.keys...)
+	return append([]string(nil), g.keys...), append([]string(nil), g.turnIDs...)
 }
 
 // rotatingCredential returns its keys in order, then repeats the last,
@@ -314,23 +316,36 @@ func chatWithCredential(ctx context.Context, t *testing.T, url string, credentia
 	return err
 }
 
+func TestChat_TurnIDTravelsAsTheTurnHeader(t *testing.T) {
+	g := newKeyGate(t, "k")
+	credential := &rotatingCredential{keys: []string{"k"}}
+
+	require.NoError(t, chatWithCredential(agent.WithTurnID(t.Context(), "turn-1"), t, g.URL, credential))
+	require.NoError(t, chatWithCredential(t.Context(), t, g.URL, credential))
+
+	_, turnIDs := g.seen()
+	assert.Equal(t, []string{"turn-1", ""}, turnIDs, "a request outside a turn carries no turn header")
+}
+
 // TestChat_RejectedCredentialIsReadAgainAndRetriedOnce pins ADR 0029's
 // recovery on this protocol. The fixed-key control shows the retry
 // belongs to the credential: a key that cannot change is not retried.
 func TestChat_RejectedCredentialIsReadAgainAndRetriedOnce(t *testing.T) {
-	ctx := t.Context()
+	ctx := agent.WithTurnID(t.Context(), "turn-1")
 
 	g := newKeyGate(t, "rotated")
 	require.NoError(t, chatWithCredential(ctx, t, g.URL, &rotatingCredential{keys: []string{"expired", "rotated"}}),
 		"the re-read key recovers the call")
-	assert.Equal(t, []string{"expired", "rotated"}, g.seen())
+	keys, turnIDs := g.seen()
+	assert.Equal(t, []string{"expired", "rotated"}, keys)
+	assert.Equal(t, []string{"turn-1", "turn-1"}, turnIDs, "the retry stays in the turn")
 
 	fixed := newKeyGate(t, "rotated")
 	m, err := anthropic.New(anthropic.Config{BaseURL: fixed.URL, Model: "auto", APIKey: "expired"})
 	require.NoError(t, err)
 	_, err = m.Chat(ctx, []agent.Message{{Role: agent.RoleUser, Content: "hi"}}, nil)
 	require.Error(t, err)
-	fixedKeys := fixed.seen()
+	fixedKeys, _ := fixed.seen()
 	assert.Len(t, fixedKeys, 1, "a fixed key is sent once")
 }
 
@@ -343,7 +358,7 @@ func TestChat_SecondRejectionFailsTheCallNamingTheSource(t *testing.T) {
 	var apiErr *anthropic.APIError
 	require.ErrorAs(t, err, &apiErr)
 	assert.Equal(t, http.StatusUnauthorized, apiErr.StatusCode)
-	keys := g.seen()
+	keys, _ := g.seen()
 	assert.Len(t, keys, 2, "one request and one retry, no more")
 	assert.Contains(t, err.Error(), "test-source /run/key")
 	assert.NotContains(t, err.Error(), "expired", "the error names the source, never the key")
@@ -356,6 +371,6 @@ func TestChat_UnreadableCredentialFailsTheCallNamingTheSource(t *testing.T) {
 	require.Error(t, err)
 	assert.Contains(t, err.Error(), "test-source /run/key")
 	assert.Contains(t, err.Error(), "no such file")
-	keys := g.seen()
+	keys, _ := g.seen()
 	assert.Empty(t, keys, "nothing is sent without a key")
 }

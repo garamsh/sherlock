@@ -16,8 +16,8 @@ import (
 
 // modelEndpoint is a local stand-in for a model provider: it answers the
 // embeddings route with a fixed vector, every other route after delay
-// with 400, and records each request's path and credential headers. No
-// request leaves the host.
+// with 400, and records each request's path, credential headers and turn
+// header. No request leaves the host.
 type modelEndpoint struct {
 	URL string
 
@@ -27,7 +27,7 @@ type modelEndpoint struct {
 
 // endpointRequest is what modelEndpoint recorded of one request.
 type endpointRequest struct {
-	Path, Authorization, APIKey string
+	Path, Authorization, APIKey, TurnID string
 }
 
 func newModelEndpoint(t *testing.T, delay time.Duration) *modelEndpoint {
@@ -37,6 +37,7 @@ func newModelEndpoint(t *testing.T, delay time.Duration) *modelEndpoint {
 		e.mu.Lock()
 		e.requests = append(e.requests, endpointRequest{
 			Path: r.URL.Path, Authorization: r.Header.Get("Authorization"), APIKey: r.Header.Get("x-api-key"),
+			TurnID: r.Header.Get("X-Turn-Id"),
 		})
 		e.mu.Unlock()
 		if r.URL.Path == "/v1/embeddings" {
@@ -227,4 +228,19 @@ func TestAgentCommand_KeyFileReachesTheModel(t *testing.T) {
 	req, ok := endpoint.request("/v1/chat/completions")
 	require.True(t, ok, "the turn called the chat-completions route")
 	assert.Equal(t, "Bearer from-the-file", req.Authorization)
+}
+
+// TestAgentCommand_TurnIDReachesTheModel runs a turn through the shipped
+// wiring (ADR 0030): the model request carries the turn's identifier in
+// X-Turn-Id.
+func TestAgentCommand_TurnIDReachesTheModel(t *testing.T) {
+	t.Setenv("SHERLOCK_TEST_KEY", "sk-test")
+	endpoint := newModelEndpoint(t, 0)
+	err := providerTurn(t, fmt.Sprintf("  provider: openai-compatible\n  base-url: %q\n"+
+		"  model: auto\n  api-key-env: SHERLOCK_TEST_KEY\n", endpoint.URL), liveEmbedding(endpoint))
+	require.Error(t, err, "the test endpoint refuses the model call")
+
+	req, ok := endpoint.request("/v1/chat/completions")
+	require.True(t, ok, "the turn called the chat-completions route")
+	assert.Regexp(t, "^[0-9a-f]{32}$", req.TurnID, "the request carries the turn's identifier")
 }

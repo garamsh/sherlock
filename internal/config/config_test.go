@@ -87,6 +87,42 @@ func TestResolveConfig_EmbeddingSectionAndEnv(t *testing.T) {
 	}, cfg.Embedding, "the file sets the endpoint and SHERLOCK_EMBEDDING_API_KEY_ENV, absent from it, reaches the key")
 }
 
+// TestResolveConfig_ModelKeyFile holds the two key sources apart (ADR
+// 0029): api-key-file resolves from the file or the environment beside
+// the defaulted api-key-env, and one api-key-env the operator wrote
+// beside it, by either layer, is refused rather than silently unread.
+func TestResolveConfig_ModelKeyFile(t *testing.T) {
+	resolve := func(t *testing.T, model string) (config.Config, error) {
+		t.Helper()
+		dir := t.TempDir()
+		t.Chdir(dir)
+		require.NoError(t, os.MkdirAll(filepath.Join(dir, "configs"), 0o755))
+		require.NoError(t, os.WriteFile(filepath.Join(dir, "configs", "agent.yaml"), []byte("model:\n"+model), 0o600))
+		return config.Resolve(agentFlags(t))
+	}
+
+	t.Run("file key beside the default variable", func(t *testing.T) {
+		cfg, err := resolve(t, "  api-key-file: /run/model/key\n")
+		require.NoError(t, err)
+		assert.Equal(t, "/run/model/key", cfg.Model.APIKeyFile)
+	})
+	t.Run("environment key", func(t *testing.T) {
+		t.Setenv("SHERLOCK_MODEL_API_KEY_FILE", "/run/model/key")
+		cfg, err := resolve(t, "  provider: mock\n")
+		require.NoError(t, err)
+		assert.Equal(t, "/run/model/key", cfg.Model.APIKeyFile)
+	})
+	t.Run("both in the file", func(t *testing.T) {
+		_, err := resolve(t, "  api-key-file: /run/model/key\n  api-key-env: MODEL_KEY\n")
+		assert.ErrorContains(t, err, "model.api-key-file and model.api-key-env are both set")
+	})
+	t.Run("variable named through the environment", func(t *testing.T) {
+		t.Setenv("SHERLOCK_MODEL_API_KEY_ENV", "MODEL_KEY")
+		_, err := resolve(t, "  api-key-file: /run/model/key\n")
+		assert.ErrorContains(t, err, "both set")
+	})
+}
+
 func TestResolveConfig_ModelTimeoutEnvOverridesFile(t *testing.T) {
 	dir := t.TempDir()
 	t.Chdir(dir)

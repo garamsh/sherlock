@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/http/httptest"
+	"os"
 	"path/filepath"
 	"sync"
 	"testing"
@@ -209,4 +210,21 @@ func TestAgentCommand_EmbeddingSection(t *testing.T) {
 		assert.ErrorContains(t, providerTurn(t, live, liveEmbedding(endpoint)+"  api-key-env: SHERLOCK_TEST_EMBED_KEY\n"),
 			"SHERLOCK_TEST_EMBED_KEY is not set or is empty")
 	})
+}
+
+// TestAgentCommand_KeyFileReachesTheModel runs a turn configured with
+// model.api-key-file (ADR 0029): the model request carries the key the
+// file holds, not the variable api-key-env defaults to.
+func TestAgentCommand_KeyFileReachesTheModel(t *testing.T) {
+	t.Setenv("OPENAI_API_KEY", "from-the-environment")
+	keyPath := filepath.Join(t.TempDir(), "key")
+	require.NoError(t, os.WriteFile(keyPath, []byte("from-the-file\n"), 0o600))
+	endpoint := newModelEndpoint(t, 0)
+	err := providerTurn(t, fmt.Sprintf("  provider: openai-compatible\n  base-url: %q\n"+
+		"  model: auto\n  api-key-file: %q\n", endpoint.URL, keyPath), liveEmbedding(endpoint))
+	require.Error(t, err, "the test endpoint refuses the model call")
+
+	req, ok := endpoint.request("/v1/chat/completions")
+	require.True(t, ok, "the turn called the chat-completions route")
+	assert.Equal(t, "Bearer from-the-file", req.Authorization)
 }

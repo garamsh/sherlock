@@ -1,10 +1,12 @@
 package anthropic_test
 
 import (
+	"context"
 	"encoding/json"
 	"errors"
 	"net/http"
 	"net/http/httptest"
+	"sync"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -247,4 +249,113 @@ func TestChat_NonSuccessStatusIsReportedAsAPIError(t *testing.T) {
 	var apiErr *anthropic.APIError
 	require.True(t, errors.As(err, &apiErr))
 	assert.Equal(t, http.StatusUnauthorized, apiErr.StatusCode)
+}
+
+// keyGate is a Messages endpoint that accepts one x-api-key and answers
+// every other with 401, recording each request's key.
+type keyGate struct {
+	URL string
+
+	mu       sync.Mutex
+	accepted string
+	keys     []string
+}
+
+func newKeyGate(t *testing.T, accepted string) *keyGate {
+	t.Helper()
+	g := &keyGate{accepted: accepted}
+	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		g.mu.Lock()
+		defer g.mu.Unlock()
+		key := r.Header.Get("X-Api-Key")
+		g.keys = append(g.keys, key)
+		if key != g.accepted {
+			http.Error(w, `{"type":"error","error":{"type":"authentication_error"}}`, http.StatusUnauthorized)
+			return
+		}
+		_, _ = w.Write([]byte(textOnlyReply))
+	}))
+	t.Cleanup(srv.Close)
+	g.URL = srv.URL + "/v1"
+	return g
+}
+
+// seen returns the key of every request so far.
+func (g *keyGate) seen() []string {
+	g.mu.Lock()
+	defer g.mu.Unlock()
+	return append([]string(nil), g.keys...)
+}
+
+// rotatingCredential returns its keys in order, then repeats the last,
+// standing in for a file the platform rewrites between reads.
+type rotatingCredential struct {
+	keys  []string
+	reads int
+	err   error
+}
+
+func (c *rotatingCredential) Read() (string, error) {
+	if c.err != nil {
+		return "", c.err
+	}
+	key := c.keys[min(c.reads, len(c.keys)-1)]
+	c.reads++
+	return key, nil
+}
+
+func (c *rotatingCredential) Source() string { return "test-source /run/key" }
+
+func chatWithCredential(ctx context.Context, t *testing.T, url string, credential anthropic.Credential) error {
+	t.Helper()
+	m, err := anthropic.New(anthropic.Config{BaseURL: url, Model: "auto", Credential: credential})
+	require.NoError(t, err)
+	_, err = m.Chat(ctx, []agent.Message{{Role: agent.RoleUser, Content: "hi"}}, nil)
+	return err
+}
+
+// TestChat_RejectedCredentialIsReadAgainAndRetriedOnce pins ADR 0029's
+// recovery on this protocol. The fixed-key control shows the retry
+// belongs to the credential: a key that cannot change is not retried.
+func TestChat_RejectedCredentialIsReadAgainAndRetriedOnce(t *testing.T) {
+	ctx := t.Context()
+
+	g := newKeyGate(t, "rotated")
+	require.NoError(t, chatWithCredential(ctx, t, g.URL, &rotatingCredential{keys: []string{"expired", "rotated"}}),
+		"the re-read key recovers the call")
+	assert.Equal(t, []string{"expired", "rotated"}, g.seen())
+
+	fixed := newKeyGate(t, "rotated")
+	m, err := anthropic.New(anthropic.Config{BaseURL: fixed.URL, Model: "auto", APIKey: "expired"})
+	require.NoError(t, err)
+	_, err = m.Chat(ctx, []agent.Message{{Role: agent.RoleUser, Content: "hi"}}, nil)
+	require.Error(t, err)
+	fixedKeys := fixed.seen()
+	assert.Len(t, fixedKeys, 1, "a fixed key is sent once")
+}
+
+func TestChat_SecondRejectionFailsTheCallNamingTheSource(t *testing.T) {
+	g := newKeyGate(t, "never-issued")
+
+	err := chatWithCredential(t.Context(), t, g.URL, &rotatingCredential{keys: []string{"expired"}})
+	require.Error(t, err)
+
+	var apiErr *anthropic.APIError
+	require.ErrorAs(t, err, &apiErr)
+	assert.Equal(t, http.StatusUnauthorized, apiErr.StatusCode)
+	keys := g.seen()
+	assert.Len(t, keys, 2, "one request and one retry, no more")
+	assert.Contains(t, err.Error(), "test-source /run/key")
+	assert.NotContains(t, err.Error(), "expired", "the error names the source, never the key")
+}
+
+func TestChat_UnreadableCredentialFailsTheCallNamingTheSource(t *testing.T) {
+	g := newKeyGate(t, "k")
+
+	err := chatWithCredential(t.Context(), t, g.URL, &rotatingCredential{err: errors.New("no such file")})
+	require.Error(t, err)
+	assert.Contains(t, err.Error(), "test-source /run/key")
+	assert.Contains(t, err.Error(), "no such file")
+	keys := g.seen()
+	assert.Empty(t, keys, "nothing is sent without a key")
 }

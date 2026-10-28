@@ -91,23 +91,19 @@ func (m *Model) Chat(ctx context.Context, messages []agent.Message, tools []tool
 	if err != nil {
 		return agent.Response{}, fmt.Errorf("encode request: %w", err)
 	}
-	req, err := http.NewRequestWithContext(ctx, http.MethodPost, m.endpoint, bytes.NewReader(body))
+	resp, err := m.post(ctx, body)
 	if err != nil {
-		return agent.Response{}, fmt.Errorf("build request: %w", err)
-	}
-	req.Header.Set("Content-Type", "application/json")
-	req.Header.Set("X-Api-Key", m.apiKey)
-	req.Header.Set("Anthropic-Version", apiVersion)
-
-	resp, err := m.http.Do(req)
-	if err != nil {
-		return agent.Response{}, fmt.Errorf("messages: %w", err)
+		return agent.Response{}, err
 	}
 	defer func() { _ = resp.Body.Close() }()
 
 	if resp.StatusCode < 200 || resp.StatusCode >= 300 {
 		snippet, _ := io.ReadAll(io.LimitReader(resp.Body, maxErrorBody))
-		return agent.Response{}, &APIError{StatusCode: resp.StatusCode, Body: string(snippet)}
+		apiErr := &APIError{StatusCode: resp.StatusCode, Body: string(snippet)}
+		if resp.StatusCode == http.StatusUnauthorized && m.credential != nil {
+			return agent.Response{}, fmt.Errorf("%w (the key from %s was read again and refused again)", apiErr, m.credential.Source())
+		}
+		return agent.Response{}, apiErr
 	}
 	var decoded messagesResponse
 	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
@@ -139,6 +135,52 @@ func (m *Model) Chat(ctx context.Context, messages []agent.Message, tools []tool
 	}
 	out.Content = text.String()
 	return out, nil
+}
+
+// post sends body with the current key. A
+// credential the endpoint answers with 401 is read again and the request
+// sent once more, so a key rewritten since the last read recovers the
+// call (ADR 0029). A fixed APIKey is not retried: reading it again
+// returns the same key.
+func (m *Model) post(ctx context.Context, body []byte) (*http.Response, error) {
+	resp, err := m.send(ctx, body)
+	if err != nil || resp.StatusCode != http.StatusUnauthorized || m.credential == nil {
+		return resp, err
+	}
+	_ = resp.Body.Close()
+	return m.send(ctx, body)
+}
+
+// send makes one Messages request.
+func (m *Model) send(ctx context.Context, body []byte) (*http.Response, error) {
+	key, err := m.key()
+	if err != nil {
+		return nil, err
+	}
+	req, err := http.NewRequestWithContext(ctx, http.MethodPost, m.endpoint, bytes.NewReader(body))
+	if err != nil {
+		return nil, fmt.Errorf("build request: %w", err)
+	}
+	req.Header.Set("Content-Type", "application/json")
+	req.Header.Set("X-Api-Key", key)
+	req.Header.Set("Anthropic-Version", apiVersion)
+	resp, err := m.http.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("messages: %w", err)
+	}
+	return resp, nil
+}
+
+// key returns the API key to send now.
+func (m *Model) key() (string, error) {
+	if m.credential == nil {
+		return m.apiKey, nil
+	}
+	key, err := m.credential.Read()
+	if err != nil {
+		return "", fmt.Errorf("anthropic provider: read API key from %s: %w", m.credential.Source(), err)
+	}
+	return key, nil
 }
 
 // toWireMessages splits the history into the top-level system prompt and

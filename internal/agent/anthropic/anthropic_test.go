@@ -44,3 +44,11 @@ func TestNew_CompleteSettingsSatisfyTheSeam(t *testing.T) {
 	var model agent.Model = m
 	assert.NotNil(t, model)
 }
+
+func TestNew_APIKeyAndCredentialAreExclusive(t *testing.T) {
+	_, err := anthropic.New(anthropic.Config{
+		BaseURL: "https://api.anthropic.com/v1", Model: "claude-test", APIKey: "k",
+		Credential: &rotatingCredential{keys: []string{"k"}},
+	})
+	assert.ErrorContains(t, err, "both set")
+}

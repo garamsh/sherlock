@@ -1,6 +1,6 @@
 # Agent
 
-Governs the agent: the reasoning loop, memory, tool use, and model access. Rationale: ADR 0017, ADR 0009, ADR 0004, ADR 0006, ADR 0011, ADR 0019, ADR 0024, ADR 0029.
+Governs the agent: the reasoning loop, memory, tool use, and model access. Rationale: ADR 0017, ADR 0009, ADR 0004, ADR 0006, ADR 0011, ADR 0019, ADR 0024, ADR 0029, ADR 0030.
 
 ## Current decisions
 
@@ -25,6 +25,7 @@ Governs the agent: the reasoning loop, memory, tool use, and model access. Ratio
 - **A turn without the reserved terminal response does not finish.** The session asks again if a model stops without the call, and hands a note past 2,000 characters back to the model as the call's result; arguments that are not JSON fail the turn. A successful reply and its visible task are persisted, then the note, before the terminal event (ADR 0011).
 - Chat model access goes through one consumer-owned interface and embedding through a second (ADR 0004). Mid-episode synthesis uses the session model; recall makes no model call and uses the embedder configured in the `embedding:` section. `mock` remains the offline scripted stand-in, with an offline embedder beside it, and configured OpenAI- or Anthropic-compatible clients supply the live chat endpoint beside an OpenAI-compatible embeddings endpoint. The mock answers a request offering `memory_summary`, which only synthesis offers, with one fixed valid call outside its turn script, so a mock agent's batches synthesize.
 - The chat model's key comes from the variable `model.api-key-env` names, read once at startup, or from the file `model.api-key-file` names, which the platform rewrites and the client reads for every request (ADR 0029). Naming both fails startup. A file the process cannot read fails startup, and one that becomes unreadable later fails the model call with an error naming the file, not the agent. A request answered with 401 under the file reads it once more and is sent once more, and a second 401 fails the call; a key from the variable is never retried. The embedder keeps its own `embedding.api-key-env`.
+- **Each turn mints one identifier, and every model request of the turn carries it** in the header `X-Turn-Id` — the loop's calls, a retried call and the mid-episode synthesis inside the turn alike — so an endpoint that chooses a model per turn can keep the turn on it (ADR 0030). The identifier is opaque random hex, and a request outside a turn carries none.
 - Instructions compose the operator ego (or the embedded default when none is named), then the operator instructions when an instructions file is named, then the platform contract, followed by the saved note under "Your note" (ADR 0024). The operator instructions add to the ego rather than replace it, and with none named the instructions are exactly the ego and the contract. The contract is never overridden by either operator file; it tells the model to search with a standalone query when recall misses, to inspect sources for exact wording, to treat a retrieved candidate as a lead, not an established answer, and to restate its whole note in every terminal call.
 
 ## Open questions

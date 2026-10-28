@@ -37,14 +37,16 @@ model:
 #   model: BAAI/bge-base-en-v1.5
 #   api-key-env: EMBEDDING_KEY            # for a hosted endpoint
 # Tools: the agent reads ./tools/<name>/manifest.json at startup
-# (ADR 0009 §Decision). The nine first-party tools (file_read, file_write,
+# (ADR 0009 §Decision). The ten first-party tools (file_read, file_write,
 # file_list, shell_exec, message_send, github_push, github_open_issue,
-# github_open_pull_request, github_comment) ship in place under tools/; a `make build-tools`
+# github_open_pull_request, github_comment, image_generate) ship in place under tools/; a `make build-tools`
 # compile keeps the binaries current. Override the directory with the
 # tools-dir key, or drop a custom tool into ./tools/<name>/ with its own
 # manifest.json and binary. The GitHub tools fail every call without
 # GH_TOKEN, so either set GH_TOKEN in the agent's env or remove the
-# tools/github_*/ directories to run without them.
+# tools/github_*/ directories to run without them. image_generate fails
+# every call without IMAGE_API_KEY_FILE or IMAGE_API_KEY in the agent's env
+# (README.md §Adding tools); remove tools/image_generate/ to run without it.
 # tools-dir: ./tools
 #
 # tools.pins is the accepted tool set: the SHA-256 of each manifest you

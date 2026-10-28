@@ -21,6 +21,13 @@ model:
 #   base-url: https://api.minimax.io/v1
 #   model: MiniMax-M2
 #   api-key-env: MINIMAX_KEY
+# A gateway that authenticates with a short-lived token the platform
+# rewrites reads it from a file instead, again for every request
+# (README.md §A gateway that issues short-lived tokens, ADR 0029):
+#   provider: openai-compatible
+#   base-url: https://ai.garam.sh/v1
+#   model: auto
+#   api-key-file: /var/run/sherlock/model-token
 # embedding: ranks older conversation for recall. The mock provider embeds
 # offline and ignores it; every other provider needs an OpenAI-compatible
 # /embeddings endpoint here (README.md §Embeddings). A local server needs no

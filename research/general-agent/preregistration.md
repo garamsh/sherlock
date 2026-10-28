@@ -149,3 +149,10 @@ The PM changed the model at the pre-pilot gate (PR #1168, decision of 2026-10-28
   - With three act calls of about 5,000 input tokens per live turn and up to 30 syntheses of about 380 input tokens per family, both arms come to about 12.7 million input tokens. The output is about 1.8 million at those means, or 3.1 million at the 90th percentiles.
   - That is USD 5.1 at the means and USD 6.3 at the 90th percentiles. The pilot replaces this estimate.
 - **Output bound.** The proxy's bound stays at 2,048 tokens per act call and 1,024 per synthesis. Both are above the 90th percentiles above.
+
+### Amendment 1a — routing (2026-10-28, before any charged call)
+
+- The first pilot request, for family W01 in arm S at 10:46:38Z, was refused by OpenRouter with HTTP 404 "No endpoints found that can handle the requested parameters". The proxy had set `require_parameters: true`. Production sends `parallel_tool_calls`, which the `minimax/fp8` endpoint does not list among its supported parameters, so no endpoint was left. Every call got 404, and nothing was charged.
+- `b95712c6f66898e9386c51cd51817bd8d616a6aa` drops `require_parameters`. The request is still routed only to `minimax/fp8` with fallbacks off, and OpenRouter ignores the parameter that endpoint lacks.
+- The refused attempt's ledger and record are kept under [`evidence/pilot-routing-404/`](evidence/pilot-routing-404/), and the pilot starts again in a fresh directory.
+- `harness/proxy.go` is now SHA-256 `21bf8dfe9a62069fc1ebf827ebb2743f738f551f776ef1a7386e400af656a336`.

@@ -137,7 +137,7 @@ func (m *Model) Chat(ctx context.Context, messages []agent.Message, tools []tool
 	return out, nil
 }
 
-// post sends body with the current key. A
+// post sends body with the current key and the turn's identifier. A
 // credential the endpoint answers with 401 is read again and the request
 // sent once more, so a key rewritten since the last read recovers the
 // call (ADR 0029). A fixed APIKey is not retried: reading it again
@@ -164,6 +164,9 @@ func (m *Model) send(ctx context.Context, body []byte) (*http.Response, error) {
 	req.Header.Set("Content-Type", "application/json")
 	req.Header.Set("X-Api-Key", key)
 	req.Header.Set("Anthropic-Version", apiVersion)
+	if id := agent.TurnID(ctx); id != "" {
+		req.Header.Set(agent.TurnIDHeader, id)
+	}
 	resp, err := m.http.Do(req)
 	if err != nil {
 		return nil, fmt.Errorf("messages: %w", err)

@@ -191,6 +191,8 @@ model:
 
 The platform rewrites the file, and should replace it atomically (a new file renamed over the old one). The agent reads it for every model request, so a new token takes effect on the next request without a restart, and a request answered with 401 reads it once more and is sent once more. A file that cannot be read, or holds nothing, fails startup; one that goes missing later fails the model call with an error naming the file, and the agent keeps running (ADR 0029). Mount it into the agent container only, never the workspace's (ADR 0003).
 
+Every model request of one turn also carries the header `X-Turn-Id`, one opaque identifier per turn, so an endpoint that chooses a model per turn can keep the turn on it (ADR 0030). It is sent whatever `model.base-url` names, under either protocol, and carries nothing but the identifier.
+
 #### Embeddings
 
 Recall ranks mid episodes by embedding similarity, so every provider but `mock` also needs an `embedding:` section naming an OpenAI-compatible `/embeddings` endpoint. It is separate from `model:` because the chat endpoint need not serve embeddings, and the embedder speaks only the OpenAI-compatible protocol whatever `model.provider` names. The model the replication and the parity run measured, `BAAI/bge-base-en-v1.5`, runs locally in Hugging Face's text-embeddings-inference server (`research/mid-memory-rag/README.md` §Production parity (issue #858)):

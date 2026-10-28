@@ -33,6 +33,14 @@ COST_MARGIN = 0.20
 # Seconds one module's cases may run before the run counts as failed.
 CASE_TIMEOUT = 10
 
+# The exercise control: of the primary families, at least this many must
+# show the arm keeping something after the correction, or the run did not
+# exercise the structure it compares.
+EXERCISE_MIN = 30
+
+# The memory calls of H that keep a correction.
+H_WRITES = ("memory_file_write", "skill_write")
+
 
 # ---- what a turn produced -------------------------------------------------
 
@@ -467,6 +475,48 @@ def step_rows(family, record):
     return rows
 
 
+def kept(arm, turn):
+    """Whether a correction turn left the arm keeping something beyond the
+    conversation: S's note non-empty after the turn, or a write of H's
+    memory files or skills that succeeded during it."""
+    if arm == "S":
+        return bool(((turn.get("memory") or {}).get("note") or "").strip())
+    return any(name in H_WRITES for name, _ in calls(turn))
+
+
+def controls(corpus, results):
+    """The run-time controls: no correction in the restored window at a
+    probe, pre-turn recall in every S turn and no H turn, and each arm's
+    structure exercised after the correction."""
+    out = {}
+    for arm in ARMS:
+        in_window, probes, recall, turns, exercised, primary = 0, 0, 0, 0, 0, 0
+        for f in corpus["families"]:
+            record = results[arm].get(f["id"])
+            if record is None:
+                continue
+            by_step = {t["step"]: t for t in record.get("turns") or []}
+            for i, step in enumerate(f["steps"]):
+                turn = by_step.get(i)
+                if turn is None:
+                    continue
+                turns += 1
+                recall += bool(turn.get("recall_block"))
+                if step.get("probe") and not step.get("correction"):
+                    probes += 1
+                    in_window += bool(turn.get("correction_in_window"))
+            if f["group"] == "primary":
+                primary += 1
+                correction = next((i for i, s in enumerate(f["steps"]) if s.get("correction")), None)
+                exercised += correction in by_step and kept(arm, by_step[correction])
+        out[arm] = {"probes": probes, "correction_in_window": in_window, "turns": turns,
+                    "recall_turns": recall, "primary": primary, "exercised": exercised}
+    out["window_holds"] = all(out[a]["correction_in_window"] == 0 for a in ARMS)
+    out["recall_holds"] = out["S"]["recall_turns"] == out["S"]["turns"] and out["H"]["recall_turns"] == 0
+    out["exercise_holds"] = all(out[a]["exercised"] >= EXERCISE_MIN for a in ARMS)
+    return out
+
+
 def ledger_cost(run_dir):
     """Each arm's cost from the ledger: what it paid, plus what a synthesis
     the cache answered cost when it was first paid for, so an arm is charged
@@ -553,6 +603,7 @@ def score(run_dir, corpus_path):
 
     missing = {arm: sorted(f["id"] for f in corpus["families"] if f["id"] not in results[arm]) for arm in ARMS}
     out = {
+        "controls": controls(corpus, results),
         "per_kind": per_kind,
         "paired": paired,
         "guardrails": guardrails,
@@ -569,9 +620,13 @@ def score(run_dir, corpus_path):
 
 def decide(out):
     """The preregistration's decision rule. A run missing any family in
-    either arm is incomplete, and decides nothing."""
+    either arm is incomplete, and one whose run-time control failed did not
+    measure what it compares; neither decides anything."""
     if any(out["missing"][arm] for arm in ARMS):
         return {"outcome": "undetermined: collection incomplete"}
+    failed = [name for name in ("window_holds", "recall_holds", "exercise_holds") if not out["controls"][name]]
+    if failed:
+        return {"outcome": "undetermined: control failed", "failed": failed}
     primary = out["paired"]["primary"]
     beats = primary["difference"] is not None and primary["difference"] > 0 and primary["p"] < ALPHA
     holds = all(g["hold"] for g in out["guardrails"].values())
@@ -587,6 +642,7 @@ def main():
     (run_dir / "scores.json").write_text(json.dumps(out, indent=1, sort_keys=True) + "\n")
     for kind in KINDS:
         print(kind, {g: {a: f"{e[a]['held']}/{e[a]['n']}" for a in ARMS} for g, e in out["per_kind"][kind].items()})
+    print(json.dumps({k: v for k, v in out["controls"].items()}))
     print(json.dumps(out["paired"]))
     print(json.dumps(out["guardrails"]))
     print(json.dumps(out["cost"]))

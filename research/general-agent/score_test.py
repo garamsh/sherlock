@@ -384,8 +384,16 @@ class ScoreTest(unittest.TestCase):
 
     def test_one_discordant_pair_is_not_significant(self):
         out = self.stand_in(True, False)
-        self.assertEqual(out["verdict"]["outcome"], "shipped structure stands")
-        self.assertFalse(out["verdict"]["beats"])
+        out["controls"] = {"window_holds": True, "recall_holds": True, "exercise_holds": True}
+        verdict = score.decide(out)
+        self.assertEqual(verdict["outcome"], "shipped structure stands")
+        self.assertFalse(verdict["beats"])
+
+    def test_a_failed_control_makes_the_run_undetermined(self):
+        out = self.stand_in(True, True)
+        out["missing"] = {"S": [], "H": []}
+        out["controls"] = {"window_holds": False, "recall_holds": True, "exercise_holds": True}
+        self.assertEqual(score.decide(out), {"outcome": "undetermined: control failed", "failed": ["window_holds"]})
 
     def test_a_missing_family_makes_the_run_undetermined(self):
         out = self.stand_in(True, True)
@@ -394,6 +402,7 @@ class ScoreTest(unittest.TestCase):
 
     def test_the_decision_rule(self):
         base = {"missing": {"S": [], "H": []},
+                "controls": {"window_holds": True, "recall_holds": True, "exercise_holds": True},
                 "paired": {"primary": {"difference": 0.2, "p": 0.001}},
                 "guardrails": {"control": {"hold": True}, "reversal": {"hold": True}, "cost": {"hold": True}}}
         self.assertEqual(score.decide(base)["outcome"], "H valid")
@@ -409,6 +418,51 @@ class ScoreTest(unittest.TestCase):
         self.assertEqual(score.mcnemar([True] * 6, [False] * 6)[:2], (6, 0))
         self.assertAlmostEqual(score.binom_two_sided(6, 6), 0.03125)
         self.assertAlmostEqual(score.binom_two_sided(5, 6), 0.21875)
+
+
+class ControlsTest(unittest.TestCase):
+    """The run-time controls read from the records, each beside the near
+    miss it must refuse."""
+
+    corpus = {"families": [{"id": "W01", "kind": "writing", "group": "primary", "steps": [
+        {"kind": "live", "instance": 1, "correction": False, "probe": None},
+        {"kind": "live", "instance": 1, "correction": True, "probe": None},
+        {"kind": "block", "index": 0},
+        {"kind": "live", "instance": 2, "correction": False, "probe": {"rule": {}}}]}]}
+
+    def results(self, s_turns, h_turns):
+        return {"S": {"W01": {"turns": s_turns}}, "H": {"W01": {"turns": h_turns}}}
+
+    def test_a_correction_in_the_window_at_a_probe_fails_the_window_control(self):
+        good = [{"step": 3, "correction_in_window": False}]
+        self.assertTrue(score.controls(self.corpus, self.results(good, good))["window_holds"])
+        near = [{"step": 3, "correction_in_window": True}]
+        self.assertFalse(score.controls(self.corpus, self.results(good, near))["window_holds"])
+
+    def test_recall_in_an_h_turn_or_its_absence_in_an_s_turn_fails_the_recall_control(self):
+        s = [{"step": 0, "recall_block": True}, {"step": 3, "recall_block": True}]
+        h = [{"step": 0, "recall_block": False}, {"step": 3, "recall_block": False}]
+        self.assertTrue(score.controls(self.corpus, self.results(s, h))["recall_holds"])
+        self.assertFalse(score.controls(self.corpus, self.results(s, [dict(h[0], recall_block=True), h[1]]))["recall_holds"])
+        self.assertFalse(score.controls(self.corpus, self.results([s[0], dict(s[1], recall_block=False)], h))["recall_holds"])
+
+    def test_what_counts_as_keeping_the_correction(self):
+        self.assertTrue(score.kept("S", {"memory": {"note": "Begin every reply with STATUS:."}}))
+        self.assertFalse(score.kept("S", {"memory": {"note": "  "}}))
+        write = {"name": "memory_file_write", "input": {"file": "USER.md", "content": "STATUS: first"}}
+        self.assertTrue(score.kept("H", {"tools": [write]}))
+        self.assertTrue(score.kept("H", {"tools": [{"name": "skill_write", "input": {}}]}))
+        # Near misses: a refused write, and a file H holds but did not write
+        # in this turn.
+        self.assertFalse(score.kept("H", {"tools": [dict(write, failed=True)]}))
+        self.assertFalse(score.kept("H", {"memory": {"USER.md": "STATUS: first"}}))
+
+    def test_exercise_counts_the_correction_turn(self):
+        s = [{"step": 1, "memory": {"note": "STATUS: first"}}]
+        h = [{"step": 0, "tools": [{"name": "memory_file_write", "input": {}}]}, {"step": 1}]
+        out = score.controls(self.corpus, self.results(s, h))
+        self.assertEqual(out["S"]["exercised"], 1)
+        self.assertEqual(out["H"]["exercised"], 0, "a write before the correction is not keeping it")
 
 
 if __name__ == "__main__":

@@ -70,12 +70,14 @@ jobs:
       # (ADR 0021); there is no separate sherlock/tools image and no third
       # image to push. The workspace image is unchanged.
       #
-      # Every image lands under `garam/` in the registry, the convention
-      # the account's other applications follow. Production tags are
-      # semver (`0.1.0`, `0.1.1`, ...) — release tags from a `v`-prefixed
-      # git tag with the `v` stripped. Development tags are the commit
-      # short SHA; those go in by hand, not through this workflow
-      # (deployment.md §Images and tags).
+      # Each image has one repository, `sherlock/<image>`: the account names
+      # a repository `<publishing repository>/<image>`, and the image name
+      # never repeats the prefix (ADR 0020). Releases and development builds
+      # share it and are told apart by tag. Release tags are semver (`0.1.0`,
+      # `0.1.1`, ...) — a `v`-prefixed git tag with the `v` stripped — and
+      # only this workflow pushes one. Development tags are the commit short
+      # SHA; those go in by hand, not through this workflow (deployment.md
+      # §Images and tags).
       #
       # The name invoked is the one a contributor invokes and the `docker` job
       # in ci.yml already invokes (ci.md §One entry point per task); the
@@ -120,10 +122,10 @@ jobs:
         run: |
           set -euo pipefail
           for image in agent workspace; do
-            docker tag "sherlock-$image:$GITHUB_SHA" "$REGISTRY/garam/sherlock-$image:$VERSION"
+            docker tag "sherlock-$image:$GITHUB_SHA" "$REGISTRY/sherlock/$image:$VERSION"
           done
           for image in agent workspace; do
-            docker push "$REGISTRY/garam/sherlock-$image:$VERSION"
+            docker push "$REGISTRY/sherlock/$image:$VERSION"
           done
 
       # What the registry holds, read back from the registry rather than from a
@@ -149,9 +151,9 @@ jobs:
         run: |
           set -euo pipefail
           for image in agent workspace; do
-            ref="$REGISTRY/garam/sherlock-$image:$VERSION"
+            ref="$REGISTRY/sherlock/$image:$VERSION"
             fields=$(aws ecr batch-get-image \
-              --repository-name "garam/sherlock-$image" \
+              --repository-name "sherlock/$image" \
               --image-ids imageTag="$VERSION" \
               --query 'images[0].[imageManifestMediaType, imageId.imageDigest]' \
               --output text)

@@ -18,7 +18,7 @@ What makes immutability a requirement rather than a preference is in this reposi
 
 ## Decision
 
-**Each image sherlock builds is published to one repository, `sherlock/<image>` — `sherlock/agent` and `sherlock/workspace` — which holds its releases and its development builds alike, told apart by tag pattern; every repository sherlock publishes to is created `IMMUTABLE` and is never made mutable; a tag names a single commit and never moves; sherlock requires neither a lifecycle policy nor image scanning; and a consumer references an image by digest with `imagePullPolicy: Always`.**
+**Each image sherlock builds is published to one repository, `sherlock/<image>` — `sherlock/agent` and `sherlock/workspace` — which holds its releases and its development builds alike, told apart by tag pattern; every repository sherlock publishes to is created `IMMUTABLE`, with no tag-mutability exclusion, and is never made mutable; a tag names a single commit and never moves; sherlock requires neither a lifecycle policy nor image scanning; and a consumer references an image by digest with `imagePullPolicy: Always`.**
 
 ### One repository per image, two tag patterns
 
@@ -31,6 +31,8 @@ Both kinds sit in one repository, so the rules below hold for both — and the a
 Push a dirty-tree build under a tag some clean build already holds, and a mutable repository takes it: the overwrite is silent, and the tag now names a commit whose tree was not what was built. An immutable repository refuses it: ECR's `PutImage` answers `ImageTagAlreadyExistsException`. Immutability converts a silent mislabel into a refused push, which is the shape ADR 0010 requires of the executor — it never silently upgrades, because a capability reported unavailable is better than a change nobody sees.
 
 The second reason is that the setting is retroactive. Tag immutability is a property of the repository and not of a tag, and ECR records nothing about the policy a tag was pushed under, so a repository that is ever mutable leaves every tag it holds a readable label rather than an identifier — the ones pushed while it was immutable included (from the gitops PM, 2026-08-23). A tag identifies a build here only because these repositories have never been mutable, which makes this a requirement on their creation and not only on their present setting.
+
+So the setting is plain `IMMUTABLE`, with no tag-mutability exclusion. sherlock pushes no moving tag, so an exclusion buys it nothing. And an exclusion filter is itself a repository setting that can be changed later: whatever pattern it comes to match, the tags under that pattern become labels retroactively, which is the argument above reopened.
 
 ### A tag names one commit and never moves
 

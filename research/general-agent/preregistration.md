@@ -215,3 +215,11 @@ An arm is charged its paid calls plus what each cache hit first cost (§Endpoint
 - **Exercise:** each arm kept the correction in 4 of 4 primary families: S's note non-empty, and a successful H `memory_file_write`. `score.py` reports `exercise_holds` false only because its floor of 30 is set for the 60 primary families of collection.
 - **Spend:** the ledger is within USD 0.006 of the key. Holds.
 - **Scorer near miss not foreseen.** S's W01 probe at step 5 begins `**STATUS:**`, with the prefix in bold, and the prefix check fails it. §Controls lists a prefix in mid-reply as a near miss, not a prefix in emphasis. Whether emphasis around a required prefix keeps the rule is a question for the PM. The scorer is unchanged.
+
+## Amendment 3 — the diagnostic runs on MiniMax-M2.7 (2026-11-11, before any charged call)
+
+The PM's post-pilot decision of 2026-10-28 authorised a diagnostic run of H and S on C01 and C20. When it was re-run on 2026-11-11, OpenRouter answered every request for `minimax/minimax-m2` with HTTP 404, "no provider serves this model anymore" (172 calls, USD 0). The PM decided on PR #1168 (2026-11-11) to run it on a successor. This amendment changes nothing else in this file.
+
+- **Model.** `minimax/minimax-m2.7` for both arms, pinned to the `gmicloud/fp8` endpoint with fallbacks off. `GET https://openrouter.ai/api/v1/models/minimax/minimax-m2.7/endpoints` read at 2026-11-11T01:39:00Z lists `gmicloud/fp8` with tools, a 196,608-token context, and USD 0.21 per million input tokens and USD 0.84 per million output tokens. The proxy runs with `-model minimax/minimax-m2.7 -provider gmicloud/fp8 -input-usd 0.21 -output-usd 0.84 -bodies`.
+- **What it is not.** It is not the pilot's M2. A diagnosis from it is about m2.7. The pilot's own failure on M2 stays undiagnosed, and the pilot's figures are unchanged.
+- **Scope.** H and S on families C01 and C20 only, with the proxy recording request and response bodies. It is not collection and feeds no verdict. Its ceiling is USD 0.87, the remainder of the USD 1 the PM set.

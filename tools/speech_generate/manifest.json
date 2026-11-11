@@ -1,0 +1,57 @@
+{
+	"name": "speech_generate",
+	"description": "Turn text into speech and write the audio into the agent's workspace at path, replacing any file there. Optional voice names a voice the configured model offers, and format is mp3 or pcm (the endpoint's default when omitted; pcm is raw audio with no header). The path's extension is not checked, so the returned media type says what was written. Returns the path written, the audio's media type, and the cost the speech endpoint reported in USD (null when it reported none). The audio itself is not returned; read or send the file to use it.",
+	"command": "speech_generate",
+	"input_schema": {
+		"type": "object",
+		"properties": {
+			"text": {
+				"type": "string",
+				"minLength": 1
+			},
+			"path": {
+				"type": "string",
+				"minLength": 1
+			},
+			"voice": {
+				"type": "string",
+				"minLength": 1
+			},
+			"format": {
+				"type": "string",
+				"enum": [
+					"mp3",
+					"pcm"
+				]
+			}
+		},
+		"required": [
+			"text",
+			"path"
+		],
+		"additionalProperties": false
+	},
+	"output_schema": {
+		"type": "object",
+		"properties": {
+			"path": {
+				"type": "string"
+			},
+			"media_type": {
+				"type": "string"
+			},
+			"cost_usd": {
+				"type": [
+					"number",
+					"null"
+				]
+			}
+		},
+		"required": [
+			"path",
+			"media_type",
+			"cost_usd"
+		],
+		"additionalProperties": false
+	}
+}

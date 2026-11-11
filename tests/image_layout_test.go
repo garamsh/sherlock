@@ -24,6 +24,7 @@ var imageLayoutTools = []string{
 	"image_generate",
 	"message_send",
 	"shell_exec",
+	"speech_generate",
 }
 
 // TestImageLayout_AgentCarriesBakedTools verifies ADR 0021: the sherlock-agent

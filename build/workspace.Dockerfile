@@ -26,7 +26,7 @@ RUN CGO_ENABLED=0 go build -trimpath -ldflags="-s -w" -o /out/sherlock ./cmd/she
 # sub-processes) and the privilege drop made real: a privileged
 # workspace chowns its data directory to the configured exec-uid at
 # startup and drops Exec children to it (ADR 0008).
-FROM debian:13-slim@sha256:a29215f6a35e51e22adffa17f89e9d2ef06214e64a2bad10d765c46aea49f11f AS workspace
+FROM debian:13-slim@sha256:62bd423aeee912639ca8ee681c2b762cb3e25137e0a92b20be455898a9f034ad AS workspace
 ARG REVISION=unknown
 LABEL org.opencontainers.image.title="sherlock-workspace" \
       org.opencontainers.image.source="https://github.com/garamsh/sherlock" \

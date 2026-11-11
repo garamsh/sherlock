@@ -25,4 +25,4 @@ Governs the structural rules of the shape this project is partitioned into: what
 
 ## Open questions
 
-- None. Where the composition site sits, which this section held (#710), is now `stack-go.md` §Project envelope's to decide, and `packages.md` records where it places the site.
+- **`Factory.New` decides, and "the composition site stays thin" says the site decides nothing else.** `internal/gateway/runtime.go` clamps `MaxHistoryMessages` to a default or zero, derives the restore limit from the setting's sign, makes an existing outbox owner-only, and creates the memory file's directory unless `RequireStore` is set (`Factory.New` and `openStore`). Each reads a setting and acts on it, and none constructs or passes. Whether those belong in the site, in the session's options, or in the memory store has not been settled, and nothing here moves them (#710). Where the site sits is `stack-go.md` §Project envelope's to decide, and `packages.md` records where it places it.
